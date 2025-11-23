@@ -1,0 +1,252 @@
+No,Content,A,B,C,D,Answered
+22,"[""A developer is creating an application that will be deployed on IoT devices. The\napplication will send data to a RESTful API that is deployed as an AWS Lambda\nfunction. The application will assign each API request a unique identifier. The\nvolume of API requests from the application can randomly increase at any given\ntime of day.\nDuring periods of request throttling, the application might need to retry\nrequests. The API must be able to handle duplicate requests without\ninconsistencies or data loss.\nWhich solution will meet these requirements?""]",Create an Amazon RDS for MySQL DB instance. Store the unique identifier for each request in a database table. Modify the Lambda function to check the table for the identifier before processing the request.,Create an Amazon DynamoDB table. Store the unique identifier for each request in the table. Modify the Lambda function to check the table for the identifier before processing the request.,Create an Amazon DynamoDB table. Store the unique identifier for each request in the table. Modify the Lambda function to return a client error response when the function receives a duplicate request.,Create an Amazon ElastiCache for Memcached instance. Store the unique identifier for each request in the cache. Modify the Lambda function to check the cache for the identifier before processing the request.,"# Answer
+- **Correct option:** B 
+
+- **Reason:** 
+  Using an Amazon DynamoDB table to store the unique identifier for each API request allows the Lambda function to effectively check for and handle duplicate requests. DynamoDB provides high availability and can handle bursts of requests, making it suitable for IoT applications with fluctuating workloads. By storing incoming request identifiers, the Lambda function can prevent processing the same request multiple times, ensuring data integrity and consistency.
+
+# Example / Analogy
+- Think of it like a ticketing system at a concert where each ticket has a unique serial number. If someone tries to enter with a duplicate ticket number, the venue can reference a master list (like DynamoDB) to check for duplicates and deny entry, ensuring each person only experiences the concert once, just as the application ensures no duplicate data is processed.
+
+# Common Mistakes / Traps
+- A common mistake could be selecting option A instead of B, assuming relational databases like RDS would work efficiently with high-velocity requests. However, DynamoDB's design is inherently better suited for fast, scalable key-value lookups necessary for this use case.
+
+# Memory Tip
+- **Think “DynamoDB for data integrity” to handle duplicates effectively!**"
+23,"[""A developer is creating an application that includes an Amazon API Gateway REST\nAPI in the us-east-2 Region. The developer wants to use Amazon CloudFront and a\ncustom domain name for the API. The developer has acquired an SSL/TLS\ncertificate for the domain from a third-party provider.\nHow should the developer configure the custom domain for the application?""]",Import the SSL/TLS certificate into AWS Certificate Manager (ACM) in the same Region as the API. Create a DNS A record for the custom domain.,Import the SSL/TLS certificate into CloudFront. Create a DNS CNAME record for the custom domain.,Import the SSL/TLS certificate into AWS Certificate Manager (ACM) in the same Region as the API. Create a DNS CNAME record for the custom domain.,Import the SSL/TLS certificate into AWS Certificate Manager (ACM) in the us-east-1 Region. Create a DNS CNAME record for the custom domain.,"# Answer
+- **Correct option:** D
+- **Reason:** The developer should import the SSL/TLS certificate into AWS Certificate Manager (ACM) in the us-east-1 Region because API Gateway requires the certificate to be in that region when using a custom domain with CloudFront. After the certificate is imported, the developer can create a DNS CNAME record for the custom domain pointing to the CloudFront distribution.
+
+# Example / Analogy
+- Think of it like needing a special permit (the SSL certificate) that is issued only from a specific office (us-east-1) in a city (AWS). Even if your business (API) is located in a different part of the city (us-east-2), you still need that permit to operate legally. You’ll then need to let people know about your new location (creating a DNS record).
+
+# Common Mistakes / Traps
+- A common mistake is to think that the SSL/TLS certificate can be in the same region as the API (us-east-2) when in fact it must be imported to us-east-1 for the API Gateway custom domain setup. Developers might also misinterpret how to link the DNS records, mixing up A records and CNAME records.
+
+# Memory Tip
+- Remember: ""SSL in us-east-1, CNAME to disguise the endpoint!"""
+24,"[""A developer is building a new application on AWS. The application uses an AWS\nLambda function that retrieves information from an Amazon DynamoDB table. The\ndeveloper hard coded the DynamoDB table name into the Lambda function code. The\ntable name might change over time. The developer does not want to modify the\nLambda code if the table name changes.\nWhich solution will meet these requirements MOST efficiently?""]",Create a Lambda environment variable to store the table name. Use the standard method for the programming language to retrieve the variable.,Store the table name in a file. Store the file in the /tmp folder. Use the SDK for the programming language to retrieve the table name.,Create a file to store the table name. Zip the file and upload the file to the Lambda layer. Use the SDK for the programming language to retrieve the table name.,Create a global variable that is outside the handler in the Lambda function to store the table name.,"# Answer
+- **Correct option:** A : Create a Lambda environment variable to store the table name. Use the standard method for the programming language to retrieve the variable.
+
+- **Reason:** This solution allows the table name to be easily configurable without modifying the Lambda function code. Environment variables can be updated directly in the AWS Lambda console or through a configuration management tool, making it a flexible and efficient way to manage dynamic configuration data like table names.
+
+# Example / Analogy
+- Think of environment variables as labels on containers. Imagine you have several boxes labeled ""Books,"" ""Toys,"" and ""Clothes."" If you want to change the contents of ""Books"" to ""Old Books,"" you just change the label rather than redoing the whole box. Similarly, with environment variables, you can change the table name without altering the code.
+
+# Common Mistakes / Traps
+- A common trap is to use hard-coded strings or global variables, thinking they provide an easier solution, but these methods require code changes whenever a value needs to be changed, which defeats the purpose of dynamically configuring the application.
+
+# Memory Tip
+- Use environment variables for dynamic settings instead of hardcoded values to ensure flexibility and ease of maintenance."
+25,"[""A developer is migrating some features from a legacy monolithic application to\nuse AWS Lambda functions instead. The application currently stores data in an\nAmazon Aurora DB cluster that runs in private subnets in a VPC. The AWS account\nhas one VPC deployed. The Lambda functions and the DB cluster are deployed in\nthe same AWS Region in the same AWS account.\nThe developer needs to ensure that the Lambda functions can securely access the\nDB cluster without crossing the public internet.\nWhich solution will meet these requirements?""]",Configure the DB cluster's public access setting to Yes.,Configure an Amazon RDS database proxy for he Lambda functions.,Configure a NAT gateway and a security group for the Lambda functions.,"Configure the VPC, subnets, and a security group for the Lambda functions.","# Answer
+- **Correct option:** D : Configure the VPC, subnets, and a security group for the Lambda functions.
+
+- **Reason:** Lambda functions can securely access resources within a VPC by being configured to run inside that VPC. By placing the Lambda functions in the same VPC as the Amazon Aurora DB cluster and setting the appropriate subnets and security groups, you ensure that the connection between the Lambda functions and the DB remains private and does not traverse the public internet.
+
+# Example / Analogy  
+- Think of it like a secure office building with locked doors. When your Lambda functions are like employees who work inside that building (VPC), they need special access (subnets and security groups) to reach the data stored in the office’s secure vault (Aurora DB cluster). By giving them access to the same building without letting them go outside (the internet), you ensure that their work remains secure.
+
+# Common Mistakes / Traps  
+- A common mistake is to assume that simply configuring public access or adding a NAT gateway allows secure access to the DB. Public access exposes the database to the internet, which is not what the question requires. Additionally, a NAT gateway is typically used for outbound internet access from private subnets, which is not necessary for this scenario.
+
+# Memory Tip  
+- Remember: Keep Lambda in the same VPC as Aurora for a secure, private connection!"
+26,"[""A developer is writing an AWS Lambda function. The developer wants to log key\nevents that occur while the Lambda function runs. The developer wants to include\na unique identifier to associate the events with a specific function invocation.\nThe developer adds the following code to the Lambda function:\n[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image2.png]\nWhich solution will meet this requirement?""]",Obtain the request identifier from the AWS request ID field in the context object. Configure the application to write logs to standard output.,Obtain the request identifier from the AWS request ID field in the event object. Configure the application to write logs to a file.,Obtain the request identifier from the AWS request ID field in the event object. Configure the application to write logs to standard output.,Obtain the request identifier from the AWS request ID field in the context object. Configure the application to write logs to a file.,"# Answer
+- **Correct option:** A
+- **Reason:** The context object in an AWS Lambda function provides the AWS request ID, which serves as a unique identifier for the specific invocation of the function. By logging this ID to standard output, the logs become easily accessible in Amazon CloudWatch, allowing the developer to track and associate log entries with that particular function execution.
+
+# Example / Analogy
+- Think of the AWS request ID as a unique ticket number at an event. Each attendee (function invocation) gets a ticket (request ID), which they can show to identify themselves. If something happens at the event (like a lost item), the ticket helps trace back to that specific attendee, just like the request ID helps trace back to the specific invocation of the Lambda function.
+
+# Common Mistakes / Traps
+- A common mistake is opting for the event object instead of the context object to retrieve the request ID. The event object typically contains the input data for the function and may not have the unique identifier meant for logging and tracing.
+
+# Memory Tip
+- Remember, ""Context is Key"" when needing unique identifiers in AWS Lambda."
+27,"[""An application uses an Amazon EC2 Auto Scaling group. A developer notices that\nEC2 instances are taking a long time to become available during scale-out\nevents. The UserData script is taking a long time to run.\nThe developer must implement a solution to decrease the time that elapses before\nan EC2 instance becomes available. The solution must make the most recent\nversion of the application available at all times and must apply all available\nsecurity updates. The solution also must minimize the number of images that are\ncreated. The images must be validated.\nWhich combination of steps should the developer take to meet these requirements?\n(Choose two.)""]",Use EC2 Image Builder to create an Amazon Machine Image (AMI). Install all the patches and agents that are needed to manage and run the application. Update the Auto Scaling group launch configuration to use the AMI.,Use EC2 Image Builder to create an Amazon Machine Image (AMI). Install the latest version of the application and all the patches and agents that are needed to manage and run the application. Update the Auto Scaling group launch configuration to use the AMI.,Set up AWS CodeDeploy to deploy the most recent version of the application at runtime.,Set up AWS CodePipeline to deploy the most recent version of the application at runtime.,"# Answer
+- **Correct options:** A and B
+
+- **Reason:** Option A focuses on using EC2 Image Builder to prepare an AMI that has all necessary patches and agents installed, streamlining the instance launch process. However, while it ensures security updates, it does not ensure the application is the latest version. Option B extends this by also ensuring that the latest version of the application is pre-installed in the AMI created by EC2 Image Builder. This reduces the time it takes for an EC2 instance to become fully operational during scale-out events since the setup that usually runs at the initial startup is handled beforehand.
+
+# Example / Analogy
+- Think of preparing a meal for guests. Instead of cooking everything from scratch when they arrive (which takes time), you can pre-cook the meal (like creating an AMI) and just reheat it when guests arrive, ensuring it's always the freshest version and meets guests’ preferences.
+
+# Common Mistakes / Traps
+- A common mistake could be assuming that simply updating the UserData script would speed up the initialization process. While this may help, it does not address the need for the most current application version or maintain security patches by itself. 
+
+# Memory Tip
+- Pre-pack your AMI like a meal prep: have everything ready so that your EC2 instances serve up the latest version quickly!"
+28,"[""A developer is using an AWS Lambda function to generate avatars for profile\npictures that are uploaded to an Amazon S3 bucket. The Lambda function is\nautomatically invoked for profile pictures that are saved under the /original/\nS3 prefix. The developer notices that some pictures cause the Lambda function to\ntime out. The developer wants to implement a fallback mechanism by using another\nLambda function that resizes the profile picture.\nWhich solution will meet these requirements with the LEAST development effort?""]",Set the image resize Lambda function as a destination of the avatar generator Lambda function for the events that fail processing.,Create an Amazon Simple Queue Service (Amazon SQS) queue. Set the SQS queue as a destination with an on failure condition for the avatar generator Lambda function. Configure the image resize Lambda function to poll from the SQS queue.,Create an AWS Step Functions state machine that invokes the avatar generator Lambda function and uses the image resize Lambda function as a fallback. Create an Amazon EventBridge rule that matches events from the S3 bucket to invoke the state machine.,Create an Amazon Simple Notification Service (Amazon SNS) topic. Set the SNS topic as a destination with an on failure condition for the avatar generator Lambda function. Subscribe the image resize Lambda function to the SNS topic.,"# Answer
+- **Correct option:** A 
+- **Reason:** Setting the image resize Lambda function as a destination of the avatar generator Lambda function for failed events is the simplest implementation. By configuring this as a failure destination, the resize function gets invoked automatically without the need for additional polling or complex error-handling mechanisms.
+
+# Example / Analogy
+- Imagine a bakery where a chef (the avatar generator) bakes a cake (the avatar), but sometimes the cake falls (times out). Instead of throwing away the fallen cake, there’s a helper (resize Lambda) who can quickly fix and decorate it. When the chef’s attempt fails, the helper is automatically notified to step in and resize the cake without needing a complicated process to communicate.
+
+# Common Mistakes / Traps
+- A common trap is to overcomplicate the solution, like using SQS or SNS, which introduces additional components and maintenance. Understanding that a simple failure destination can directly invoke another Lambda function helps streamline error handling.
+
+# Memory Tip
+- Remember: **""Simpler is better!""** Use failure destinations for direct fallback."
+29,"[""A developer needs to migrate an online retail application to AWS to handle an\nanticipated increase in traffic. The application currently runs on two servers:\none server for the web application and another server for the database. The web\nserver renders webpages and manages session state in memory. The database server\nhosts a MySQL database that contains order details. When traffic to the\napplication is heavy, the memory usage for the web server approaches 100% and\nthe application slows down considerably.\nThe developer has found that most of the memory increase and performance\ndecrease is related to the load of managing additional user sessions. For the\nweb server migration, the developer will use Amazon EC2 instances with an Auto\nScaling group behind an Application Load Balancer.\nWhich additional set of changes should the developer make to the application to\nimprove the application's performance?""]",Use an EC2 instance to host the MySQL database. Store the session data and the application data in the MySQL database.,Use Amazon ElastiCache for Memcached to store and manage the session data. Use an Amazon RDS for MySQL DB instance to store the application data.,Use Amazon ElastiCache for Memcached to store and manage the session data and the application data.,Use the EC2 instance store to manage the session data. Use an Amazon RDS for MySQL DB instance to store the application data.,"# Answer
+- **Correct option:** B: Use Amazon ElastiCache for Memcached to store and manage the session data. Use an Amazon RDS for MySQL DB instance to store the application data.
+
+- **Reason:** Storing session data in Amazon ElastiCache helps alleviate the load on the web server's memory, as it provides a scalable in-memory caching solution specifically designed for high performance. This allows the web server to focus on rendering web pages and processing requests rather than managing session state. Additionally, using Amazon RDS for MySQL offloads database management tasks, providing a managed database solution that can handle scalability, backups, and high availability, which is particularly beneficial for an online retail application with fluctuating traffic demands.
+
+# Example / Analogy
+- Think of managing sessions like running a busy restaurant. If the chef (your web server) is also responsible for taking orders (managing sessions) and cooking (serving web pages), the quality of food (application performance) will suffer when too many customers arrive. By hiring a waiter (Amazon ElastiCache) to take orders (handle sessions), the chef can focus on cooking efficiently. Meanwhile, the RDS for MySQL can be compared to a reliable supply chain that ensures all ingredients (application data) are always in stock and readily available.
+
+# Common Mistakes / Traps
+- A common mistake is to consider that session data can simply be stored in the database (option A or D), as traditional databases are not optimized for high-speed reads/writes required for session management. Additionally, opting for EC2 instance storage (option D) is risky since instance storage is ephemeral and will be lost if the instance is terminated. 
+
+# Memory Tip
+- Use caching (like ElastiCache) to offload session management from the web server for better performance!"
+30,"[""A developer has a legacy application that is hosted on-premises. Other\napplications hosted on AWS depend on the on-premises application for proper\nfunctioning. In case of any application errors, the developer wants to be able\nto use Amazon CloudWatch to monitor and troubleshoot all applications from one\nplace.\nHow can the developer accomplish this?""]",Install an AWS SDK on the on-premises server to automatically send logs to CloudWatch.,Download the CloudWatch agent to the on-premises server. Configure the agent to use IAM user credentials with permissions for CloudWatch.,Upload log files from the on-premises server to Amazon S3 and have CloudWatch read the files.,Upload log files from the on-premises server to an Amazon EC2 instance and have the instance forward the logs to CloudWatch.,"# Answer
+- **Correct option:** B : Download the CloudWatch agent to the on-premises server. Configure the agent to use IAM user credentials with permissions for CloudWatch.
+
+- **Reason:** The Amazon CloudWatch Agent is specifically designed to collect monitoring and operational data from both EC2 and on-premises servers. By installing this agent on the on-premises server, the developer can have the application logs sent directly to CloudWatch, providing centralized monitoring for troubleshooting and operational oversight.
+
+# Example / Analogy
+- Imagine a security camera (CloudWatch agent) installed in a store (on-premises server) that continuously relays video footage (logs) to a central monitoring station (CloudWatch). Instead of having to go to the store to check the footage, the security personnel can simply view everything from one centralized location.
+
+# Common Mistakes / Traps
+- A common mistake could be to think that simply uploading logs to S3 (Options C and D) would allow direct integration with CloudWatch. While this approach is valid for archival, it doesn’t provide real-time monitoring capabilities like the CloudWatch agent does. Additionally, users might assume that just using an SDK (Option A) is sufficient, but the agility and functionality of the dedicated CloudWatch agent make it the preferred solution.
+
+# Memory Tip
+- **Install the CloudWatch agent on-premises for real-time log monitoring and centralized troubleshooting.**"
+31,"[""An ecommerce company is using an AWS Lambda function behind Amazon API Gateway\nas its application tier. To process orders during checkout, the application\ncalls a POST API from the frontend. The POST API invokes the Lambda function\nasynchronously. In rare situations, the application has not processed orders.\nThe Lambda application logs show no errors or failures.\nWhat should a developer do to solve this problem?""]",Inspect the frontend logs for API failures. Call the POST API manually by using the requests from the log file.,Create and inspect the Lambda dead-letter queue. Troubleshoot the failed functions. Reprocess the events.,Inspect the Lambda logs in Amazon CloudWatch for possible errors. Fix the errors.,Make sure that caching is disabled for the POST API in API Gateway.,"# Answer
+- **Correct option:** B
+- **Reason:** Creating and inspecting the Lambda dead-letter queue (DLQ) allows you to identify any events that failed to be processed correctly. Since the logs do not show any errors or failures, it's possible that the Lambda function processed the request, but there may have been an issue with the event itself that caused it to be unprocessed. The DLQ will help capture this data.
+
+# Example / Analogy
+- Think of the dead-letter queue as a lost-and-found box. If someone orders a package, but it gets lost (in this case, the event fails), the order information is still there in the lost-and-found. By checking the box (DLQ), you can see what went wrong and re-process those orders.
+
+# Common Mistakes / Traps
+- A common mistake might be to assume that there was an error in the Lambda logs (Choice C) when no error was logged, which can lead to overlooking the possibility of unprocessed events. Another trap could be focusing on API Gateway's configurations like caching (Choice D), which isn't the issue when the Lambda function shows no errors.
+
+# Memory Tip
+- Remember: ""Use the dead-letter queue to find lost events!"""
+32,"[""A company has an Amazon S3 bucket that contains sensitive data. The data must be\nencrypted in transit and at rest. The company encrypts the data in the S3 bucket\nby using an AWS Key Management Service (AWS KMS) key. A developer needs to grant\nseveral other AWS accounts the permission to use the S3 GetObject operation to\nretrieve the data from the S3 bucket.\nHow can the developer enforce that all requests to retrieve the data provide\nencryption in transit?""]",Define a resource-based policy on the S3 bucket to deny access when a request meets the condition “aws:SecureTransport”: “false”.,Define a resource-based policy on the S3 bucket to allow access when a request meets the condition “aws:SecureTransport”: “false”.,Define a role-based policy on the other accounts' roles to deny access when a request meets the condition of “aws:SecureTransport”: “false”.,Define a resource-based policy on the KMS key to deny access when a request meets the condition of “aws:SecureTransport”: “false”.,"# Answer
+- **Correct option:** A
+- **Reason:** Defining a resource-based policy on the S3 bucket to deny access when a request meets the condition “aws:SecureTransport”: “false” ensures that any attempt to access the S3 bucket without using HTTPS (which is secure transport) will be blocked. This effectively enforces the requirement that all requests for retrieving data must be encrypted in transit.
+
+# Example / Analogy
+- Think of the S3 bucket as a vault that only opens when the secure lock (HTTPS) is used. If someone tries to open the vault using a regular key (HTTP), the vault will stay locked, protecting the sensitive data inside.
+
+# Common Mistakes / Traps
+- A common mistake could be selecting option B, which incorrectly allows access under insecure conditions. This could lead to data being accessible over unencrypted channels, jeopardizing the data's confidentiality and integrity.
+
+# Memory Tip
+- ""S3 policies can lock the vault against unsecure keys."""
+33,"[""A developer is building a web application that uses Amazon API Gateway to expose\nan AWS Lambda function to process requests from clients. During testing, the\ndeveloper notices that the API Gateway times out even though the Lambda function\nfinishes under the set time limit.\nWhich of the following API Gateway metrics in Amazon CloudWatch can help the\ndeveloper troubleshoot the issue? (Choose two.)""]",CacheHitCount,IntegrationLatency,CacheMissCount,Latency,"# Answer
+- **Correct option:** B : IntegrationLatency, D : Latency
+
+- **Reason:** 
+  - **IntegrationLatency** measures the time taken by API Gateway to call the integrated AWS service (in this case, the Lambda function). It helps the developer understand if the delay is due to the API Gateway waiting on the Lambda function's response.
+  - **Latency** encompasses the total time taken for a client request to be processed by API Gateway, which includes the time taken to receive the request, call the Lambda function, and return the response. It can help identify if the timeout issue is within the API Gateway itself.
+
+# Example / Analogy
+- Think of API Gateway as a restaurant waiter (API), who takes an order, passes it to the kitchen (Lambda function), and then delivers the food back to the customer. If the waiter takes a long time to return with the food, you'd want to know if it's because the kitchen is slow (IntegrationLatency) or if the waiter took a long time to take the order or deliver it (Latency).
+
+# Common Mistakes / Traps
+- A common mistake is confusing metrics that don't directly relate to the timing of Lambda execution with those that do. For instance, **CacheHitCount** and **CacheMissCount** contribute to performance analysis, but they don't help in understanding the timing of the request processing.
+
+# Memory Tip
+- Remember: **IntegrationLatency is about the connection, while Latency is about the whole journey.**"
+34,"[""A company is building a web application on AWS. When a customer sends a request,\nthe application will generate reports and then make the reports available to the\ncustomer within one hour. Reports should be accessible to the customer for 8\nhours. Some reports are larger than 1 MB. Each report is unique to the customer.\nThe application should delete all reports that are older than 2 days.\nWhich solution will meet these requirements with the LEAST operational overhead?""]",Generate the reports and then store the reports as Amazon DynamoDB items that have a specified TTL. Generate a URL that retrieves the reports from DynamoDB. Provide the URL to customers through the web application.,Generate the reports and then store the reports in an Amazon S3 bucket that uses server-side encryption. Attach the reports to an Amazon Simple Notification Service (Amazon SNS) message. Subscribe the customer to email notifications from Amazon SNS.,Generate the reports and then store the reports in an Amazon S3 bucket that uses server-side encryption. Generate a presigned URL that contains an expiration date Provide the URL to customers through the web application. Add S3 Lifecycle configuration rules to the S3 bucket to delete old reports.,Generate the reports and then store the reports in an Amazon RDS database with a date stamp. Generate an URL that retrieves the reports from the RDS database. Provide the URL to customers through the web application. Schedule an hourly AWS Lambda function to delete database records that have expired date stamps.,"# Answer
+- **Correct option:** C
+- **Reason:** Storing the reports in an Amazon S3 bucket allows for large files and simplifies expiration management with S3 lifecycle rules. Using presigned URLs ensures secure access for customers, and the lifecycle rules automate the deletion of reports older than 2 days, minimizing operational overhead.
+
+# Example / Analogy
+- Think of Amazon S3 as a secure filing cabinet where you can store large documents. When you need a document (report), you get a special key (presigned URL) that allows you to access it for a limited time. The janitor (S3 lifecycle rules) automatically removes old documents after a certain period, so you don’t have to worry about cleaning out the cabinet yourself.
+
+# Common Mistakes / Traps
+- A common mistake is to overlook the storage service's ability to handle file size—in this case, Amazon S3 is designed for large objects, unlike DynamoDB which has limitations on item size (up to 400 KB). Also, avoid thinking that pressing for a DB solution (like RDS) is always better; it incurs more overhead because of managing connection pools and read/write operations.
+
+# Memory Tip
+- **Remember:** Use S3 for scalable storage and lifecycle rules to automate cleanup."
+35,"[""A company is planning to securely manage one-time fixed license keys in AWS. The\ncompany's development team needs to access the license keys in automaton scripts\nthat run in Amazon EC2 instances and in AWS CloudFormation stacks.\nWhich solution will meet these requirements MOST cost-effectively?""]",Amazon S3 with encrypted files prefixed with “config”,AWS Secrets Manager secrets with a tag that is named SecretString,AWS Systems Manager Parameter Store SecureString parameters,CloudFormation NoEcho parameters,"# Answer
+- **Correct option:** C : AWS Systems Manager Parameter Store SecureString parameters
+
+- **Reason:** AWS Systems Manager Parameter Store allows you to securely store and manage parameters, such as license keys, in a way that developers can easily access them in their automation scripts running on EC2 instances. The SecureString parameters ensure that the sensitive data is encrypted at rest and in transit, making it a cost-effective solution since Parameter Store is free for a certain number of parameters and is straightforward to integrate into both EC2 instances and CloudFormation stacks.
+
+# Example / Analogy
+- Think of Parameter Store like a secure vault for important documents. Just as you would keep keys or sensitive papers in a safe place where only trusted individuals can access them, Parameter Store keeps your license keys safe, allowing your development team to retrieve them as needed securely.
+
+# Common Mistakes / Traps
+- A common mistake is choosing AWS Secrets Manager because it’s specifically designed for secrets management, but for simple license key storage, Parameter Store is often more cost-effective. Additionally, some might overlook the need for SecureString, thinking standard strings will suffice for sensitive data.
+
+# Memory Tip
+- Use Parameter Store as your secure vault for sensitive keys in scripts!"
+36,"[""A development team wants to build a continuous integration/continuous delivery\n(CI/CD) pipeline. The team is using AWS CodePipeline to automate the code build\nand deployment. The team wants to store the program code to prepare for the\nCI/CD pipeline.\nWhich AWS service should the team use to store the program code?""]",AWS CodeDeploy,AWS CodeArtifact,AWS CodeCommit,Amazon CodeGuru,"# Answer
+- **Correct option:** C : AWS CodeCommit
+- **Reason:** AWS CodeCommit is a fully managed source control service that hosts secure Git repositories. It is designed specifically for developers to store and manage their code, making it an ideal choice for the development team to store their program code in preparation for the CI/CD pipeline.
+
+# Example / Analogy
+- Think of CodeCommit like a digital library where you can store your books (the code). Just as a library allows you to keep your books safe, share them with others, and manage different versions, CodeCommit allows developers to store their code securely, collaborate with team members, and manage different code versions effectively.
+
+# Common Mistakes / Traps
+- A common mistake is to confuse CodeCommit with AWS CodeDeploy or AWS CodeArtifact. CodeDeploy is for deploying applications, while CodeArtifact is for managing and sharing software packages—not for storing code repositories.
+
+# Memory Tip
+- Remember: ""CodeCommit keeps code safe, just like a library for your books!"""
+37,"[""A developer is designing an AWS Lambda function that creates temporary files\nthat are less than 10 MB during invocation. The temporary files will be accessed\nand modified multiple times during invocation. The developer has no need to save\nor retrieve these files in the future.\nWhere should the temporary files be stored?""]",the /tmp directory,Amazon Elastic File System (Amazon EFS),Amazon Elastic Block Store (Amazon EBS),Amazon S3,"# Answer
+- **Correct option:** A : the /tmp directory
+- **Reason:** AWS Lambda provides a limited amount of temporary storage in the /tmp directory with a capacity of 512 MB. This is ideal for storing temporary files needed only during the execution of the function, especially since the files are less than 10 MB and do not need to be preserved beyond the invocation.
+
+# Example / Analogy
+- Think of the /tmp directory like a temporary workspace or desk. When you're working on a project, you might use this desk to spread out your documents and tools. Once you finish the project, you can clear the desk without worrying about saving anything because you no longer need those materials. Similarly, the /tmp directory serves as a temporary space during the execution of the Lambda function.
+
+# Common Mistakes / Traps
+- A common mistake is to choose Amazon S3, thinking it’s suitable for temporary storage, but S3 is designed for persistent storage and involves additional overhead for interactions. Also, options like EBS and EFS are used for long-term storage, which is unnecessary for temporary files.
+
+# Memory Tip
+- Temporary files = /tmp directory in AWS Lambda = quick cleanup after use!"
+38,"[""A developer is designing a serverless application with two AWS Lambda functions\nto process photos. One Lambda function stores objects in an Amazon S3 bucket and\nstores the associated metadata in an Amazon DynamoDB table. The other Lambda\nfunction fetches the objects from the S3 bucket by using the metadata from the\nDynamoDB table. Both Lambda functions use the same Python library to perform\ncomplex computations and are approaching the quota for the maximum size of\nzipped deployment packages.\nWhat should the developer do to reduce the size of the Lambda deployment\npackages with the LEAST operational overhead?""]",Package each Python library in its own .zip file archive. Deploy each Lambda function with its own copy of the library.,Create a Lambda layer with the required Python library. Use the Lambda layer in both Lambda functions.,Combine the two Lambda functions into one Lambda function. Deploy the Lambda function as a single .zip file archive.,Download the Python library to an S3 bucket. Program the Lambda functions to reference the object URLs.,"# Answer
+- **Correct option:** B : Create a Lambda layer with the required Python library. Use the Lambda layer in both Lambda functions.
+- **Reason:** Using a Lambda layer allows you to store the shared library separately from the Lambda function deployment package. This reduces the size of the individual deployment packages, as the library is maintained separately and can be reused across multiple functions, which is ideal when the same library is required in more than one function.
+
+# Example / Analogy
+- Real-life example or memorable comparison: Think of Lambda layers like a cooking class where several chefs need to use the same set of tools (e.g., knives, pans). Instead of each chef bringing their own set of tools (which would take up space), they can use a shared kitchen tool set located in one area. This way, they focus on their dishes (the main tasks of each Lambda function) while keeping their workspaces (deployment packages) less cluttered.
+
+# Common Mistakes / Traps
+- Common trap points, if any: A common mistake is assuming that each Lambda function must contain its own copy of a library. This increases deployment package size unnecessarily. Another trap is thinking that simply combining the functions or downloading libraries at runtime will resolve size issues without operational overhead or complexity.
+
+# Memory Tip
+- Use Lambda layers to share code efficiently and reduce deployment package size."
+39,"[""A developer is working on a serverless application that needs to process any\nchanges to an Amazon DynamoDB table with an AWS Lambda function.\nHow should the developer configure the Lambda function to detect changes to the\nDynamoDB table?""]","Create an Amazon Kinesis data stream, and attach it to the DynamoDB table. Create a trigger to connect the data stream to the Lambda function.",Create an Amazon EventBridge rule to invoke the Lambda function on a regular schedule. Conned to the DynamoDB table from the Lambda function to detect changes.,Enable DynamoDB Streams on the table. Create a trigger to connect the DynamoDB stream to the Lambda function.,"Create an Amazon Kinesis Data Firehose delivery stream, and attach it to the DynamoDB table. Configure the delivery stream destination as the Lambda function.","# Answer
+- **Correct option:** C
+- **Reason:** Enabling DynamoDB Streams on the table captures changes to the items in the table, and by creating a trigger that connects the DynamoDB Streams to the Lambda function, the function can be automatically invoked whenever changes occur in the table (like inserts, updates, or deletes).
+
+# Example / Analogy
+- Think of DynamoDB Streams as a live feed of all changes happening in a store. If you imagine a café where every order placed, modified, or canceled is written down on a board, the Lambda function is like a barista who gets immediately notified whenever the board is updated, allowing them to adjust their tasks in real-time based on customer demand.
+
+# Common Mistakes / Traps
+- A common error is to confuse DynamoDB Streams with alternative data ingestion services like Kinesis. Many people might think they should set up Kinesis for streaming changes, but using DynamoDB Streams is more efficient and directly tied to tracking changes in DynamoDB.
+
+# Memory Tip
+- Remember: **DynamoDB Streams = Real-time operation updates** for triggering actions with Lambda."
+40,"[""A developer is creating an AWS Lambda function that needs credentials to connect\nto an Amazon RDS for MySQL database. An Amazon S3 bucket currently stores the\ncredentials. The developer needs to improve the existing solution by\nimplementing credential rotation and secure storage. The developer also needs to\nprovide integration with the Lambda function.\nWhich solution should the developer use to store and retrieve the credentials\nwith the LEAST management overhead?""]",Store the credentials in AWS Systems Manager Parameter Store. Select the database that the parameter will access. Use the default AWS Key Management Service (AWS KMS) key to encrypt the parameter. Enable automatic rotation for the parameter. Use the parameter from Parameter Store on the Lambda function to connect to the database.,"Encrypt the credentials with the default AWS Key Management Service (AWS KMS) key. Store the credentials as environment variables for the Lambda function. Create a second Lambda function to generate new credentials and to rotate the credentials by updating the environment variables of the first Lambda function. Invoke the second Lambda function by using an Amazon EventBridge rule that runs on a schedule. Update the database to use the new credentials. On the first Lambda function, retrieve the credentials from the environment variables. Decrypt the credentials by using AWS KMS, Connect to the database.",Store the credentials in AWS Secrets Manager. Set the secret type to Credentials for Amazon RDS database. Select the database that the secret will access. Use the default AWS Key Management Service (AWS KMS) key to encrypt the secret. Enable automatic rotation for the secret. Use the secret from Secrets Manager on the Lambda function to connect to the database.,Encrypt the credentials by using AWS Key Management Service (AWS KMS). Store the credentials in an Amazon DynamoDB table. Create a second Lambda function to rotate the credentials. Invoke the second Lambda function by using an Amazon EventBridge rule that runs on a schedule. Update the DynamoDB table. Update the database to use the generated credentials. Retrieve the credentials from DynamoDB with the first Lambda function. Connect to the database.,"# Answer
+- **Correct option:** C
+- **Reason:** AWS Secrets Manager is specifically designed for managing and storing sensitive information like database credentials securely. It provides built-in support for automatic credential rotation without additional management overhead, simplifying integration with AWS Lambda functions.
+
+# Example / Analogy
+- Think of AWS Secrets Manager as a high-security vault that automatically changes its lock (the credentials) regularly without you having to physically change the keys (credentials) yourself. Just like a bank updates its security measures to ensure safety, Secrets Manager updates the credentials while you continue to access the vault (database) seamlessly.
+
+# Common Mistakes / Traps
+- A common mistake would be to choose options that involve more management overhead, like creating additional Lambda functions for rotation or manually handling encryption and storage in places like S3 or DynamoDB, which can lead to complexity and higher chances of error. Many might also underestimate the importance of automatic rotation and secure storage features that Secret Manager provides.
+
+# Memory Tip
+- Use Secrets Manager for secrets—it's the purpose-built tool that reduces overhead and simplifies secure management."
+41,"[""A developer has written the following IAM policy to provide access to an Amazon\nS3 bucket:\n[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image3.png]\nWhich access does the policy allow regarding the s3:GetObject and s3:PutObject\nactions?""]",Access on all buckets except the “DOC-EXAMPLE-BUCKET” bucket,Access on all buckets that start with “DOC-EXAMPLE-BUCKET” except the “DOC-EXAMPLE-BUCKET/secrets” bucket,Access on all objects in the “DOC-EXAMPLE-BUCKET” bucket along with access to all S3 actions for objects in the “DOC-EXAMPLE-BUCKET” bucket that start with “secrets”,Access on all objects in the “DOC-EXAMPLE-BUCKET” bucket except on objects that start with “secrets”,"# Answer
+- **Correct option:** D
+- **Reason:** The IAM policy allows access to all objects in the ""DOC-EXAMPLE-BUCKET"" bucket except for those objects whose keys start with ""secrets"". This is specified in the policy with the Action `s3:GetObject` and `s3:PutObject` allowed for all objects in the bucket, with a condition that denies specific access for objects prefixed with ""secrets"".
+
+# Example / Analogy
+- Think of the ""DOC-EXAMPLE-BUCKET"" as a library where you can borrow any book (objects) you want, but there is a special section labeled ""Secrets"" (objects starting with ""secrets""). You have a sign that states you cannot access any books in that special section. This way, while you have access to the majority of the library (the bucket), the restriction prevents you from obtaining specific information that is confidential.
+
+# Common Mistakes / Traps
+- A common mistake is to misunderstand the effect of the S3 policy in relation to object prefixes. People might mistakenly think that the restriction on ""secrets"" applies to all actions or the entire bucket, rather than just objects starting with that prefix.
+
+# Memory Tip
+- Remember: ""All but the Secrets"" when allowing permissions for S3 objects—you're granted access, but only certain items are off-limits."

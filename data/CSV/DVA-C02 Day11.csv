@@ -1,0 +1,252 @@
+No,Content,A,B,C,D,Answered
+202,"[""A developer is receiving HTTP 400: ThrottlingException errors intermittently\nwhen calling the Amazon CloudWatch API. When a call fails, no data is retrieved.\n\nWhat best practice should first be applied to address this issue?""]",Contact AWS Support for a limit increase.,Use the AWS CLI to get the metrics.,Analyze the applications and remove the API call.,Retry the call with exponential backoff.,"# Answer
+- **Correct option:** D : Retry the call with exponential backoff.
+
+- **Reason:** This answer is correct because AWS services, including the CloudWatch API, often impose rate limits. A ThrottlingException indicates that the requests exceed these limits. Using exponential backoff is a standard best practice in distributed systems, where a service will retry failed requests after progressively longer waiting periods. This method helps to avoid overwhelming the service with repeated requests and increases the chances of the requests succeeding after waiting for a while.
+
+# Example / Analogy
+- Think of it like trying to get into a busy restaurant. If you keep trying to barge through the door when it’s full, you’ll just be turned away (throttled). Instead, if you wait a moment (retry after a short pause) and try again (exponential backoff), you will have a better chance of being let in when the crowd disperses.
+
+# Common Mistakes / Traps
+- A common trap is to think that simply contacting AWS Support for a limit increase (Option A) is the best initial action. This solution can take time and is not always necessary if implementing retry logic resolves the issue promptly.
+
+# Memory Tip
+- Remember: When facing throttling, ""Pause and Retry"" with exponential backoff to succeed."
+203,"[""An application needs to use the IP address of the client in its processing. The\napplication has been moved into AWS and has been placed behind an Application\nLoad Balancer (ALB). However, all the client IP addresses now appear to be the\nsame. The application must maintain the ability to scale horizontally.\n\nBased on this scenario, what is the MOST cost-effective solution to this\nproblem?""]",Remove the application from the ALB. Delete the ALB and change Amazon Route 53 to direct traffic to the instance running the application.,Remove the application from the ALCreate a Classic Load Balancer in its place. Direct traffic to the application using the HTTP protocol.,Alter the application code to inspect the X-Forwarded-For header. Ensure that the code can work properly if a list of IP addresses is passed in the header.,Alter the application code to inspect a custom header. Alter the client code to pass the IP address in the custom header.,"# Answer
+- **Correct option:** C
+- **Reason:** The application needs to access the original client IP addresses that are obscured by the Application Load Balancer (ALB). The ALB forwards the actual client IP in the `X-Forwarded-For` header. By altering the application code to inspect this header, the application can extract and utilize the original client IP addresses while still utilizing the benefits of the ALB for scaling and managing traffic.
+
+# Example / Analogy
+- Consider a ticket counter at a concert where attendees line up in a queue. The ticket counter represents the ALB, while each individual in line represents a client. When attendees check in at the counter, they each provide a name (representing their IP). However, if the counter just records everyone's names as “Attendee,” it loses track of who is who. By instructing the counter to also take note of the original names of the attendees (using the `X-Forwarded-For`), it can identify individuals for issues like refunds or special requests without losing the scaling benefits of the queue.
+
+# Common Mistakes / Traps
+- A common mistake is to think that removing the ALB or replacing it with a Classic Load Balancer (Choices A and B) will solve the issue. This not only removes the benefits of the ALB but also will not provide the original client IPs. Another mistake is to assume that creating a custom header (Choice D) is necessary when the standard `X-Forwarded-For` header is already provided by AWS services.
+
+# Memory Tip
+- Remember: ""X-Forwarded-For holds the key to original client IP."""
+204,"[""A web application is using Amazon Kinesis Data Streams for clickstream data that\nmay not be consumed for up to 12 hours.\n\nHow can the developer implement encryption at rest for data within the Kinesis\nData Streams?""]",Enable SSL connections to Kinesis.,Use Amazon Kinesis Consumer Library.,Encrypt the data once it is at rest with a Lambda function.,Enable server-side encryption in Kinesis Data Streams.,"# Answer
+- **Correct option:** D : Enable server-side encryption in Kinesis Data Streams.
+  
+- **Reason:** This option directly allows for encryption of the data at rest within Kinesis Data Streams. Server-side encryption (SSE) automatically encrypts your data when it is stored in the stream, ensuring that sensitive clickstream data is protected without additional code or custom encryption logic. This is a built-in feature that provides peace of mind regarding data security.
+
+# Example / Analogy
+- Think of server-side encryption like a bank vault for your cash. Just as a bank secures your money when you deposit it, SSE secures your data as it rests in the stream. You lock it up to prevent unauthorized access while it's stored.
+
+# Common Mistakes / Traps
+- A common trap is to confuse encryption at rest with securing data in transit. Options like A (Enable SSL connections) secure the data while it's being transmitted but do not provide encryption for data stored in Kinesis Data Streams. Another common mistake is considering custom solutions (like using a Lambda function) instead of leveraging built-in features like SSE.
+
+# Memory Tip
+- Remember: ""Encrypting data at rest? Use Kinesis’ server-side encryption – keeping it locked up tight!"""
+205,"[""An application is real-time processing millions of events that are received\nthrough an API.\n\nWhat service could be used to allow multiple consumers to process the data\nconcurrently and MOST cost-effectively?""]",Amazon SNS with fanout to an SQS queue for each application,"Amazon SNS with fanout to an SQS FIFO (first-in, first-out) queue for each application",Amazon Kinesis Firehose,Amazon Kinesis Data Streams,"# Answer
+- **Correct option:** D : Amazon Kinesis Data Streams
+- **Reason:** Amazon Kinesis Data Streams allows for real-time processing of millions of events by enabling multiple consumers to process the data concurrently. It is designed for high-throughput applications and is the most cost-effective option for scenarios requiring real-time event streaming and analysis.
+
+# Example / Analogy
+- Imagine a highway (Kinesis Data Streams) where cars (events) can travel at high speed and multiple cars can drive side by side (concurrent consumers). It's an efficient way for many vehicles to move simultaneously, unlike a one-lane road where only one car can go at a time (like an SQS FIFO queue).
+
+# Common Mistakes / Traps
+- A common mistake is to confuse Amazon Kinesis Data Streams with Kinesis Firehose or SQS. Firehose is great for loading data to destinations like S3 but is not meant for concurrent processing by multiple consumers. SQS FIFO queues are used for ordered message processing, not optimal for high-throughput real-time processing needed here.
+
+# Memory Tip
+- Think of Kinesis Data Streams as a “multi-lane highway” for streaming data, allowing many applications to process data simultaneously."
+206,"[""A developer needs to manage AWS infrastructure as code and must be able to\ndeploy multiple identical copies of the infrastructure, stage changes, and\nrevert to previous versions.\n\nWhich approach addresses these requirements?""]",Use cost allocation reports and AWS OpsWorks to deploy and manage the infrastructure.,Use Amazon CloudWatch metrics and alerts along with resource tagging to deploy and manage the infrastructure.,Use AWS Elastic Beanstalk and AWS CodeCommit to deploy and manage the infrastructure.,Use AWS CloudFormation and AWS CodeCommit to deploy and manage the infrastructure.,"# Answer
+- **Correct option:** D : Use AWS CloudFormation and AWS CodeCommit to deploy and manage the infrastructure.
+
+- **Reason:** AWS CloudFormation allows developers to define their infrastructure as code, enabling the deployment of multiple identical environments and facilitating version control for changes. This means you can stage changes and revert to previous infrastructures easily. AWS CodeCommit complements this by providing a Git-based version control system for managing the CloudFormation templates, allowing you to track changes and collaborate with others.
+
+# Example / Analogy
+- Think of AWS CloudFormation like a blueprint for a house. You can make changes to the blueprint (like moving a wall or adding a room), and with AWS CodeCommit, you can keep track of all the versions of these blueprints. If you decide you want to revert back to an older version of the design, you can do that easily, just like going back to a previous version of your house design.
+
+# Common Mistakes / Traps
+- A common mistake is to confuse AWS OpsWorks and Elastic Beanstalk with CloudFormation. While both can manage application deployments, they don’t provide the same level of infrastructure-as-code capabilities and version tracking for infrastructure itself like CloudFormation does.
+
+# Memory Tip
+- **Think CloudFormation = Blueprint + CodeCommit = Version Control.**"
+207,"[""A developer needs to launch a new Amazon EC2 instance by using the AWS CLI.\n\nWhich AWS CLI command should the developer use to meet this requirement?""]",aws ec2 bundle-instance,aws ec2 start-instances,aws ec2 confirm-product-instance,aws ec2 run-instances,"# Answer
+- **Correct option:** D : aws ec2 run-instances
+- **Reason:** The `aws ec2 run-instances` command is specifically designed to launch one or more Amazon EC2 instances from an Amazon Machine Image (AMI). This command provisions the instance with specified configurations such as instance type, key pair, and security groups.
+
+# Example / Analogy
+- Think of launching an EC2 instance like ordering a custom sandwich. When you use the `run-instances` command, you're placing an order with specific ingredients (instance type, AMI, security groups) to create your ideal sandwich (instance) on a fresh loaf of bread (the underlying hardware).
+
+# Common Mistakes / Traps
+- A common mistake is confusing launching a new instance with starting an existing one. The `start-instances` command only starts instances that have already been created and are in a stopped state.
+
+# Memory Tip
+- Remember: ""Run a new instance, don’t just start what's stopped."""
+208,"[""A company is hosting a workshop for external users and wants to share the\nreference documents with the external users for 7 days. The company stores the\nreference documents in an Amazon S3 bucket that the company owns.\n\nWhat is the MOST secure way to share the documents with the external users?""]",Use S3 presigned URLs to share the documents with the external users. Set an expiration time of 7 days.,Move the documents to an Amazon WorkDocs folder. Share the links of the WorkDocs folder with the external users.,Create temporary IAM users that have read-only access to the S3 bucket. Share the access keys with the external users. Expire the credentials after 7 days.,Create a role that has read-only access to the S3 bucket. Share the Amazon Resource Name (ARN) of this role with the external users.,"# Answer
+- **Correct option:** A: Use S3 presigned URLs to share the documents with the external users. Set an expiration time of 7 days.
+
+- **Reason:** S3 presigned URLs allow you to provide temporary access to objects in your S3 bucket without needing to expose your AWS credentials or manage user access. By setting an expiration time of 7 days, you ensure that the links become invalid after this period, which enhances security.
+
+# Example / Analogy
+- Think of a presigned URL like a ticket to a concert. You can give someone a ticket that allows them entry for a limited time. Once the concert is over (or the time expires), the ticket is no longer valid, and they can't use it to enter again.
+
+# Common Mistakes / Traps
+- A common trap is to consider using IAM users or roles for external sharing. This introduces complexity and potential security risks, as managing access to AWS credentials can be challenging and unwieldy, especially for external users.
+
+# Memory Tip
+- Remember: ""Presigned URLs are like temporary tickets – valid for a limited time, easy to share, and secure."""
+209,"[""A developer needs to troubleshoot an AWS Lambda function in a development\nenvironment. The Lambda function is configured in VPC mode and needs to connect\nto an existing Amazon RDS for SQL Server DB instance. The DB instance is\ndeployed in a private subnet and accepts connections by using port 1433.\n\nWhen the developer tests the function, the function reports an error when it\ntries to connect to the database.\n\nWhich combination of steps should the developer take to diagnose this issue?\n(Choose two.)""]",Check that the function’s security group has outbound access on port 1433 to the DB instance’s security group. Check that the DB instance’s security group has inbound access on port 1433 from the function’s security group.,Check that the function’s security group has inbound access on port 1433 from the DB instance’s security group. Check that the DB instance’s security group has outbound access on port 1433 to the function’s security group.,Check that the VPC is set up for a NAT gateway. Check that the DB instance has the public access option turned on.,"Check that the function’s execution role permissions include rds:DescribeDBInstances, rds:ModifyDBInstance. and rds:DescribeDBSecurityGroups for the DB instance.","# Answer
+- **Correct option:** A
+
+- **Reason:**  
+To troubleshoot the connection issue between the Lambda function and the RDS instance, the developer needs to ensure that the security group settings are correctly configured. Specifically, the function's security group needs to have outbound rules allowing traffic on port 1433 to the RDS instance's security group. Likewise, the RDS instance's security group must permit inbound traffic on port 1433 from the Lambda function's security group. If these permit rules aren’t in place, the Lambda function will be unable to establish a connection to the database, leading to errors when trying to access it.
+
+# Example / Analogy
+- Think of security groups like a club's bouncer system. If you’re a member (the Lambda function), you need to be allowed to leave the club (send data) to visit another member's house (the RDS instance). To visit the house, the owner (the RDS security group) must also allow members from the club (Lambda's security group) to come inside. If both aren't aligned, you won’t get through.
+
+# Common Mistakes / Traps
+- A common mistake is confusing inbound and outbound rules. Remember, for a Lambda function to access an RDS instance, the Lambda's security group must have an outbound rule and the RDS’s security group must have an inbound rule. Also, options that mention settings not relevant to the direct connection issue, like NAT gateway settings (option C), can be misleading.
+
+# Memory Tip
+- ""Access requires clearance both ways: outbound for the function and inbound for the database."""
+210,"[""A developer has built a market application that stores pricing data in Amazon\nDynamoDB with Amazon ElastiCache in front. The prices of items in the market\nchange frequently. Sellers have begun complaining that, after they update the\nprice of an item, the price does not actually change in the product listing.\n\nWhat could be causing this issue?""]",The cache is not being invalidated when the price of the item is changed.,The price of the item is being retrieved using a write-through ElastiCache cluster.,The DynamoDB table was provisioned with insufficient read capacity.,The DynamoDB table was provisioned with insufficient write capacity.,"# Answer
+- **Correct option:** A : The cache is not being invalidated when the price of the item is changed.
+- **Reason:** In this scenario, when the seller updates the price of an item in the DynamoDB table, if the cache (Amazon ElastiCache) is not invalidated or refreshed, it will continue serving the stale data (the old price) to users. This is a common issue known as “cache stale data,” where changes in the source of truth (DynamoDB) are not reflected in the cache stored in ElastiCache.
+
+# Example / Analogy
+- Think of a library that has a section of books (DynamoDB) and a reading room (ElastiCache) where people go to read the latest books. If someone returns a book to the library with an updated title, but the staff forgets to replace the old book in the reading room with the new one, visitors will still see the outdated title. Similarly, if the cache isn't updated after a price change in the database, users will see the incorrect pricing.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that simply changing the data in DynamoDB automatically updates the cache. However, cache management requires explicit invalidation or refresh procedures to ensure that updated data is correctly reflected.
+
+# Memory Tip
+- Always remember: *Cache must be invalidated to reflect changes in the database.*"
+211,"[""A developer is working on an application that is deployed on an Amazon EC2\ninstance. The developer needs a solution that will securely transfer files from\nthe application to an Amazon S3 bucket.\n\nWhat should the developer do to meet these requirements in the MOST secure way?""]",Create an IAM user. Create an access key for the IAM user. Store the access key in the application’s environment variables.,Create an IAM role. Create an access key for the IAM role. Store the access key in the application’s environment variables.,Create an IAM role. Configure the IAM role to access the specific Amazon S3 API calls the application requires. Associate the IAM role with the EC2 instance.,Configure an S3 bucket policy for the S3 bucket. Configure the S3 bucket policy to allow access for the EC2 instance ID.,"# Answer
+- **Correct option:** C
+- **Reason:** Creating an IAM role with appropriate permissions and associating it with the EC2 instance is the most secure way to allow the application to access the S3 bucket. This method avoids hardcoding credentials and eliminates the risk of exposing access keys.
+
+# Example / Analogy
+- Think of an IAM role as a keycard that only allows authorized personnel to enter a building. Instead of giving each person a permanent key (which can be lost or copied), you provide them temporary access through a keycard (IAM role) that can be easily revoked. Similarly, when the EC2 instance is terminated, the IAM role permissions are automatically removed, enhancing security.
+
+# Common Mistakes / Traps
+- A common mistake is to choose option A or B, which involve hardcoding access keys or storing them in environment variables. This practice is insecure because if the access keys are exposed, anyone with those keys can access the AWS resources.
+
+# Memory Tip
+- Remember: ""Use IAM roles for temporary, safe access – no keys to lose!"""
+212,"[""An AWS Lambda function is running in a company’s shared AWS account. The\nfunction needs to perform an additional ec2:DescribeInstances action that is\ndirected at the company’s development accounts. A developer must configure the\nrequired permissions across the accounts.\n\nHow should the developer configure the permissions to adhere to the principle of\nleast privilege?""]",Create an IAM role in the shared account. Add the ec2:DescribeInstances permission to the role. Establish a trust relationship between the development accounts for this role. Update the Lambda function IAM role in the shared account by adding the ec2:DescribeInstances permission to the role.,Create an IAM role in the development accounts. Add the ec2:DescribeInstances permission to the role. Establish a trust relationship with the shared account for this role. Update the Lambda function IAM role in the shared account by adding the iam:AssumeRole permissions.,Create an IAM role in the shared account. Add the ec2:DescribeInstances permission to the role. Establish a trust relationship between the development accounts for this role. Update the Lambda function IAM role in the shared account by adding the iam:AssumeRole permissions.,Create an IAM role in the development accounts. Add the ec2:DescribeInstances permission to the role. Establish a trust relationship with the shared account for this role. Update the Lambda function IAM role in the shared account by adding the ec2:DescribeInstances permission to the role.,"# Answer
+- **Correct option:** B
+
+- **Reason:** This option correctly aligns with the principle of least privilege by creating an IAM role in the development accounts that has the required `ec2:DescribeInstances` permission. By establishing a trust relationship with the shared account, the Lambda function can assume this role to perform that action. The emphasis on allowing only the necessary permissions within the necessary account structures maintains minimal access rights and security.
+
+# Example / Analogy
+- Think of it like a library system. Instead of giving everyone in the neighborhood access to the entire library, you create a special visitor pass for people working on the development of a library section. This pass allows them to look at only the books they are specifically assigned to. By doing this, you restrict access to sensitive information while allowing the necessary work to be done effectively.
+
+# Common Mistakes / Traps
+- A common mistake is assuming that giving permissions directly in the Lambda function IAM role (as done in option A or C) is sufficient without utilizing cross-account role assumptions. Participants might overlook the importance of trust relationships in establishing proper permissions.
+
+# Memory Tip
+- ""Allow roles to talk, restrict actions to needed tasks."""
+213,"[""A developer is designing a serverless application that customers use to select\nseats for a concert venue. Customers send the ticket requests to an Amazon API\nGateway API with an AWS Lambda function that acknowledges the order and\ngenerates an order ID. The application includes two additional Lambda functions:\none for inventory management and one for payment processing. These two Lambda\nfunctions run in parallel and write the order to an Amazon Dynamo DB table.\n\nThe application must provide seats to customers according to the following\nrequirements. If a seat is accidently sold more than once, the first order that\nthe application received must get the seat. In these cases, the application must\nprocess the payment for only the first order. However, if the first order is\nrejected during payment processing, the second order must get the seat. In these\ncases, the application must process the payment for the second order.\n\nWhich solution will meet these requirements?""]",Send the order ID to an Amazon Simple Notification Service (Amazon SNS) FIFO topic that fans out to one Amazon Simple Queue Service (Amazon SQS) FIFO queue for inventory management and another SQS FIFO queue for payment processing.,Change the Lambda function that generates the order ID to initiate the Lambda function for inventory management. Then initiate the Lambda function for payment processing.,Send the order ID to an Amazon Simple Notification Service (Amazon SNS) topic. Subscribe the Lambda functions for inventory management and payment processing to the topic.,Deliver the order ID to an Amazon Simple Queue Service (Amazon SQS) queue. Configure the Lambda functions for inventory management and payment processing to poll the queue.,"# Answer
+- **Correct option:** A
+- **Reason:** Option A uses Amazon SNS FIFO topics and SQS FIFO queues, which ensure that the orders (messages) are processed in the exact order they were received. This order is essential for the application’s requirement that if a seat is sold more than once, the first order gets priority in payment processing. By using FIFO topics and queues, you can handle the payment processing appropriately and ensure that only the relevant order gets its payment processed first. Additionally, SQS FIFO queues help manage concurrency, meaning multiple orders can be processed without conflicts.
+
+# Example / Analogy
+- Think of a concert ticket sale as a line at a ticket booth. Customers wait in line and the first person in line receives the ticket (seat) first. If that first person decides not to buy, then the next person in line gets their chance. Using FIFO messaging systems ensures that the same order is followed, just like a physical line at the box office. 
+
+# Common Mistakes / Traps
+- A common mistake would be choosing option C, which uses standard SNS and SQS options. Standard queues do not guarantee order, which could result in an improper seating assignment. Option B suggests initiating the functions in a non-parallel way, losing the concurrent aspect that is crucial for the application, while option D could lead to timing issues and race conditions without ordered processing.
+
+# Memory Tip
+- **Remember:** FIFO means ""First In, First Out"" – the first request gets processed first, just as in a queue!"
+214,"[""An application uses AWS X-Ray to generate a large amount of trace data on an\nhourly basis. A developer wants to use filter expressions to limit the returned\nresults through user-specified custom attributes.\n\nHow should the developer use filter expressions to filter the results in X-Ray?""]",Add custom attributes as annotations in the segment document.,Add custom attributes as metadata in the segment document.,Add custom attributes as new segment fields in the segment document.,Create new sampling rules that are based on custom attributes.,"# Answer
+- **Correct option:** A : Add custom attributes as annotations in the segment document.
+
+- **Reason:** In AWS X-Ray, filter expressions can be utilized to limit query results based on custom attributes that are defined in annotations. Annotations are indexed, which allows for efficient searching and filtering, while metadata does not support this. Therefore, to effectively use filter expressions based on user-specified custom attributes, the developer must add those attributes as annotations in the segment document.
+
+# Example / Analogy
+- Think of annotations as labels on a box of files. Each label (annotation) helps you quickly find and filter through the contents of the box (trace data) based on certain criteria (custom attributes). In comparison, metadata would be the details written inside the files themselves – they are not easily searchable without opening each one.
+
+# Common Mistakes / Traps
+- A common mistake is confusing metadata with annotations. While both can contain additional information, only annotations can be indexed and thus be effectively used for filtering results in queries.
+
+# Memory Tip
+- Remember: **Annotations are the key to filtering in X-Ray!**"
+215,"[""A developer is planning to use an Amazon API Gateway and AWS Lambda to provide a\nREST API. The developer will have three distinct environments to manage:\ndevelopment, test, and production.\n\nHow should the application be deployed while minimizing the number of resources\nto manage?""]",Create a separate API Gateway and separate Lambda function for each environment in the same Region.,Assign a Region for each environment and deploy API Gateway and Lambda to each Region.,Create one API Gateway with multiple stages with one Lambda function with multiple aliases.,"Create one API Gateway and one Lambda function, and use a REST parameter to identify the environment.","# Answer
+- **Correct option:** C : Create one API Gateway with multiple stages with one Lambda function with multiple aliases.
+- **Reason:** This approach minimizes the number of resources to manage by utilizing a single API Gateway that can handle different stages (development, test, and production) and a single Lambda function that can have multiple aliases pointing to different versions. Stages allow you to differentiate between environments without the overhead of managing multiple resources, thereby simplifying deployment and maintenance.
+
+# Example / Analogy
+- Think of a restaurant with one kitchen (the Lambda function) and different dining areas for various occasions (stages like development, test, and production). Instead of building multiple kitchens (Lambda functions) for each dining area (environment), the restaurant uses the same kitchen to prepare different dishes on different menus (versions of the Lambda function), serving customers in a way that suits the occasion.
+
+# Common Mistakes / Traps
+- A common mistake is to think that each environment must have completely separate resources, leading to increased complexity and cost. Developers may also overlook the flexibility of using stages and aliases, focusing instead on having distinct API Gateway instances.
+
+# Memory Tip
+- Use one API Gateway and Lambda function with stages to simplify environment management."
+216,"[""A developer has built an application that inserts data into an Amazon DynamoDB\ntable. The table is configured to use provisioned capacity. The application is\ndeployed on a burstable nano Amazon EC2 instance. The application logs show that\nthe application has been failing because of a\nProvisionedThroughputExceededException error.\n\nWhich actions should the developer take to resolve this issue? (Choose two.)""]",Move the application to a larger EC2 instance.,Increase the number of read capacity units (RCUs) that are provisioned for the DynamoDB table.,Reduce the frequency of requests to DynamoDB by implementing exponential backoff.,Increase the frequency of requests to DynamoDB by decreasing the retry delay.,"# Answer
+- **Correct options:** B, C
+- **Reason:** 
+  - Option B (Increase the number of read capacity units (RCUs) that are provisioned for the DynamoDB table) can help alleviate the ProvisionedThroughputExceededException by providing more capacity to handle incoming requests. By increasing the provisioned capacity, the application can handle more read and write traffic without failing.
+  - Option C (Reduce the frequency of requests to DynamoDB by implementing exponential backoff) helps manage the retry logic in a situation where requests are exceeding the provisioned throughput. This reduces the load during peak times and prevents the application from overwhelming the DynamoDB table, which can help mitigate the error.
+
+# Example / Analogy
+- Think of the DynamoDB table like a restaurant with a limited number of tables (i.e., capacity). If too many diners (requests) show up at once and the tables are full (capacity exceeded), some customers will have to wait or leave. Increasing the number of tables (RCUs) allows more diners to be seated, while staggering reservations (exponential backoff) ensures that the restaurant doesn't get overwhelmed.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that simply increasing the instance size (Option A) will solve the issue without addressing the underlying problem of provisioned capacity. Additionally, increasing the frequency of requests (Option D) is counterproductive and can worsen the situation.
+
+# Memory Tip
+- Always remember: Increase capacity or pace yourself to avoid exceeding limits!"
+217,"[""Given the following AWS CloudFormation template:\n\n[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image14.png]\n\nWhat is the MOST efficient way to reference the new Amazon S3 bucket from\nanother AWS CloudFormation template?""]",Add an Export declaration to the Outputs section of the original template and use ImportValue in other templates.,Add Exported: true to the Content.Bucket in the original template and use ImportResource in other templates.,Create a custom AWS CloudFormation resource that gets the bucket name from the ContentBucket resource of the first stack.,Use Fn::Include to include the existing template in other templates and use the ContentBucket resource directly.,"# Answer
+- **Correct option:** A: Add an Export declaration to the Outputs section of the original template and use ImportValue in other templates.
+
+- **Reason:** By using the Export declaration in the Outputs section of the original CloudFormation template, you can make the S3 bucket name available for other CloudFormation stacks to reference. The `ImportValue` function allows other stacks to import this value efficiently and manage dependencies between stacks without needing to hard-code values or have other less efficient references.
+
+# Example / Analogy
+- Think of the Export and Import system like a library where the original template is a book that includes a summary in the back for important titles (exports) that other books (templates) can reference. When a new author (a different template) wants to refer to a certain title (like your S3 bucket), they can simply look up the summary provided in the ""library"" of original books rather than writing a new chapter (resource) from scratch.
+
+# Common Mistakes / Traps
+- A common mistake is confusing how to access resources in multiple templates. Some may think they can directly reference resources without using Imports/Exports or might consider complex custom resources when simpler solutions like `Export` and `ImportValue` are available.
+
+# Memory Tip
+- Remember: ""Export and Import are the keys to sharing values between CloudFormation stacks."""
+218,"[""A developer registered an AWS Lambda function as a target for an Application\nLoad Balancer (ALB) using a CLI command. However, the Lambda function is not\nbeing invoked when the client sends requests through the ALB.\n\nWhy is the Lambda function not being invoked?""]",A Lambda function cannot be registered as a target for an ALB.,A Lambda function can be registered with an ALB using AWS Management Console only.,The permissions to invoke the Lambda function are missing.,Cross-zone is not enabled on the ALB.,"# Answer
+- **Correct option:** A
+- **Reason:** A Lambda function cannot be registered as a target for an ALB. While you can use ALB to route requests to Lambda functions, you must configure the ALB listeners and rules properly to trigger the Lambda, not register it as a traditional target.
+
+# Example / Analogy
+- Think of the ALB as a restaurant and the Lambda function as a chef. You can't simply tell the restaurant to register the chef as a part of the staff without specifying the order they will prepare. Instead, you need to establish the rules (like the menu) that dictate which requests lead to invoking that chef's services.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that any resource can directly be registered as a target for an ALB without understanding the configuration requirements. Additionally, some might confuse the concept of routing requests with the idea of directly registering resources.
+
+# Memory Tip
+- Remember: ALB routes to Lambda via rules, not by direct registration!"
+219,"[""A developer is creating an AWS Lambda function that will connect to an Amazon\nRDS for MySQL instance. The developer wants to store the database credentials.\nThe database credentials need to be encrypted and the database password needs to\nbe automatically rotated.\n\nWhich solution will meet these requirements?""]",Store the database credentials as environment variables for the Lambda function. Set the environment variables to rotate automatically.,Store the database credentials in AWS Secrets Manager. Set up managed rotation on the database credentials.,Store the database credentials in AWS Systems Manager Parameter Store as secure string parameters. Set up managed rotation on the parameters.,Store the database credentials in the X-Amz-Security-Token parameter. Set up managed rotation on the parameter.,"# Answer
+- **Correct option:** B
+- **Reason:** Storing the database credentials in AWS Secrets Manager allows for secure storage, encryption, and automatic rotation of the database credentials, meeting all the specified requirements.
+
+# Example / Analogy
+- Imagine you have a locker where you store your valuables. You can have a personal lock (encryption) to make sure no one can access it without your permission. Now, what if you have a service that not only keeps your valuables safe but also sends a locksmith every month to change your lock (automatic rotation)? That’s like using AWS Secrets Manager for storing database credentials.
+
+# Common Mistakes / Traps
+- A common mistake is thinking that environment variables or systems manager parameters can provide the same level of security and automatic rotation as AWS Secrets Manager. While they can store sensitive data, they lack built-in features for automatic rotation and do not enforce encryption automatically.
+
+# Memory Tip
+- Remember: **Secrets Manager = Secure storage + Automatic rotation.**"
+220,"[""A developer wants to reduce risk when deploying a new version of an existing AWS\nLambda function. To test the Lambda function, the developer needs to split the\ntraffic between the existing version and the new version of the Lambda function.\n\nWhich solution will meet these requirements?""]",Configure a weighted routing policy in Amazon Route 53. Associate the versions of the Lambda function with the weighted routing policy.,Create a function alias. Configure the alias to split the traffic between the two versions of the Lambda function.,Create an Application Load Balancer (ALB) that uses the Lambda function as a target. Configure the ALB to split the traffic between the two versions of the Lambda function.,Create the new version of the Lambda function as a Lambda layer on the existing version. Configure the function to split the traffic between the two layers.,"# Answer
+- **Correct option:** B
+- **Reason:** Creating a function alias for the Lambda function allows you to point to specific versions of the function. By configuring the alias to split the traffic between the existing version and the new version, you can test the new version in production while minimizing risk. AWS Lambda supports traffic shifting using aliases out of the box, significantly simplifying the deployment process.
+
+# Example / Analogy
+- Think of the alias as a theater manager. When a new show (the new version of the Lambda function) is introduced, the manager can decide how many seats to fill with audience members interested in the new show, while still allowing attendees to enjoy the existing show. This way, the manager tests the new show with a portion of the audience and can gauge their reaction without fully committing to it yet.
+
+# Common Mistakes / Traps
+- A common mistake is to think that routing policies in Route 53 or Application Load Balancer configurations can directly split traffic between Lambda versions. While they are powerful tools, they don't manage Lambda version traffic splitting specifically, which needs to be handled by Lambda aliases.
+
+# Memory Tip
+- Remember: **Aliases are the traffic managers for your Lambda versions!**"
+221,"[""A developer is troubleshooting an application in an integration environment. In\nthe application, an Amazon Simple Queue Service (Amazon SQS) queue consumes\nmessages and then an AWS Lambda function processes the messages. The Lambda\nfunction transforms the messages and makes an API call to a third-party service.\n\nThere has been an increase in application usage. The third-party API frequently\nreturns an HTTP 429 Too Many Requests error message. The error message prevents\na significant number of messages from being processed successfully.\n\nHow can the developer resolve this issue?""]",Increase the SQS event source’s batch size setting.,Configure provisioned concurrency for the Lambda function based on the third-party API’s documented rate limits.,Increase the retry attempts and maximum event age in the Lambda function’s asynchronous configuration.,Configure maximum concurrency on the SQS event source based on the third-party service’s documented rate limits.,"# Answer
+- **Correct option:** D : Configure maximum concurrency on the SQS event source based on the third-party service’s documented rate limits.
+- **Reason:** By configuring the maximum concurrency on the SQS event source, the developer can limit the number of concurrent Lambda executions that process messages from the SQS queue. This ensures that the API calls made to the third-party service do not exceed its rate limits, thereby reducing the occurrence of the HTTP 429 error.
+
+# Example / Analogy
+- Imagine a popular fast-food restaurant where only a limited number of cars can go through the drive-thru at any given time. If too many cars try to order at once, the restaurant cannot handle them, leading to delays and frustration. By controlling the number of cars allowed in the drive-thru, the restaurant ensures efficient service and a better experience for customers—similar to managing Lambda execution concurrency to prevent overwhelming the third-party API.
+
+# Common Mistakes / Traps
+- A common mistake is choosing options related to increasing batch sizes or concurrency settings that do not directly control the rate at which API calls are made. The developer might mistakenly think that these adjustments can alleviate the 429 error without recognizing the need for rate limiting aligned with the external API's constraints.
+
+# Memory Tip
+- Control the flow: Limit Lambda concurrency to match external API limits!"

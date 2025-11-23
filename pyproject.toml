@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "quiz"
+version = "0.1.0"
+description = ""
+authors = ["Nhim0701 <hieunguyen.hari0701@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.120.4"
+uvicorn = "^0.38.0"
+sqlalchemy = "^2.0.44"
+psycopg2 = "^2.9.11"
+alembic = "^1.17.1"
+python-dotenv = "^1.2.1"
+pyyaml = "^6.0.3"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+bcrypt = "4.0.1"
+python-multipart = "^0.0.6"
+email-validator = "^2.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

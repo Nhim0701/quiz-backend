@@ -1,0 +1,255 @@
+No,Content,A,B,C,D,Answered
+62,"[""A developer is creating an application. New users of the application must be\nable to create an account and register by using their own social media accounts.\n\nWhich AWS service or resource should the developer use to meet these\nrequirements?""]",IAM role,Amazon Cognito identity pools,Amazon Cognito user pools,AWS Directory Service,"# Answer
+- **Correct option:** B : Amazon Cognito identity pools  
+
+- **Reason:** Amazon Cognito identity pools allow users to authenticate using social identity providers (like Facebook, Google, etc.) and obtain AWS credentials, enabling them to access AWS services. This is exactly what is needed for an application where new users can register and create accounts using their social media accounts.
+
+# Example / Analogy
+- Think of Cognito identity pools like a VIP entrance at a concert where people can show their social media passes (like Facebook or Google) to get access. Instead of creating a new ticket for each person (like traditional user registration), they show their existing pass to enter.
+
+# Common Mistakes / Traps
+- A common mistake is confusing identity pools with user pools. While identity pools enable federated authentication using social providers, user pools are more about user registration and management without social identity integration.
+
+# Memory Tip
+- Remember: ""Identity pools for social sign-ins; User pools for managing users."""
+63,"[""A social media application uses the AWS SDK for JavaScript on the frontend to\nget user credentials from AWS Security Token Service (AWS STS). The application\nstores its assets in an Amazon S3 bucket. The application serves its content by\nusing an Amazon CloudFront distribution with the origin set to the S3 bucket.\n\nThe credentials for the role that the application assumes to make the SDK calls\nare stored in plaintext in a JSON file within the application code. The\ndeveloper needs to implement a solution that will allow the application to get\nuser credentials without having any credentials hardcoded in the application\ncode.\n\nWhich solution will meet these requirements?""]",Add a Lambda@Edge function to the distribution. Invoke the function on viewer request. Add permissions to the function's execution role to allow the function to access AWS STS. Move all SDK calls from the frontend into the function.,Add a CloudFront function to the distribution. Invoke the function on viewer request. Add permissions to the function's execution role to allow the function to access AWS STS. Move all SDK calls from the frontend into the function.,Add a Lambda@Edge function to the distribution. Invoke the function on viewer request. Move the credentials from the JSON file into the function. Move all SDK calls from the frontend into the function.,Add a CloudFront function to the distribution. Invoke the function on viewer request. Move the credentials from the JSON file into the function. Move all SDK calls from the frontend into the function.,"# Answer
+- **Correct option:** A
+
+- **Reason:** 
+  The correct solution is to add a Lambda@Edge function to the CloudFront distribution that will invoke on viewer requests. This function can assume a role to access AWS STS, allowing it to generate temporary, secure credentials without hardcoding any sensitive information in the frontend application. By moving all SDK calls from the frontend to the Lambda@Edge function, you eliminate the exposure of credentials.
+
+# Example / Analogy
+- Think of Lambda@Edge as a security guard at the entrance of a concert (your application). Instead of allowing every attendee (the frontend code) to access the backstage (AWS STS) where sensitive operations happen, the guard (Lambda@Edge) checks the tickets and only lets authorized personnel in to interact with the backstage securely.
+
+# Common Mistakes / Traps
+- A common mistake is to think that simply moving credentials to a function makes it secure. Storing credentials within the function can still pose security risks if not carefully managed. Always ensure that the code does not expose sensitive information.
+
+# Memory Tip
+- **Lambda@Edge: Your secure gatekeeper for handling sensitive AWS interactions on behalf of your frontend.**"
+64,"[""An ecommerce website uses an AWS Lambda function and an Amazon RDS for MySQL\ndatabase for an order fulfillment service. The service needs to return order\nconfirmation immediately.\n\nDuring a marketing campaign that caused an increase in the number of orders, the\nwebsite's operations team noticed errors for “too many connections” from Amazon\nRDS. However, the RDS DB cluster metrics are healthy. CPU and memory capacity\nare still available.\n\nWhat should a developer do to resolve the errors?""]",Initialize the database connection outside the handler function. Increase the max_user_connections value on the parameter group of the DB cluster. Restart the DB cluster.,Initialize the database connection outside the handler function. Use RDS Proxy instead of connecting directly to the DB cluster.,Use Amazon Simple Queue Service (Amazon SQS) FIFO queues to queue the orders. Ingest the orders into the database. Set the Lambda function's concurrency to a value that equals the number of available database connections.,Use Amazon Simple Queue Service (Amazon SQS) FIFO queues to queue the orders. Ingest the orders into the database. Set the Lambda function's concurrency to a value that is less than the number of available database connections.,"# Answer
+- **Correct option:** B
+- **Reason:** Initializing the database connection outside the handler function allows for connection reuse across Lambda invocations, reducing the overhead of establishing a new connection for each request. Additionally, using RDS Proxy helps to manage connections efficiently and scale the authorized connections without hitting the database directly, mitigating ""too many connections"" errors.
+
+# Example / Analogy
+- Imagine trying to enter a busy restaurant where there’s a line at the door. If every customer had to talk to the manager to get a table every time they walked in, it would slow things down. Instead, if you had a receptionist (like RDS Proxy) handling the flow, she could manage the guests and ensure that customers could get seated without overwhelming the manager (the RDS database).
+
+# Common Mistakes / Traps
+- A common mistake is assuming that simply increasing the max_user_connections will solve the problem without addressing connection management or reusability.
+- Another trap is initializing connections inside the handler function, leading to inefficient use of database connections and potential exhaustion during peaks.
+
+# Memory Tip
+- ""Optimize connections: Use RDS Proxy for efficient database access!"""
+65,"[""A company stores its data in data tables in a series of Amazon S3 buckets. The\ncompany received an alert that customer credit card information might have been\nexposed in a data table on one of the company's public applications. A developer\nneeds to identify all potential exposures within the application environment.\n\nWhich solution will meet these requirements?""]",Use Amazon Athena to run a job on the S3 buckets that contain the affected data. Filter the findings by using the SensitiveData:S3Object/Personal finding type.,Use Amazon Macie to run a job on the S3 buckets that contain the affected data. Filter the findings by using the SensitiveData:S3Object/Financial finding type.,Use Amazon Macie to run a job on the S3 buckets that contain the affected data. Filter the findings by using the SensitiveData:S3Object/Personal finding type.,Use Amazon Athena to run a job on the S3 buckets that contain the affected data. Filter the findings by using the SensitiveData:S3Object/Financial finding type.,"# Answer
+- **Correct option:** B  
+- **Reason:** Amazon Macie is specifically designed for discovering and protecting sensitive data, including financial data like credit card information. By filtering with the SensitiveData:S3Object/Financial finding type, Macie can help identify all occurrences of this type of sensitive information in your S3 buckets, meeting the company's requirement to pinpoint potential exposures.
+
+# Example / Analogy
+- Think of Amazon Macie as a security guard for your data; just like a guard who inspects bags for cash or credit cards, Macie scans your S3 buckets for sensitive data, ensuring nothing is overlooked. If you suspect cash might be missing, you’d want the guard checking for that specific item—just as you want Macie filtering specifically for financial data when there’s a risk of credit card exposure.
+
+# Common Mistakes / Traps
+- A common mistake is confusing Amazon Macie with Amazon Athena. While Athena is great for querying data in S3, it does not specialize in identifying sensitive information. Users might incorrectly assume they can use Athena for this purpose when they need Macie's specialized capabilities.
+
+# Memory Tip
+- **Remember:** Use **Macie** for **sensitive data** discovery; it’s your **data security expert** in the AWS ecosystem!"
+66,"[""A software company is launching a multimedia application. The application will\nallow guest users to access sample content before the users decide if they want\nto create an account to gain full access. The company wants to implement an\nauthentication process that can identify users who have already created an\naccount. The company also needs to keep track of the number of guest users who\neventually create an account.\n\nWhich combination of steps will meet these requirements? (Choose two.)""]",Create an Amazon Cognito user pool. Configure the user pool to allow unauthenticated users. Exchange user tokens for temporary credentials that allow authenticated users to assume a role.,Create an Amazon Cognito identity pool. Configure the identity pool to allow unauthenticated users. Exchange unique identity for temporary credentials that allow all users to assume a role.,Create an Amazon CloudFront distribution. Configure the distribution to allow unauthenticated users. Exchange user tokens for temporary credentials that allow all users to assume a role.,Create a role for authenticated users that allows access to all content. Create a role for unauthenticated users that allows access to only the sample content.,"# Answer
+- **Correct option:** A and B
+- **Reason:** Option A involves using an Amazon Cognito user pool which can authenticate users and recognize existing accounts. Option B complements this by using an Amazon Cognito identity pool which allows both authenticated and unauthenticated users to access temporary credentials. This setup lets the application track guest users turning into registered users while providing a seamless experience.
+
+# Example / Analogy
+- Think of a library where anyone can enter (guest access) and browse a shelf of sample books (sample content). Once they decide they want to check out a book (create an account), they sign up and get a library card (authentication). The library can now keep track of how many visitors went from browsing to becoming members.
+
+# Common Mistakes / Traps
+- A common mistake is assuming that using only user pools or only identity pools will suffice. In this scenario, both are necessary to handle guest access while allowing for authenticated identity verification.
+
+# Memory Tip
+- Remember: **Cognito = Guest Browsing + User Authentication = Seamless User Experience!**"
+67,"[""A company is updating an application to move the backend of the application from\nAmazon EC2 instances to a serverless model. The application uses an Amazon RDS\nfor MySQL DB instance and runs in a single VPC on AWS. The application and the\nDB instance are deployed in a private subnet in the VPC.\n\nThe company needs to connect AWS Lambda functions to the DB instance.\n\nWhich solution will meet these requirements?""]",Create Lambda functions inside the VPC with the AWSLambdaBasicExecutionRole policy attached to the Lambda execution role. Modify the RDS security group to allow inbound access from the Lambda security group.,Create Lambda functions inside the VPC with the AWSLambdaVPCAccessExecutionRole policy attached to the Lambda execution role. Modify the RDS security group to allow inbound access from the Lambda security group.,Create Lambda functions with the AWSLambdaBasicExecutionRole policy attached to the Lambda execution role. Create an interface VPC endpoint for the Lambda functions. Configure the interface endpoint policy to allow the lambda:InvokeFunclion action for each Lambda function's Amazon Resource Name (ARN).,Create Lambda functions with the AWSLambdaVPCAccessExecutionRole policy attached to the Lambda execution role. Create an interface VPC endpoint for the Lambda functions. Configure the interface endpoint policy to allow the lambda:InvokeFunction action for each Lambda function's Amazon Resource Name (ARN).,"# Answer
+- **Correct option:** B
+- **Reason:** To allow AWS Lambda functions to access resources within a VPC, the Lambda functions must be configured to run inside the VPC by selecting appropriate subnets and security groups. The AWSLambdaVPCAccessExecutionRole policy grants the necessary permissions for Lambda to access resources in the VPC, including the Amazon RDS instance. Additionally, modifying the RDS security group to allow inbound access from the Lambda security group ensures that traffic from the Lambda functions to the RDS database is permitted.
+
+# Example / Analogy
+- Think of AWS Lambda functions as guests in a private club (VPC), and the Amazon RDS instance as a specific room in that club. The AWSLambdaVPCAccessExecutionRole policy is like a special invitation (membership access) that allows the guests (Lambda functions) to enter the club and access the room (RDS instance). If the room (RDS) doesn’t allow guests from the club (via security group rules), they won't be able to access it even if they have the right invitation.
+
+# Common Mistakes / Traps
+- A common mistake is to choose options that do not include the AWSLambdaVPCAccessExecutionRole policy, believing that basic execution permissions are sufficient. Another potential trap is misunderstanding how the security group rules work; it's crucial to allow inbound access from the Lambda function's security group to the RDS instance.
+
+# Memory Tip
+- Remember: ""VPC access needs the right role (AWSLambdaVPCAccessExecutionRole) AND correct security groups!"""
+68,"[""A company has a web application that runs on Amazon EC2 instances with a custom\nAmazon Machine Image (AMI). The company uses AWS CloudFormation to provision the\napplication. The application runs in the us-east-1 Region, and the company needs\nto deploy the application to the us-west-1 Region.\n\nAn attempt to create the AWS CloudFormation stack in us-west-1 fails. An error\nmessage states that the AMI ID does not exist. A developer must resolve this\nerror with a solution that uses the least amount of operational overhead.\n\nWhich solution meets these requirements?""]",Change the AWS CloudFormation templates for us-east-1 and us-west-1 to use an AWS AMI. Relaunch the stack for both Regions.,Copy the custom AMI from us-east-1 to us-west-1. Update the AWS CloudFormation template for us-west-1 to refer to AMI ID for the copied AMI. Relaunch the stack.,Build the custom AMI in us-west-1. Create a new AWS CloudFormation template to launch the stack in us-west-1 with the new AMI ID.,Manually deploy the application outside AWS CloudFormation in us-west-1.,"# Answer
+- **Correct option:** B
+
+- **Reason:** Copying the custom AMI from us-east-1 to us-west-1 allows you to retain the configured image for use in the new region. Updating the AWS CloudFormation template to reference the new AMI ID ensures that the stack can be launched successfully in us-west-1. This approach minimizes operational overhead because it leverages the existing settings and infrastructure while only requiring a few straightforward updates.
+
+# Example / Analogy
+- Imagine you have a favorite recipe for a cake (the custom AMI) that you typically bake in one kitchen (us-east-1). If you want to bake the same cake in another kitchen (us-west-1), you wouldn't start from scratch; instead, you would copy your recipe to that kitchen, slightly adjust it to fit the new environment, and then bake. This is similar to copying the AMI to the new region and modifying the CloudFormation template.
+
+# Common Mistakes / Traps
+- A common pitfall is to choose option A, which suggests using a generic AMI instead of the custom one. This might not satisfy specific configurations or dependencies that the original custom AMI provided.
+- Another mistake could be thinking that updating the CloudFormation template alone (without the AMI copy) would work, which is incorrect since the specified AMI ID will not exist in the target region initially.
+
+# Memory Tip
+- ""Copy your recipe (AMI) to the new kitchen (region) before baking (deploying)!"""
+69,"[""A developer is updating several AWS Lambda functions and notices that all the\nLambda functions share the same custom libraries. The developer wants to\ncentralize all the libraries, update the libraries in a convenient way, and keep\nthe libraries versioned.\n\nWhich solution will meet these requirements with the LEAST development effort?""]",Create an AWS CodeArtifact repository that contains all the custom libraries.,Create a custom container image for the Lambda functions to save all the custom libraries.,Create a Lambda layer that contains all the custom libraries.,Create an Amazon Elastic File System (Amazon EFS) file system to store all the custom libraries.,"# Answer
+- **Correct option:** C : Create a Lambda layer that contains all the custom libraries.
+- **Reason:** Lambda layers allow you to package and manage shared libraries separately from your Lambda function code. This means you can easily update the library versions, share them among multiple functions, and keep the libraries organized. Using layers is a built-in feature of AWS Lambda that minimizes additional development effort while ensuring version control and centralized management.
+
+# Example / Analogy
+- Consider a school where every student (Lambda function) needs to use the same textbooks (custom libraries) for different subjects. Instead of each student carrying their own heavy textbooks (bloating each function), the school provides a central library (Lambda layer) where all the textbooks are stored. Students can easily borrow the books they need, and if a new edition comes out, the school simply updates it in the library, making it available for all students instantly.
+
+# Common Mistakes / Traps
+- A common mistake is to think that packaging libraries in a container (Option B) is necessary. While this works, it introduces more complexity compared to using layers. Another mistake could be underestimating Lambda layers' ability to manage shared code efficiently and not leveraging this feature when it’s ideal for the scenario.
+
+# Memory Tip
+- **Think of Lambda layers as a centralized library for your Lambda functions’ shared resources.**"
+70,"[""A company is providing read access to objects in an Amazon S3 bucket for\ndifferent customers. The company uses IAM permissions to restrict access to the\nS3 bucket. The customers can access only their own files.\n\nDue to a regulation requirement, the company needs to enforce encryption in\ntransit for interactions with Amazon S3.\n\nWhich solution will meet these requirements?""]",Add a bucket policy to the S3 bucket to deny S3 actions when the aws:SecureTransport condition is equal to false.,Add a bucket policy to the S3 bucket to deny S3 actions when the s3:x-amz-acl condition is equal to public-read.,Add an IAM policy to the IAM users to enforce the usage of the AWS SDK.,Add an IAM policy to the IAM users that allows S3 actions when the s3:x-amz-acl condition is equal to bucket-owner-read.,"# Answer
+- **Correct option:** A
+- **Reason:** Adding a bucket policy to the S3 bucket that denies S3 actions when the `aws:SecureTransport` condition is equal to `false` ensures that all interactions with the S3 bucket are encrypted in transit. This means that any requests made over non-secure (HTTP) connections will be denied, thereby enforcing secure interaction with the S3 resources.
+
+# Example / Analogy
+- Think of it like a secure building that requires all people entering to pass through a metal detector (encryption) to ensure safety. If someone tries to enter without going through the detector (non-secure connection), they are turned away. Similarly, the bucket policy acts like that security measure, only allowing access via secure methods.
+
+# Common Mistakes / Traps
+- A common trap is misunderstanding the specific conditions that allow or restrict access. Focusing on other options that do not directly relate to enforcing encryption in transit can lead to selecting the wrong answer. Always check if the option is directly aligned with the requirement of enforcing secure connections.
+
+# Memory Tip
+- Remember: ""Secure Transport = Allowed; Non-Secure = Denied."""
+71,"[""A company has an image storage web application that runs on AWS. The company\nhosts the application on Amazon EC2 instances in an Auto Scaling group. The Auto\nScaling group acts as the target group for an Application Load Balancer (ALB)\nand uses an Amazon S3 bucket to store the images for sale.\n\nThe company wants to develop a feature to test system requests. The feature will\ndirect requests to a separate target group that hosts a new beta version of the\napplication.\n\nWhich solution will meet this requirement with the LEAST effort?""]",Create a new Auto Scaling group and target group for the beta version of the application. Update the ALB routing rule with a condition that looks for a cookie named version that has a value of beta. Update the test system code to use this cookie to test the beta version of the application.,"Create a new ALB, Auto Scaling group, and target group for the beta version of the application. Configure an alternate Amazon Route 53 record for the new ALB endpoint. Use the alternate Route 53 endpoint in the test system requests to test the beta version of the application.","Create a new ALB, Auto Scaling group, and target group for the beta version of the application. Use Amazon CloudFront with Lambda@Edge to determine which specific request will go to the new ALB. Use the CloudFront endpoint to send the test system requests to test the beta version of the application.",Create a new Auto Scaling group and target group for the beta version of the application. Update the ALB routing rule with a condition that looks for a cookie named version that has a value of beta. Use Amazon CloudFront with Lambda@Edge to update the test system requests to add the required cookie when the requests go to the ALB.,"# Answer
+- **Correct option:** A
+
+- **Reason:** This option involves creating a new Auto Scaling group and target group for the beta version of the application which is the least effort solution. It suggests updating the existing Application Load Balancer (ALB) routing rule to direct traffic based on a specific cookie named ""version"" with a value of ""beta"". This allows the company to easily control which requests go to the beta version without needing significant infrastructure changes, like setting up a new ALB or using more complex solutions.
+
+# Example / Analogy
+- Think of it like a restaurant offering a special seasonal menu. Instead of creating a separate restaurant (like a new ALB), they could simply have a waiter ask customers if they’d like to try dishes from the special menu (using a cookie to identify the request) while still operating under the same establishment (the existing ALB).
+
+# Common Mistakes / Traps
+- A common mistake might be to overcomplicate the solution by assuming that a completely new system (like setting up additional infrastructure) is necessary instead of leveraging existing components. 
+
+# Memory Tip
+- Keep it simple: Use cookies to direct traffic rather than overengineering with new infrastructure."
+72,"[""A team is developing an application that is deployed on Amazon EC2 instances.\nDuring testing, the team receives an error. The EC2 instances are unable to\naccess an Amazon S3 bucket.\n\nWhich steps should the team take to troubleshoot this issue? (Choose two.)""]",Check whether the policy that is assigned to the IAM role that is attached to the EC2 instances grants access to Amazon S3.,Check the S3 bucket policy to validate the access permissions for the S3 bucket.,Check whether the policy that is assigned to the IAM user that is attached to the EC2 instances grants access to Amazon S3.,Check the S3 Lifecycle policy to validate the permissions that are assigned to the S3 bucket.,"# Answer
+- **Correct option:** A, B
+- **Reason:**  
+  To troubleshoot the inability of EC2 instances to access an S3 bucket, the team should first confirm that the IAM role attached to the EC2 instances has the correct permissions (Option A). This involves checking the policies to ensure that they grant the necessary access to Amazon S3. Additionally, the team should check the S3 bucket policy (Option B) to verify that it allows the EC2 instances (via their IAM role) to perform the required actions (like Read or Write). Both of these policies work together to control access.
+
+# Example / Analogy
+- Imagine a library (S3 bucket) that requires a library card (IAM role) to borrow books. If the library card does not have permission to borrow books (the IAM role lacks S3 permissions), or if the library enforces rules that only allow certain cardholders to borrow (the S3 bucket policy), the person won’t be able to borrow books. Checking both the card and the library's borrowing rules is essential to solving the issue.
+
+# Common Mistakes / Traps
+- A common mistake is to focus only on either the IAM role or the S3 bucket policy, neglecting to check both. Understanding that both policies interact is key to identifying access issues.
+
+# Memory Tip
+- Always check IAM roles and S3 bucket policies for access issues."
+73,"[""A developer is working on an ecommerce website. The developer wants to review\nserver logs without logging in to each of the application servers individually.\nThe website runs on multiple Amazon EC2 instances, is written in Python, and\nneeds to be highly available.\n\nHow can the developer update the application to meet these requirements with\nMINIMUM changes?""]","Rewrite the application to be cloud native and to run on AWS Lambda, where the logs can be reviewed in Amazon CloudWatch.","Set up centralized logging by using Amazon OpenSearch Service, Logstash, and OpenSearch Dashboards.",Scale down the application to one larger EC2 instance where only one instance is recording logs.,Install the unified Amazon CloudWatch agent on the EC2 instances. Configure the agent to push the application logs to CloudWatch.,"# Answer
+- **Correct option:** D : Install the unified Amazon CloudWatch agent on the EC2 instances. Configure the agent to push the application logs to CloudWatch.
+
+- **Reason:** This option allows the developer to centrally manage and review logs from multiple EC2 instances without significant changes to the existing application architecture. By installing the CloudWatch agent, logs can be automatically pushed to CloudWatch, where they can be aggregated, searched, and analyzed, thus meeting the requirement for easy log review.
+
+# Example / Analogy
+- Think of the application servers as individual book authors working in different rooms (EC2 instances). Instead of going to each author's room to read their notes (logs), you could set up a central library (CloudWatch) where each author submits their notes for everyone to read and review in one place. 
+
+# Common Mistakes / Traps
+- A common mistake is to assume that rewriting the application to be cloud-native or changing the architecture completely (like option A) is necessary. This can lead to unnecessary complexity and resource expenditure. Additionally, options that limit log access (like option C) do not fulfill the requirement for reviewing logs easily.
+
+# Memory Tip
+- Remember: ""CloudWatch gathers logs, so you don't have to visit each server's logs."""
+74,"[""A company is creating an application that processes .csv files from Amazon S3. A\ndeveloper has created an S3 bucket. The developer has also created an AWS Lambda\nfunction to process the .csv files from the S3 bucket.\n\nWhich combination of steps will invoke the Lambda function when a .csv file is\nuploaded to Amazon S3? (Choose two.)""]",Create an Amazon EventBridge rule. Configure the rule with a pattern to match the S3 object created event.,Schedule an Amazon EventBridge rule to run a new Lambda function to scan the S3 bucket.,Add a trigger to the existing Lambda function. Set the trigger type to EventBridge. Select the Amazon EventBridge rule.,Create a new Lambda function to scan the S3 bucket for recently added S3 objects.,"# Answer
+- **Correct option:** A and C
+- **Reason:** To set up a trigger for the Lambda function to invoke when a .csv file is uploaded to an S3 bucket, you need to create an EventBridge rule that matches the S3 object created event (option A). In addition, you can directly add an S3 bucket trigger to the existing Lambda function (option C) without needing to use EventBridge. However, since the question requires two steps, the combination of these two options (A and C) effectively accomplishes the goal of invoking the Lambda function.
+
+# Example / Analogy
+- Think of it like setting up a doorbell and then telling a friend that when the doorbell rings (a new .csv file is uploaded), they should come over and take care of the visitor (invoke the Lambda function). The doorbell (EventBridge rule) alerts you, and you might also directly tell your friend to watch for visitors (the direct S3 trigger).
+
+# Common Mistakes / Traps
+- A common mistake is to think that only the EventBridge rule (option A) is needed for this task. However, the S3 bucket can directly trigger the Lambda function, making option C an essential step as well. Also, avoid confusing EventBridge with other services like scheduled events when it comes to S3 object events.
+
+# Memory Tip
+- Remember: ""S3 triggers Lambda directly and can also notify EventBridge."""
+75,"[""A developer needs to build an AWS CloudFormation template that self-populates\nthe AWS Region variable that deploys the CloudFormation template.\n\nWhat is the MOST operationally efficient way to determine the Region in which\nthe template is being deployed?""]",Use the AWS::Region pseudo parameter.,Require the Region as a CloudFormation parameter.,Find the Region from the AWS::StackId pseudo parameter by using the Fn::Split intrinsic function.,Dynamically import the Region by referencing the relevant parameter in AWS Systems Manager Parameter Store.,"# Answer
+- **Correct option:** A : Use the AWS::Region pseudo parameter.
+- **Reason:** The AWS::Region pseudo parameter is specifically designed to return the Region in which the CloudFormation stack is being created. It is a built-in feature that automatically populates the value without requiring any additional parameters or complex logic. This makes it the most operationally efficient option.
+
+# Example / Analogy
+- Imagine you’re sending a package and you want to label it with the destination city. Instead of writing the city name yourself, you could use a smart address label that automatically detects your current location and fills it in for you. The AWS::Region pseudo parameter does exactly that for the CloudFormation template—automatically populating the region based on where it's being deployed.
+
+# Common Mistakes / Traps
+- A common mistake is assuming that requiring the region as a parameter (Option B) is viable. However, it adds unnecessary complexity and increases the chance of user error since it relies on manual input. Similarly, relying on the AWS::StackId (Option C) or Systems Manager Parameter Store (Option D) introduces additional steps and potential for error when the AWS::Region parameter is readily available.
+
+# Memory Tip
+- ""AWS::Region: the easiest way to know where you are!"""
+76,"[""A company has hundreds of AWS Lambda functions that the company's QA team needs\nto test by using the Lambda function URLs. A developer needs to configure the\nauthentication of the Lambda functions to allow access so that the QA IAM group\ncan invoke the Lambda functions by using the public URLs.\n\nWhich solution will meet these requirements?""]",Create a CLI script that loops on the Lambda functions to add a Lambda function URL with the AWS_IAM auth type. Run another script to create an IAM identity-based policy that allows the lambda:InvokeFunctionUrl action to all the Lambda function Amazon Resource Names (ARNs). Attach the policy to the QA IAM group.,Create a CLI script that loops on the Lambda functions to add a Lambda function URL with the NONE auth type. Run another script to create an IAM resource-based policy that allows the lambda:InvokeFunctionUrl action to all the Lambda function Amazon Resource Names (ARNs). Attach the policy to the QA IAM group.,Create a CLI script that loops on the Lambda functions to add a Lambda function URL with the AWS_IAM auth type. Run another script to loop on the Lambda functions to create an IAM identity-based policy that allows the lambda:InvokeFunctionUrl action from the QA IAM group's Amazon Resource Name (ARN).,Create a CLI script that loops on the Lambda functions to add a Lambda function URL with the NONE auth type. Run another script to loop on the Lambda functions to create an IAM resource-based policy that allows the lambda:InvokeFunctionUrl action from the QA IAM group's Amazon Resource Name (ARN).,"# Answer
+- **Correct option:** A
+
+- **Reason:** Option A correctly specifies to use the AWS_IAM authentication type for Lambda function URLs, which ensures that only users or groups with valid IAM permissions (in this case, the QA IAM group) can access the Lambda functions via their public URLs. The proposed solution also includes creating an IAM identity-based policy that explicitly allows the necessary action (lambda:InvokeFunctionUrl) for the Lambda function ARNs and attaching it to the QA IAM group, which is essential for managing permissions effectively.
+
+# Example / Analogy
+- Think of it like granting access to a secure building (the Lambda function) that can only be entered by employees with valid identification (AWS IAM permissions). The LDAP function URLs with AWS_IAM authentication act like security doors that only open for those who show their ID (valid IAM credentials), ensuring that only the authorized QA team can access the building.
+
+# Common Mistakes / Traps
+- A common mistake could be selecting an option that uses the NONE authentication type (as seen in options B and D), which would allow anyone with the URL to invoke the Lambda function, completely bypassing the IAM permissions and risking unauthorized access.
+
+# Memory Tip
+- Always remember: ""AWS_IAM for safe access—control who can invoke!"""
+77,"[""A developer maintains a critical business application that uses Amazon DynamoDB\nas the primary data store. The DynamoDB table contains millions of documents and\nreceives 30-60 requests each minute. The developer needs to perform processing\nin near-real time on the documents when they are added or updated in the\nDynamoDB table.\n\nHow can the developer implement this feature with the LEAST amount of change to\nthe existing application code?""]",Set up a cron job on an Amazon EC2 instance. Run a script every hour to query the table for changes and process the documents.,Enable a DynamoDB stream on the table. Invoke an AWS Lambda function to process the documents.,Update the application to send a PutEvents request to Amazon EventBridge. Create an EventBridge rule to invoke an AWS Lambda function to process the documents.,Update the application to synchronously process the documents directly after the DynamoDB write.,"# Answer
+- **Correct option:** B
+- **Reason:** Enabling a DynamoDB stream allows the application to capture changes (inserts, updates, deletes) in real-time and trigger an AWS Lambda function to process those changes without needing extensive modifications to the existing application code.
+
+# Example / Analogy
+- Think of DynamoDB Streams like a security camera that records everything happening in a room (your DynamoDB table). When something changes in the room (like adding or editing a document), the camera captures that event and can alert someone (a Lambda function) to take action right away, all without needing to change the existing furniture (your application code).
+
+# Common Mistakes / Traps
+- A common mistake is choosing options that involve significant changes to the application architecture, such as using a cron job or synchronous processing. These methods are less efficient and would entail more development effort.
+
+# Memory Tip
+- Remember: ""Streams allow us to react in real-time while keeping our app's core unchanged.” "
+78,"[""A developer is writing an application for a company. The application will be\ndeployed on Amazon EC2 and will use an Amazon RDS for Microsoft SQL Server\ndatabase. The company's security team requires that database credentials are\nrotated at least weekly.\n\nHow should the developer configure the database credentials for this\napplication?""]",Create a database user. Store the user name and password in an AWS Systems Manager Parameter Store secure string parameter. Enable rotation of the AWS Key Management Service (AWS KMS) key that is used to encrypt the parameter.,Enable IAM authentication for the database. Create a database user for use with IAM authentication. Enable password rotation.,Create a database user. Store the user name and password in an AWS Secrets Manager secret that has daily rotation enabled.,Use the EC2 user data to create a database user. Provide the user name and password in environment variables to the application.,"# Answer
+- **Correct option:** C
+- **Reason:** Storing the database user name and password in AWS Secrets Manager allows for automatic and secure handling of credentials with built-in support for rotation. Secrets Manager can rotate the secrets on a schedule (like daily), which complies with the requirement of rotating credentials at least weekly.
+
+# Example / Analogy
+- Think of AWS Secrets Manager like a secure vault for your application credentials. Just like a safe that can automatically change the combination lock every day to keep your valuables secure, Secrets Manager keeps your database credentials safe and rotates them automatically per your specifications.
+
+# Common Mistakes / Traps
+- A common mistake is to underestimate the importance of using a dedicated secrets management service. Options like using AWS Systems Manager Parameter Store or storing credentials in environment variables could lead to security vulnerabilities or complicate the rotation requirements. It's essential to use services that automatically handle the security and rotation of sensitive data.
+
+# Memory Tip
+- Use a ""secret vault"" like Secrets Manager to keep credentials safe and rotated automatically."
+79,"[""A real-time messaging application uses Amazon API Gateway WebSocket APIs with\nbackend HTTP service. A developer needs to build a feature in the application to\nidentify a client that keeps connecting to and disconnecting from the WebSocket\nconnection. The developer also needs the ability to remove the client.\n\nWhich combination of changes should the developer make to the application to\nmeet these requirements? (Choose two.)""]",Switch to HTTP APIs in the backend service.,Switch to REST APIs in the backend service.,Use the callback URL to disconnect the client from the backend service.,Add code to track the client status in Amazon ElastiCache in the backend service.,"# Answer
+- **Correct options:** D, C
+
+- **Reason:** 
+  - To track client status and identify clients connecting and disconnecting from a WebSocket API, the developer needs an efficient way to store and manage that state information. Option D suggests using Amazon ElastiCache, which is an excellent choice for maintaining high-performance states for multiple connections, allowing for quick retrieval of client status. 
+  - Option C provides a mechanism to disconnect the client from the backend service through a callback URL, which allows the application to communicate effectively back to the client that it should disconnect. This combination aligns with the need to manage client connections dynamically.
+
+# Example / Analogy
+- Think of a real-time messaging application like a party where guests (clients) continuously come and go. You need a guest list (ElastiCache) to keep track of who is currently at the party and their status. If someone needs to leave (disconnection), you'd call them (callback URL) and politely ask them to exit the venue.
+
+# Common Mistakes / Traps
+- A common trap is to choose options that suggest switching APIs without addressing the core need for tracking client connections. Options A and B imply changing the API type without providing a solution to managing client states, which is crucial for this requirement.
+
+# Memory Tip
+- Track client status effectively with ElastiCache and use callback URLs for disconnections."
+80,"[""A developer has written code for an application and wants to share it with other\ndevelopers on the team to receive feedback. The shared application code needs to\nbe stored long-term with multiple versions and batch change tracking.\n\nWhich AWS service should the developer use?""]",AWS CodeBuild,Amazon S3,AWS CodeCommit,AWS Cloud9,"# Answer
+- **Correct option:** C: AWS CodeCommit
+- **Reason:** AWS CodeCommit is a source control service that allows you to host secure and scalable Git repositories. It fits the requirements since it supports versioning and change tracking, enabling the developer to share their code with the team effectively.
+
+# Example / Analogy
+- Think of AWS CodeCommit as a shared digital library where multiple developers can not only deposit their books (code) but also check out past editions (versions) whenever needed. Just like a library keeps track of all versions of its books, CodeCommit enables tracking of changes in application code.
+
+# Common Mistakes / Traps
+- A common mistake is confusing CodeCommit with other AWS services like Amazon S3, which is primarily for object storage and does not offer version control and collaborative features suitable for code development.
+
+# Memory Tip
+- Remember: CodeCommit is for ""Code Collaboration and Versioning."""
+81,"[""A company's developer is building a static website to be deployed in Amazon S3\nfor a production environment. The website integrates with an Amazon Aurora\nPostgreSQL database by using an AWS Lambda function. The website that is\ndeployed to production will use a Lambda alias that points to a specific version\nof the Lambda function.\n\nThe company must rotate the database credentials every 2 weeks. Lambda functions\nthat the company deployed previously must be able to use the most recent\ncredentials.\n\nWhich solution will meet these requirements?""]",Store the database credentials in AWS Secrets Manager. Turn on rotation. Write code in the Lambda function to retrieve the credentials from Secrets Manager.,Include the database credentials as part of the Lambda function code. Update the credentials periodically and deploy the new Lambda function.,Use Lambda environment variables. Update the environment variables when new credentials are available.,Store the database credentials in AWS Systems Manager Parameter Store. Turn on rotation. Write code in the Lambda function to retrieve the credentials from Systems Manager Parameter Store.,"# Answer
+- **Correct option:** A
+
+- **Reason:** Storing the database credentials in AWS Secrets Manager allows for secure secret management, automatic rotation of credentials, and easy retrieval within Lambda functions. Turning on rotation ensures that each Lambda function can always access the most recent credentials without needing manual updates or redeployments.
+
+# Example / Analogy
+- Imagine using a secure vault for keeping your house keys. Instead of storing spare keys in various places (which could get lost or stolen), you use a trusty vault that securely manages your keys and can create new ones at regular intervals. You simply access the vault whenever you need the most current key, just as the Lambda function accesses Secrets Manager for the most up-to-date database credentials.
+
+# Common Mistakes / Traps
+- A common mistake is opting for environment variables or hardcoding credentials within Lambda functions, which poses security risks and does not support automated rotation. Additionally, many may overlook the implications of managing secrets securely, leading to vulnerabilities.
+
+# Memory Tip
+- Use ""Secrets Manager for Secrets"" to remember that AWS Secrets Manager is your go-to for securely storing and rotating sensitive information."

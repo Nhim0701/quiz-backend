@@ -1,0 +1,253 @@
+No,Content,A,B,C,D,Answered
+2,"[""A company wants to share information with a third party. The third party has an\nHTTP API endpoint that the company can use to share the information. The company\nhas the required API key to access the HTTP API.\nThe company needs a way to manage the API key by using code. The integration of\nthe API key with the application code cannot affect application performance.\nWhich solution will meet these requirements MOST securely?""]",Store the API credentials in AWS Secrets Manager. Retrieve the API credentials at runtime by using the AWS SDK. Use the credentials to make the API call.,Store the API credentials in a local code variable. Push the code to a secure Git repository. Use the local code variable at runtime to make the API call.,Store the API credentials as an object in a private Amazon S3 bucket. Restrict access to the S3 object by using IAM policies. Retrieve the API credentials at runtime by using the AWS SDK. Use the credentials to make the API call.,Store the API credentials in an Amazon DynamoDB table. Restrict access to the table by using resource-based policies. Retrieve the API credentials at runtime by using the AWS SDK. Use the credentials to make the API call.,"# Answer
+- **Correct option:** A
+
+- **Reason:** Storing the API credentials in AWS Secrets Manager allows for secure management and retrieval of sensitive information like API keys. Secrets Manager automatically handles encryption, access control, and key rotation, while also providing easy access via the AWS SDK, ensuring that the application performance remains unaffected at runtime. This approach is also in line with best practices for security and compliance.
+
+# Example / Analogy
+- Think of AWS Secrets Manager like a secure vault where you can store your valuable jewels (API keys). Just like you wouldn’t want to carry your expensive jewelry around in the open, secrets should not be hardcoded in your application. Instead, they should be stored securely and accessed only when needed.
+
+# Common Mistakes / Traps
+- A common mistake is to think that storing sensitive information directly in application code (like choice B) or simply using a less secure method (like S3 or DynamoDB without added security features) is sufficient. This goes against security best practices and can expose sensitive information to unintended access.
+
+# Memory Tip
+- Always store secrets securely, not in code; use AWS Secrets Manager for best security practices!"
+3,"[""A company wants to share information with a third party. The third party has an\nHTTP API endpoint that the company can use to share the information. The company\nhas the required API key to access the HTTP API.\nThe company needs a way to manage the API key by using code. The integration of\nthe API key with the application code cannot affect application performance.\nWhich solution will meet these requirements MOST securely?""]",Store the API credentials in AWS Secrets Manager. Retrieve the API credentials at runtime by using the AWS SDK. Use the credentials to make the API call.,Store the API credentials in a local code variable. Push the code to a secure Git repository. Use the local code variable at runtime to make the API call.,Store the API credentials as an object in a private Amazon S3 bucket. Restrict access to the S3 object by using IAM policies. Retrieve the API credentials at runtime by using the AWS SDK. Use the credentials to make the API call.,Store the API credentials in an Amazon DynamoDB table. Restrict access to the table by using resource-based policies. Retrieve the API credentials at runtime by using the AWS SDK. Use the credentials to make the API call.,"# Answer
+- **Correct option:** A
+- **Reason:** Storing the API key in AWS Secrets Manager provides a secure and controlled way to manage sensitive information. This method allows for automatic retrieval of the credentials at runtime without compromising application performance. Secrets Manager also offers built-in encryption and fine-grained access control, ensuring that only authorized entities can access the API key.
+
+# Example / Analogy
+- Think of AWS Secrets Manager as a secure vault where you can store your valuables (like API keys) along with instructions on how to access them. Just as you wouldn’t keep your valuables in plain sight at home, you shouldn’t hardcode sensitive data (like API keys) in your application code. Instead, you can ""check out"" what you need from the vault when you need it, ensuring only the right people can access it.
+
+# Common Mistakes / Traps
+- A common trap is to consider local variables or configuration files for storing API keys, as this can lead to unintentional exposure or hardcoding of credentials in the source code. Many developers might think pushing code to a secure Git repository keeps it safe, but repositories can be inadvertently accessed by unauthorized users or leaked.
+
+# Memory Tip
+- **""Use the vault for your secrets: store them securely in Secrets Manager!""**"
+4,"[""A developer is deploying a new application to Amazon Elastic Container Service\n(Amazon ECS). The developer needs to securely store and retrieve different types\nof variables. These variables include authentication information for a remote\nAPI, the URL for the API, and credentials. The authentication information and\nAPI URL must be available to all current and future deployed versions of the\napplication across development, testing, and production environments.\nHow should the developer retrieve the variables with the FEWEST application\nchanges?""]",Update the application to retrieve the variables from AWS Systems Manager Parameter Store. Use unique paths in Parameter Store for each variable in each environment. Store the credentials in AWS Secrets Manager in each environment.,Update the application to retrieve the variables from AWS Key Management Service (AWS KMS). Store the API URL and credentials as unique keys for each environment.,Update the application to retrieve the variables from an encrypted file that is stored with the application. Store the API URL and credentials in unique files for each environment.,Update the application to retrieve the variables from each of the deployed environments. Define the authentication information and API URL in the ECS task definition as unique names during the deployment process.,"# Answer
+- **Correct option:** A
+- **Reason:** Option A suggests using AWS Systems Manager Parameter Store for application variables and AWS Secrets Manager for credentials. This approach allows for secure storage and retrieval of sensitive information with minimal application code changes across different environments (development, testing, and production). Parameter Store offers straightforward integration with ECS and maintains a single source of truth for all environments, ensuring consistency.
+
+# Example / Analogy
+- Think of Parameter Store like a secure vault for your app's keys. Just as a hotel might have a single lock system for all rooms, you keep all environment variables in the same “vault”. You simply call out to that vault when you need a key (variable), and it provides the right one based on what room (environment) you are currently in.
+
+# Common Mistakes / Traps
+- A common mistake is assuming that each environment needs separate code or hardcoding values into the application, which complicates deployments and can lead to security risks. Option B might seem appealing with AWS KMS but is not really designed for easy retrieval of config values like Parameter Store or Secrets Manager.
+
+# Memory Tip
+- AWS Parameter Store is the vault for variables; use it to avoid hardcoding and control access securely."
+5,"[""A developer is creating an application that will give users the ability to store\nphotos from their cellphones in the cloud. The application needs to support tens\nof thousands of users. The application uses an Amazon API Gateway REST API that\nis integrated with AWS Lambda functions to process the photos. The application\nstores details about the photos in Amazon DynamoDB.\nUsers need to create an account to access the application. In the application,\nusers must be able to upload photos and retrieve previously uploaded photos. The\nphotos will range in size from 300 KB to 5 MB.\nWhich solution will meet these requirements with the LEAST operational overhead?""]",Use Amazon Cognito user pools to manage user accounts. Create an Amazon Cognito user pool authorizer in API Gateway to control access to the API. Use the Lambda function to store the photos and details in the DynamoDB table. Retrieve previously uploaded photos directly from the DynamoDB table.,Use Amazon Cognito user pools to manage user accounts. Create an Amazon Cognito user pool authorizer in API Gateway to control access to the API. Use the Lambda function to store the photos in Amazon S3. Store the object's S3 key as part of the photo details in the DynamoDB table. Retrieve previously uploaded photos by querying DynamoDB for the S3 key.,Create an IAM user for each user of the application during the sign-up process. Use IAM authentication to access the API Gateway API. Use the Lambda function to store the photos in Amazon S3. Store the object's S3 key as part of the photo details in the DynamoDB table. Retrieve previously uploaded photos by querying DynamoDB for the S3 key.,Create a users table in DynamoDB. Use the table to manage user accounts. Create a Lambda authorizer that validates user credentials against the users table. Integrate the Lambda authorizer with API Gateway to control access to the API. Use the Lambda function to store the photos in Amazon S3. Store the object's S3 key as par of the photo details in the DynamoDB table. Retrieve previously uploaded photos by querying DynamoDB for the S3 key.,"# Answer
+- **Correct option:** B
+- **Reason:** Option B uses Amazon Cognito user pools to manage user accounts, which simplifies user management and authentication, especially for applications that need to scale to tens of thousands of users. It also leverages Amazon S3 for storing photos, which is the ideal solution for handling large file uploads efficiently. Storing the S3 key in DynamoDB minimizes the operational overhead while enabling quick retrieval of the photos.
+
+# Example / Analogy
+- Think of Amazon S3 as a warehouse where all your photos are stored, and DynamoDB as an indexed catalog that tells you where each photo is located in the warehouse. Instead of digging through the warehouse (S3) to find a photo, you just look it up in the catalog (DynamoDB) for quick access.
+
+# Common Mistakes / Traps
+- A common trap is to try to store the photos in DynamoDB directly, which is not efficient given DynamoDB's limitations on item size and costs related to storage. Also, relying on IAM user creation for each individual can lead to immense management overhead and loss of scalability.
+
+# Memory Tip
+- ""Cognito for accounts, S3 for storage, DynamoDB for indexing."""
+6,"[""A company receives food orders from multiple partners. The company has a\nmicroservices application that uses Amazon API Gateway APIs with AWS Lambda\nintegration. Each partner sends orders by calling a customized API that is\nexposed through API Gateway. The API call invokes a shared Lambda function to\nprocess the orders.\nPartners need to be notified after the Lambda function processes the orders.\nEach partner must receive updates for only the partner's own orders. The company\nwants to add new partners in the future with the fewest code changes possible.\nWhich solution will meet these requirements in the MOST scalable way?""]",Create a different Amazon Simple Notification Service (Amazon SNS) topic for each partner. Configure the Lambda function to publish messages for each partner to the partner's SNS topic.,Create a different Lambda function for each partner. Configure the Lambda function to notify each partner's service endpoint directly.,Create an Amazon Simple Notification Service (Amazon SNS) topic. Configure the Lambda function to publish messages with specific attributes to the SNS topic. Subscribe each partner to the SNS topic. Apply the appropriate filter policy to the topic subscriptions.,Create one Amazon Simple Notification Service (Amazon SNS) topic. Subscribe all partners to the SNS topic.,"# Answer
+- **Correct option:** C
+
+- **Reason:** This solution allows for scalability by using a single Amazon Simple Notification Service (SNS) topic that can accommodate many partners easily. By publishing messages with specific attributes, the Lambda function can differentiate notifications for each partner. Each partner can subscribe to the SNS topic with a filter policy that ensures they only receive updates relevant to their own orders. This setup reduces the need for multiple resources and code changes when adding new partners.
+
+# Example / Analogy
+- Imagine a post office where each partner is a house that receives mail. Instead of building separate mailboxes for each house (which would be cumbersome), the post office has one central mailbox (the SNS topic). Letters dispatched from the post office have specific addresses (attributes). When a new house moves in (a new partner), the post office simply adds their address to the mailing list without needing a new mailbox or significant changes to the system.
+
+# Common Mistakes / Traps
+- A common mistake would be to choose option A and create separate SNS topics for each partner. While this meets the requirement, it does not scale well since every new partner would necessitate additional topics, complicating configuration and management. Options B and D also fall short as they either lead to increased complex configurations or all partners receiving every notification without filtering.
+
+# Memory Tip
+- Think of SNS like a central post office: one topic, many recipients, filtered mail."
+7,"[""A developer has written an AWS Lambda function. The function is CPU-bound. The\ndeveloper wants to ensure that the function returns responses quickly.\nHow can the developer improve the function's performance?""]",Increase the function's CPU core count.,Increase the function's memory.,Increase the function's reserved concurrency.,Increase the function's timeout.,"# Answer
+- **Correct option:** B : Increase the function's memory.
+
+- **Reason:** In AWS Lambda, the CPU and memory allocation are linked. By increasing the memory for a Lambda function, you also increase the CPU resources allocated to it. For CPU-bound tasks, having more memory means that the function will have more CPU power available, allowing it to process tasks more quickly and efficiently.
+
+# Example / Analogy
+- Think of a chef in a kitchen where the number of stoves (CPU) is limited by the kitchen's size (memory). If the chef has access to more space, they can set up more stoves, cook more dishes at once, and thus serve the customers faster. By increasing the memory allocated to the Lambda function, you're effectively allowing it more ""stoves"" to work with, speeding up the processing time.
+
+# Common Mistakes / Traps
+- A common mistake is selecting option A (Increase the function's CPU core count). While it seems logical to want more CPU power, AWS Lambda does not allow you to directly adjust the number of CPU cores; it allows you to adjust memory, which indirectly increases CPU allocation based on the memory size.
+
+# Memory Tip
+- **More memory = more CPU power in Lambda!**"
+8,"[""A company is building a serverless application on AWS. The application uses an\nAWS Lambda function to process customer orders 24 hours a day, 7 days a week.\nThe Lambda function calls an external vendor's HTTP API to process payments.\nDuring load tests, a developer discovers that the external vendor payment\nprocessing API occasionally times out and returns errors. The company expects\nthat some payment processing API calls will return errors.\nThe company wants the support team to receive notifications in near real time\nonly when the payment processing external API error rate exceed 5% of the total\nnumber of transactions in an hour. Developers need to use an existing Amazon\nSimple Notification Service (Amazon SNS) topic that is configured to notify the\nsupport team.\nWhich solution will meet these requirements?""]",Write the results of payment processing API calls to Amazon CloudWatch. Use Amazon CloudWatch Logs Insights to query the CloudWatch logs. Schedule the Lambda function to check the CloudWatch logs and notify the existing SNS topic.,Publish custom metrics to CloudWatch that record the failures of the external payment processing API calls. Configure a CloudWatch alarm to notify the existing SNS topic when error rate exceeds the specified rate.,Publish the results of the external payment processing API calls to a new Amazon SNS topic. Subscribe the support team members to the new SNS topic.,Write the results of the external payment processing API calls to Amazon S3. Schedule an Amazon Athena query to run at regular intervals. Configure Athena to send notifications to the existing SNS topic when the error rate exceeds the specified rate.,"# Answer
+- **Correct option:** B
+- **Reason:** Publishing custom metrics to Amazon CloudWatch allows the application to track error rates by capturing failures specifically from the payment processing API calls. A CloudWatch alarm can be configured to monitor these metrics and can trigger a notification via the existing SNS topic if the error rate exceeds 5%, meeting the company's requirements for near real-time alerts based on defined thresholds.
+
+# Example / Analogy
+- Imagine you're managing a restaurant's orders, and you set up a system that logs all customer complaints. If more than 5% of the customers report issues with orders in an hour, you want to be notified immediately to address the problem. By continuously tracking complaints (similar to CloudWatch metrics), you can swiftly react if the business's performance dips.
+
+# Common Mistakes / Traps
+- A common mistake is to think that simply logging the results (as in option A) or storing results in S3 (as in option D) is adequate for monitoring error rates. While these methods can provide data, they don’t facilitate immediate alerting and monitoring of key metrics, which is critical for timely response.
+
+# Memory Tip
+- Track key metrics with CloudWatch to alert swiftly; don't rely on logs or delayed queries."
+9,"[""A company is offering APIs as a service over the internet to provide\nunauthenticated read access to statistical information that is updated daily.\nThe company uses Amazon API Gateway and AWS Lambda to develop the APIs. The\nservice has become popular, and the company wants to enhance the responsiveness\nof the APIs.\nWhich action can help the company achieve this goal?""]",Enable API caching in API Gateway.,Configure API Gateway to use an interface VPC endpoint.,Enable cross-origin resource sharing (CORS) for the APIs.,Configure usage plans and API keys in API Gateway.,"# Answer
+- **Correct option:** A : Enable API caching in API Gateway.
+- **Reason:** Enabling API caching allows responses from the API to be stored temporarily, which can significantly reduce the latency for subsequent requests, as these requests can be served from the cache rather than invoking the backend services (like Lambda) each time. This is particularly effective for read access APIs where the data does not change frequently, such as daily statistics.
+
+# Example / Analogy
+- Think of API caching like a library that allows you to borrow books. Instead of ordering a new book every time someone wants to read it, the library keeps popular books on a shelf ready for quick access. This reduces waiting time for readers (similar to reducing response time for users) since they can get the book immediately without having to wait for it to be ordered and delivered again.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that enabling CORS or configuring usage plans directly improves API performance. While these are useful features, they do not directly enhance responsiveness in terms of reducing latency for read access operations.
+
+# Memory Tip
+- ""Cache to dash: speed up APIs with cached responses!"""
+10,"[""A developer wants to store information about movies. Each movie has a title,\nrelease year, and genre. The movie information also can include additional\nproperties about the cast and production crew. This additional information is\ninconsistent across movies. For example, one movie might have an assistant\ndirector, and another movie might have an animal trainer.\nThe developer needs to implement a solution to support the following use cases:\nFor a given title and release year, get all details about the movie that has\nthat title and release year.\nFor a given title, get all details about all movies that have that title.\nFor a given genre, get all details about all movies in that genre.\nWhich data store configuration will meet these requirements?""]",Create an Amazon DynamoDB table. Configure the table with a primary key that consists of the title as the partition key and the release year as the sort key. Create a global secondary index that uses the genre as the partition key and the title as the sort key.,Create an Amazon DynamoDB table. Configure the table with a primary key that consists of the genre as the partition key and the release year as the sort key. Create a global secondary index that uses the title as the partition key.,"On an Amazon RDS DB instance, create a table that contains columns for title, release year, and genre. Configure the title as the primary key.","On an Amazon RDS DB instance, create a table where the primary key is the title and all other data is encoded into JSON format as one additional column.","# Answer
+- **Correct option:** A
+- **Reason:** Option A proposes a suitable design using Amazon DynamoDB with a primary key composed of the title as the partition key and the release year as the sort key. This allows for efficient querying of a specific movie detail using both the title and release year. Moreover, the global secondary index (GSI) on genre enables querying all movies by their genre. This structure effectively meets all the specified use cases.
+
+# Example / Analogy
+- Real-life example: Think of a library where books are organized by both title and year of publication. If you know the title and year, you can easily find the book, much like querying in DynamoDB with the primary key. Additionally, if you want to find all books of a specific genre, a separate shelf for genres acts like the global secondary index in DynamoDB.
+
+# Common Mistakes / Traps
+- A common mistake is assuming that a single primary key can satisfy all query requirements. Some options might seem simpler but could limit querying flexibility. For instance, Option C confining title as the primary key would not allow querying by genre or release year effectively, as it lacks sufficient granularity.
+
+# Memory Tip
+- **Remember:** ""DynamoDB needs the right keys for the queries you want to perform."""
+11,"[""A company is migrating an on-premises database to Amazon RDS for MySQL. The\ncompany has read-heavy workloads. The company wants to refactor the code to\nachieve optimum read performance for queries.\nWhich solution will meet this requirement with LEAST current and future effort?""]",Use a multi-AZ Amazon RDS deployment. Increase the number of connections that the code makes to the database or increase the connection pool size if a connection pool is in use.,Use a multi-AZ Amazon RDS deployment. Modify the code so that queries access the secondary RDS instance.,Deploy Amazon RDS with one or more read replicas. Modify the application code so that queries use the URL for the read replicas.,Use open source replication software to create a copy of the MySQL database on an Amazon EC2 instance. Modify the application code so that queries use the IP address of the EC2 instance.,"# Answer
+- **Correct option:** C : Deploy Amazon RDS with one or more read replicas. Modify the application code so that queries use the URL for the read replicas.
+- **Reason:** Deploying read replicas allows you to offload read traffic from the primary database. This is optimal for read-heavy workloads, as it enhances performance while reducing latency for read queries. Each read replica can handle read queries independently, freeing up resources on the primary instance for write operations. This solution requires minimal changes to the code, involving only the modification of the connection strings to direct read queries to the replicas.
+
+# Example / Analogy
+- Think of a primary database like a busy restaurant kitchen. If all customers (queries) are directed to that kitchen, the chefs (the database) can get overwhelmed, leading to long wait times. By setting up read replicas as additional kitchens, you can channel diners (read queries) to these smaller kitchens, allowing them to be served faster without overloading the main kitchen.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that a multi-AZ deployment will increase read performance. Multi-AZ is primarily designed for high availability and failover, not for handling read-heavy workloads. Another mistake is overlooking the need for application code modifications, as simply improving the database configuration isn't enough.
+
+# Memory Tip
+- **Tip:** Remember that read replicas boost read performance by splitting the workload—like having multiple kitchen setups for a busy restaurant."
+12,"[""A developer has an application that stores data in an Amazon S3 bucket. The\napplication uses an HTTP API to store and retrieve objects. When the PutObject\nAPI operation adds objects to the S3 bucket the developer must encrypt these\nobjects at rest by using server-side encryption with Amazon S3 managed keys\n(SSE-S3).\nWhich solution will meet this requirement?""]",Create an AWS Key Management Service (AWS KMS) key. Assign the KMS key to the S3 bucket.,Set the x-amz-server-side-encryption header when invoking the PutObject API operation.,Provide the encryption key in the HTTP header of every request.,Apply TLS to encrypt the traffic to the S3 bucket.,"# Answer
+- **Correct option:** B : Set the x-amz-server-side-encryption header when invoking the PutObject API operation.
+
+- **Reason:** When using server-side encryption with Amazon S3 managed keys (SSE-S3), the developer needs to specify this encryption method during the `PutObject` API operation. This is done by setting the `x-amz-server-side-encryption` HTTP header to `AES256`. This instructs S3 to automatically encrypt the object at rest using its managed keys.
+
+# Example / Analogy
+- Think of it like checking a box to request a special wrapping when sending a gift. Just as you need to indicate that you want the gift wrapped upon sending it (in this case, by setting up a header), when uploading an object to S3, you specify that it should be encrypted using the SSE-S3 method with a header. 
+
+# Common Mistakes / Traps
+- A common mistake is to confuse SSE-S3 with AWS KMS. Option A mentions creating an AWS KMS key, which is not necessary for SSE-S3, as SSE-S3 uses its own Amazon-managed keys. Additionally, some might think that encryption should be applied at the transport layer (like TLS in option D), but that does not equate to encrypting data at rest.
+
+# Memory Tip
+- Remember: ""Set the header to encrypt, just like checking the box for gift wrapping!"""
+13,"[""A developer needs to perform geographic load testing of an API. The developer\nmust deploy resources to multiple AWS Regions to support the load testing of the\nAPI.\nHow can the developer meet these requirements without additional application\ncode?""]",Create and deploy an AWS Lambda function in each desired Region. Configure the Lambda function to create a stack from an AWS CloudFormation template in that Region when the function is invoked.,Create an AWS CloudFormation template that defines the load test resources. Use the AWS CLI create-stack-set command to create a stack set in the desired Regions.,Create an AWS Systems Manager document that defines the resources. Use the document to create the resources in the desired Regions.,Create an AWS CloudFormation template that defines the load test resources. Use the AWS CLI deploy command to create a stack from the template in each Region.,"# Answer
+- **Correct option:** B : Create an AWS CloudFormation template that defines the load test resources. Use the AWS CLI create-stack-set command to create a stack set in the desired Regions.
+
+- **Reason:** The AWS CloudFormation stack set functionality allows you to easily deploy a single CloudFormation template across multiple AWS Regions simultaneously. This eliminates the need for additional application code and enables efficient resource deployment tailored to geographic load testing.
+
+# Example / Analogy
+- Imagine you are a chef preparing the same dish in multiple restaurants located in different cities. Instead of going to each restaurant and cooking the meal manually, you create a recipe (CloudFormation template). With stack sets, you can hand the recipe to a manager (the AWS CLI) at each restaurant, who can then execute it, ensuring each location prepares the dish consistently and simultaneously without additional work from you.
+
+# Common Mistakes / Traps
+- One common mistake is thinking that simply deploying resources in each region with separate commands or templates is sufficient, which does not leverage the efficiency and centralized management that stack sets offer. Some may also consider manually invoking resources in each region using Lambda or other methods, which is not as efficient or manageable.
+
+# Memory Tip
+- Use stack sets for efficient multi-region resource deployment; simplify your process."
+14,"[""A developer is creating a template that uses AWS CloudFormation to deploy an\napplication. The application is serverless and uses Amazon API Gateway, Amazon\nDynamoDB, and AWS Lambda.\nWhich AWS service or tool should the developer use to define serverless\nresources in YAML?""]",CloudFormation serverless intrinsic functions,AWS Elastic Beanstalk,AWS Serverless Application Model (AWS SAM),AWS Cloud Development Kit (AWS CDK),"# Answer
+- **Correct option:** C : AWS Serverless Application Model (AWS SAM)
+- **Reason:** AWS SAM is specifically designed to simplify the creation and management of serverless applications. It extends AWS CloudFormation with a simplified syntax for defining serverless resources, allowing developers to define APIs, Lambda functions, and DynamoDB tables in a YAML format.
+
+# Example / Analogy
+- Think of AWS SAM like a recipe book for cooking a meal. Just as a recipe simplifies the cooking process by detailing the ingredients and steps, AWS SAM simplifies the deployment of serverless applications by providing a structured format to define the necessary resources and their configurations.
+
+# Common Mistakes / Traps
+- A common mistake is to confuse AWS SAM with AWS Cloud Development Kit (AWS CDK). While CDK allows you to define infrastructure using familiar programming languages and could also be used for serverless architectures, SAM is tailored specifically for serverless applications and offers an easier path with its simplified abstractions.
+
+# Memory Tip
+- Remember: ""SAM simplifies serverless."""
+15,"[""A developer wants to insert a record into an Amazon DynamoDB table as soon as a\nnew file is added to an Amazon S3 bucket.\nWhich set of steps would be necessary to achieve this?""]",Create an event with Amazon EventBridge that will monitor the S3 bucket and then insert the records into DynamoDB.,Configure an S3 event to invoke an AWS Lambda function that inserts records into DynamoDB.,Create an AWS Lambda function that will poll the S3 bucket and then insert the records into DynamoDB.,Create a cron job that will run at a scheduled time and insert the records into DynamoDB.,"# Answer
+- **Correct option:** B : Configure an S3 event to invoke an AWS Lambda function that inserts records into DynamoDB.
+
+- **Reason:** This option allows for a direct and efficient way to respond to events in S3. By configuring an event notification on the S3 bucket, you can trigger a Lambda function automatically whenever a new file is added. This function can then handle the logic to insert a record into the DynamoDB table without the need for continuous polling or additional event management services.
+
+# Example / Analogy
+- Imagine you have a smart doorbell that notifies you when someone rings the bell (S3 event), and you have a second service (Lambda) that performs an action when it receives that notification, like recording the visitor’s name (inserting a record into DynamoDB). This direct trigger-response model is efficient and automated.
+
+# Common Mistakes / Traps
+- A common mistake is to overlook alternatives, like using EventBridge or polling methods. However, those methods introduce unnecessary complexity for this straightforward use case. The question specifically asks about actions as soon as a file is added, which the Lambda trigger handles perfectly.
+
+# Memory Tip
+- Remember: ""S3 events are like triggers; they call Lambda to take action instantly."""
+16,"[""A development team maintains a web application by using a single AWS\nCloudFormation template. The template defines web servers and an Amazon RDS\ndatabase. The team uses the Cloud Formation template to deploy the Cloud\nFormation stack to different environments.\nDuring a recent application deployment, a developer caused the primary\ndevelopment database to be dropped and recreated. The result of this incident\nwas a loss of data. The team needs to avoid accidental database deletion in the\nfuture.\nWhich solutions will meet these requirements? (Choose two.)""]",Add a CloudFormation Deletion Policy attribute with the Retain value to the database resource.,Update the CloudFormation stack policy to prevent updates to the database.,Modify the database to use a Multi-AZ deployment.,Create a CloudFormation stack set for the web application and database deployments.,"# Answer
+- **Correct options:** A and B
+
+- **Reason:**  
+Option A is correct because adding a CloudFormation Deletion Policy attribute with the Retain value to the database resource will ensure that if the stack is deleted, the database resource will not be deleted, thus preserving the data. Option B is also correct because updating the CloudFormation stack policy to prevent updates to the database will lock it down from being modified or deleted unexpectedly during stack updates, thereby protecting it from accidental deletion.
+
+# Example / Analogy
+- Imagine you have a precious family heirloom (the database) kept in a secure display cabinet (the CloudFormation stack). If you put a ""do not touch"" sign (the stack policy) on the cabinet, people know they can't disturb what's inside. Further, if you put a safeguard in place that says ""keep this inside even if you dismantle the cabinet"" (the retain policy), your heirloom stays safe regardless of what happens to the cabinet.
+
+# Common Mistakes / Traps
+- A common mistake is confusing the Deletion Policy with stack policies. The Deletion Policy specifically addresses how resources are treated upon stack deletion, while stack policies control what can be modified within the stack's lifecycle. Additionally, some might be tempted to consider options like Multi-AZ deployments (Option C) as a solution, but that primarily enhances availability rather than preventing deletion.
+
+# Memory Tip
+- Remember: **""Retain to sustain, policy to protect!""** (Deletion Policy for retainment; stack policy for protection)."
+17,"[""An application that is hosted on an Amazon EC2 instance needs access to files\nthat are stored in an Amazon S3 bucket. The application lists the objects that\nare stored in the S3 bucket and displays a table to the user. During testing, a\ndeveloper discovers that the application does not show any objects in the list.\nWhat is the MOST secure way to resolve this issue?""]",Update the IAM instance profile that is attached to the EC2 instance to include the S3:* permission for the S3 bucket.,Update the IAM instance profile that is attached to the EC2 instance to include the S3:ListBucket permission for the S3 bucket.,Update the developer's user permissions to include the S3:ListBucket permission for the S3 bucket.,Update the S3 bucket policy by including the S3:ListBucket permission and by setting the Principal element to specify the account number of the EC2 instance.,"# Answer
+- **Correct option:** B : Update the IAM instance profile that is attached to the EC2 instance to include the S3:ListBucket permission for the S3 bucket.
+
+- **Reason:** The application running on the EC2 instance needs the `S3:ListBucket` permission to retrieve the list of objects in the specified S3 bucket. This permission allows the application to access the bucket's metadata and display the content. Granting broader permissions like `S3:*` is less secure and should be avoided when only `S3:ListBucket` is needed.
+
+# Example / Analogy
+- Imagine a library where you can only see the book titles on the shelves (metadata) if you have a specific library card (permission) that allows you to look at the index. The `S3:ListBucket` permission is like that library card—it lets the application see what is available, without giving full access to check out the books.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that a user’s permissions are the same as those needed by an application. The application runs under the EC2 instance's IAM role, not under the developer's permissions. Also, choosing overly broad permissions can lead to security vulnerabilities.
+
+# Memory Tip
+- ""Grant only what’s necessary: List permissions to see, but don’t give full access!"""
+18,"[""A company has deployed infrastructure on AWS. A development team wants to create\nan AWS Lambda function that will retrieve data from an Amazon Aurora database.\nThe Amazon Aurora database is in a private subnet in company's VPC. The VPC is\nnamed VPC1. The data is relational in nature. The Lambda function needs to\naccess the data securely.\nWhich solution will meet these requirements?""]",Create the Lambda function. Configure VPC1 access for the function. Attach a security group named SG1 to both the Lambda function and the database. Configure the security group inbound and outbound rules to allow TCP traffic on Port 3306.,Create and launch a Lambda function in a new public subnet that is in a new VPC named VPC2. Create a peering connection between VPC1 and VPC2.,Create the Lambda function. Configure VPC1 access for the function. Assign a security group named SG1 to the Lambda function. Assign a second security group named SG2 to the database. Add an inbound rule to SG1 to allow TCP traffic from Port 3306.,Export the data from the Aurora database to Amazon S3. Create and launch a Lambda function in VPC1. Configure the Lambda function query the data from Amazon S3.,"# Answer
+- **Correct option:** A
+- **Reason:** This option correctly implements VPC access for the Lambda function while maintaining the security requirements. By configuring the Lambda function to run within VPC1 and attaching a security group (SG1) that allows inbound and outbound TCP traffic on Port 3306 (the standard MySQL port used by Amazon Aurora), the Lambda function can securely communicate with the Aurora database.
+
+# Example / Analogy
+- Think of the Lambda function as a guest who needs special permission to enter a restricted area (the private subnet where the Aurora database resides). By giving the guest a pass (security group SG1) that allows access to specific areas (inbound and outbound rules for TCP on Port 3306), they can safely access the resources (the database) they need without exposing it to the entire internet.
+
+# Common Mistakes / Traps
+- A common mistake might be to assume that creating a new public subnet or a new VPC (as in option B) is necessary for a Lambda function to communicate with a private database. This would expose the setup to unnecessary complexities like VPC peering and would not adhere to the requirement for secure access to a private database.
+
+# Memory Tip
+- Remember: “Keep Lambda in the same VPC as the database for secure access!”"
+19,"[""A developer is creating a mobile app that calls a backend service by using an\nAmazon API Gateway REST API. For integration testing during the development\nphase, the developer wants to simulate different backend responses without\ninvoking the backend service.\nWhich solution will meet these requirements with the LEAST operational overhead?""]",Create an AWS Lambda function. Use API Gateway proxy integration to return constant HTTP responses.,Create an Amazon EC2 instance that serves the backend REST API by using an AWS CloudFormation template.,Customize the API Gateway stage to select a response type based on the request.,Use a request mapping template to select the mock integration response.,"# Answer
+- **Correct option:** D : Use a request mapping template to select the mock integration response.
+
+- **Reason:** This method allows you to define mock responses directly in API Gateway without any additional infrastructure or resources. By using request mapping templates, you can simulate various backend responses, which is efficient and requires the least operational overhead compared to setting up Lambda functions or EC2 instances.
+
+# Example / Analogy
+- Imagine you're a chef preparing a new dish in your restaurant. Instead of sourcing every ingredient and cooking it, you decide to create a sample dish just using what you have in your pantry. This way, you can quickly adjust flavors and portions without the need for extra supplies. Similarly, using mapping templates in API Gateway lets you quickly simulate backend responses without needing additional resources.
+
+# Common Mistakes / Traps
+- A common mistake is to choose options that require setting up additional infrastructure (like options A and B) thinking they may provide more flexibility, but they, in fact, introduce unnecessary complexity and operational overhead. 
+
+# Memory Tip
+- Think ""mock responses"" in API Gateway for quick tests—just like a chef trying flavors before the final dish!"
+20,"[""A developer is creating an application that will store personal health\ninformation (PHI). The PHI needs to be encrypted at all times. An encrypted\nAmazon RDS for MySQL DB instance is storing the data. The developer wants to\nincrease the performance of the application by caching frequently accessed data\nwhile adding the ability to sort or rank the cached datasets.\nWhich solution will meet these requirements?""]",Create an Amazon ElastiCache for Redis instance. Enable encryption of data in transit and at rest. Store frequently accessed data in the cache.,Create an Amazon ElastiCache for Memcached instance. Enable encryption of data in transit and at rest. Store frequently accessed data in the cache.,Create an Amazon RDS for MySQL read replica. Connect to the read replica by using SSL. Configure the read replica to store frequently accessed data.,Create an Amazon DynamoDB table and a DynamoDB Accelerator (DAX) cluster for the table. Store frequently accessed data in the DynamoDB table.,"# Answer
+- **Correct option:** A : Create an Amazon ElastiCache for Redis instance. Enable encryption of data in transit and at rest. Store frequently accessed data in the cache.
+
+- **Reason:** Amazon ElastiCache for Redis supports advanced caching features, such as sorting and ranking capabilities, in addition to offering options for data encryption both at rest and in transit. This makes it suitable for handling personal health information (PHI) while enhancing application performance by caching frequently accessed data.
+
+# Example / Analogy
+- Think of ElastiCache for Redis like a high-speed filing system. When you need to retrieve important documents quickly (frequently accessed data), you keep them handy in a drawer (cache) where you can easily access them instead of going to the long-term archive (RDS). Additionally, ensuring that the drawer is locked (encryption) secures the important information inside.
+
+# Common Mistakes / Traps
+- A common mistake might be to choose Amazon ElastiCache for Memcached (Option B) instead of Redis, as Memcached does not support data persistence and lacks the advanced data structure features that Redis provides, which are necessary for sorting and ranking the cached data.
+
+# Memory Tip
+- Reflect: ""Use Redis for speed (cache) and encryption (security) of valuable data."""
+21,"[""A company wants to deploy and maintain static websites on AWS. Each website's\nsource code is hosted in one of several version control systems, including AWS\nCodeCommit, Bitbucket, and GitHub.\nThe company wants to implement phased releases by using development, staging,\nuser acceptance testing, and production environments in the AWS Cloud.\nDeployments to each environment must be started by code merges on the relevant\nGit branch. The company wants to use HTTPS for all data exchange. The company\nneeds a solution that does not require servers to run continuously.\nWhich solution will meet these requirements with the LEAST operational overhead?""]",Host each website by using AWS Amplify with a serverless backend. Conned the repository branches that correspond to each of the desired environments. Start deployments by merging code changes to a desired branch.,Host each website in AWS Elastic Beanstalk with multiple environments. Use the EB CLI to link each repository branch. Integrate AWS CodePipeline to automate deployments from version control code merges.,Host each website in different Amazon S3 buckets for each environment. Configure AWS CodePipeline to pull source code from version control. Add an AWS CodeBuild stage to copy source code to Amazon S3.,Host each website on its own Amazon EC2 instance. Write a custom deployment script to bundle each website's static assets. Copy the assets to Amazon EC2. Set up a workflow to run the script when code is merged.,"# Answer
+- **Correct option:** A
+
+- **Reason:** Hosting each website using AWS Amplify allows the company to easily connect repository branches that correspond to different environments, such as development, staging, user acceptance testing, and production. AWS Amplify provides a fully managed service that automatically deploys the website when code changes are merged into the relevant Git branch, and it handles HTTPS automatically. This solution requires no servers to run continuously, ensuring minimal operational overhead.
+
+# Example / Analogy
+- Think of AWS Amplify like a restaurant that offers a seamless take-out service. You simply call in your order (merge code changes), and the restaurant (Amplify) prepares your meal (deploys the website) without needing you to worry about the kitchen (servers) every time you want to order. Each time you want to try a new dish (deploy to an environment), you just call to place your order.
+
+# Common Mistakes / Traps
+- A common mistake is choosing options that require more management and operational overhead, such as EC2 instances or Elastic Beanstalk, which involve more configuration and ongoing management.
+
+# Memory Tip
+- **Remember AWS Amplify for serverless web deployment and effortless environment branching!**"

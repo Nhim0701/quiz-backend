@@ -1,0 +1,253 @@
+No,Content,A,B,C,D,Answered
+142,"[""A developer migrated a legacy application to an AWS Lambda function. The\nfunction uses a third-party service to pull data with a series of API calls at\nthe end of each month. The function then processes the data to generate the\nmonthly reports. The function has been working with no issues so far.\n\nThe third-party service recently issued a restriction to allow a fixed number of\nAPI calls each minute and each day. If the API calls exceed the limit for each\nminute or each day, then the service will produce errors. The API also provides\nthe minute limit and daily limit in the response header. This restriction might\nextend the overall process to multiple days because the process is consuming\nmore API calls than the available limit.\n\nWhat is the MOST operationally efficient way to refactor the serverless\napplication to accommodate this change?""]",Use an AWS Step Functions state machine to monitor API failures. Use the Wait state to delay calling the Lambda function.,Use an Amazon Simple Queue Service (Amazon SQS) queue to hold the API calls. Configure the Lambda function to poll the queue within the API threshold limits.,Use an Amazon CloudWatch Logs metric to count the number of API calls. Configure an Amazon CloudWatch alarm that stops the currently running instance of the Lambda function when the metric exceeds the API threshold limits.,Use Amazon Kinesis Data Firehose to batch the API calls and deliver them to an Amazon S3 bucket with an event notification to invoke the Lambda function.,"# Answer
+- **Correct option:** B : Use an Amazon Simple Queue Service (Amazon SQS) queue to hold the API calls. Configure the Lambda function to poll the queue within the API threshold limits.
+
+- **Reason:** Using Amazon SQS allows the application to effectively manage API calls by queuing them up and ensuring that the Lambda function only processes a number of calls that adhere to the limits set by the third-party service. The queuing mechanism creates elasticity and reliability, allowing the processing of calls over time without exceeding rate limits. SQS can handle high throughput, and the Lambda function can be set to poll messages from the queue while respecting the API's rate limits.
+
+# Example / Analogy
+- Think of it like a bakery that can only bake a limited number of cakes every hour due to an oven restriction (the API's limit). Instead of trying to bake all the cakes at once, the bakery can let customers place orders (SQS) and bake them one by one as per the oven's capacity. This ensures that they comply with the limitation without losing orders and also makes the process smoother.
+
+# Common Mistakes / Traps
+- A common trap is to assume that monitoring and stopping the function (like in option C) is a viable long-term solution. This is less efficient, as it may disrupt processing and create operational challenges. Option A, while relevant, does not inherently solve the problem of exceeding the API limits directly.
+
+# Memory Tip
+- Think of SQS as a ""waiting line"" that respects capacity limits while ensuring that all tasks are processed efficiently."
+143,"[""A developer must analyze performance issues with production-distributed\napplications written as AWS Lambda functions. These distributed Lambda\napplications invoke other components that make up the applications.\n\nHow should the developer identify and troubleshoot the root cause of the\nperformance issues in production?""]","Add logging statements to the Lambda functions, then use Amazon CloudWatch to view the logs.",Use AWS CloudTrail and then examine the logs.,"Use AWS X-Ray, then examine the segments and errors.",Run Amazon Inspector agents and then analyze performance.,"# Answer
+- **Correct option:** C : Use AWS X-Ray, then examine the segments and errors.
+- **Reason:** AWS X-Ray is specifically designed for analyzing and debugging distributed applications, including Lambda functions. It provides a detailed view of the request flow through the different components, allowing the developer to pinpoint performance bottlenecks, see execution times, and analyze errors. This level of insight is essential for performance troubleshooting in distributed architectures.
+
+# Example / Analogy
+- Imagine trying to fix a leaky faucet in your house that has multiple sinks, all connected by pipes. Instead of just listening for drips (logging), you need to trace the water flow and see where the leak is actually occurring (X-Ray). AWS X-Ray helps visualize that flow through your application's components, making it easier to see where the problem lies.
+
+# Common Mistakes / Traps
+- A common mistake is to solely rely on logging (Option A). While logging is useful, it doesn't provide the same depth of insight into the interactions and latencies between microservices that X-Ray does. Additionally, some may confuse CloudTrail (Option B) as being suitable for performance troubleshooting, whereas it is mainly used for auditing API calls and changes in AWS services.
+
+# Memory Tip
+- **""Use X-Ray to draw the line on your application’s performance.""**"
+144,"[""A developer wants to deploy a new version of an AWS Elastic Beanstalk\napplication. During deployment, the application must maintain full capacity and\navoid service interruption. Additionally, the developer must minimize the cost\nof additional resources that support the deployment.\n\nWhich deployment method should the developer use to meet these requirements?""]",All at once,Rolling with additional batch,Blue/green,Immutable,"# Answer
+- **Correct option:** C : Blue/green
+
+- **Reason:** The blue/green deployment method involves creating a new environment (the ""green"" environment) alongside the current environment (the ""blue"" environment). This allows for full capacity to be maintained during the deployment, as the application can switch traffic from blue to green without any service interruption. Additionally, while this method may temporarily increase costs due to running two environments, it ensures minimal risk and a seamless transition.
+
+# Example / Analogy
+- Think of a blue/green deployment like a restaurant opening a new location (green) while keeping the existing location (blue) open. Customers can continue to dine at the original location while the new one gets ready. Once everything is perfect at the new location, you can direct customers to it without any downtime, ensuring service remains uninterrupted.
+
+# Common Mistakes / Traps
+- A common mistake is choosing the ""All at once"" method, which introduces significant risk of downtime since all instances are updated simultaneously, leading to potential service interruption.
+
+# Memory Tip
+- ""Blue/green means smooth transitions, maintaining green while blue serves."""
+145,"[""A developer is troubleshooting an application that uses Amazon DynamoDB in the\nus-west-2 Region. The application is deployed to an Amazon EC2 instance. The\napplication requires read-only permissions to a table that is named Cars. The\nEC2 instance has an attached IAM role that contains the following IAM policy:\n\n[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image12.png]\n\nWhen the application tries to read from the Cars table, an Access Denied error\noccurs.\n\nHow can the developer resolve this error?""]",Modify the IAM policy resource to be “arn:aws:dynamodb:us-west-2:account-id:table/*”.,Modify the IAM policy to include the dynamodb:* action.,Create a trust policy that specifies the EC2 service principal. Associate the role with the policy.,Create a trust relationship between the role and dynamodb.amazonaws.com.,"# Answer
+- **Correct option:** A : Modify the IAM policy resource to be “arn:aws:dynamodb:us-west-2:account-id:table/*”.
+
+- **Reason:** The Access Denied error indicates that the IAM role attached to the EC2 instance does not have sufficient permissions to access the ""Cars"" table. In this scenario, the IAM policy likely restricts access to a specific table (which may not be ""Cars"") or may not match the resource accurately. By modifying the policy resource to include ""arn:aws:dynamodb:us-west-2:account-id:table/*"", the role will have access to all tables within that account in the specified region, including ""Cars.""
+
+# Example / Analogy
+- Think of IAM policies as keys to a house. If you give someone a key that only opens a certain room (a specific table) but they need to access the entire house (all tables), they won't be able to enter. By giving them a key to the whole house (using a wildcard), they can access the necessary rooms (tables) as needed.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that permission errors are solely due to the actions specified (like using `dynamodb:*`). However, it may also stem from incorrect resource ARNs, which need to match the actual resources the policy is intended to allow access to.
+
+# Memory Tip
+- Always check the resource ARN in IAM policies to ensure the correct access scope is defined."
+146,"[""A developer has observed an increase in bugs in the AWS Lambda functions that a\ndevelopment team has deployed in its Node.js application. To minimize these\nbugs, the developer wants to implement automated testing of Lambda functions in\nan environment that closely simulates the Lambda environment.\n\nThe developer needs to give other developers the ability to run the tests\nlocally. The developer also needs to integrate the tests into the team’s\ncontinuous integration and continuous delivery (CI/CD) pipeline before the AWS\nCloud Development Kit (AWS CDK) deployment.\n\nWhich solution will meet these requirements?""]",Create sample events based on the Lambda documentation. Create automated test scripts that use the cdk local invoke command to invoke the Lambda functions. Check the response. Document the test scripts for the other developers on the team. Update the CI/CD pipeline to run the test scripts.,Install a unit testing framework that reproduces the Lambda execution environment. Create sample events based on the Lambda documentation. Invoke the handler function by using a unit testing framework. Check the response. Document how to run the unit testing framework for the other developers on the team. Update the CI/CD pipeline to run the unit testing framework.,Install the AWS Serverless Application Model (AWS SAM) CLI tool. Use the sam local generate-event command to generate sample events for the automated tests. Create automated test scripts that use the sam local invoke command to invoke the Lambda functions. Check the response. Document the test scripts for the other developers on the team. Update the CI/CD pipeline to run the test scripts.,Create sample events based on the Lambda documentation. Create a Docker container from the Node.js base image to invoke the Lambda functions. Check the response. Document how to run the Docker container for the other developers on the team. Update the CI/CD pipeline to run the Docker container.,"# Answer
+- **Correct option:** C
+
+- **Reason:** The AWS Serverless Application Model (AWS SAM) CLI provides tools that closely simulate the AWS Lambda execution environment on your local machine. Using `sam local generate-event` allows developers to create sample events that can be used for testing Lambda functions. The command `sam local invoke` enables the invocation of Lambda functions as they would be executed in the AWS environment. This makes it an ideal solution for automated testing in a local environment that mirrors the actual Lambda environment. Additionally, integrating this process into a CI/CD pipeline ensures consistent testing before deployment.
+
+# Example / Analogy
+- Imagine you are rehearsing a play. You need a stage that closely resembles the actual theater, with the same lighting, sounds, and props. Using AWS SAM is like having a practice stage that mimics the real one, allowing you and your cast (the development team) to prepare thoroughly before the real performance (the deployment), ensuring fewer mistakes during the actual show.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that just using sample events without a proper local execution environment (like a mock or unit testing framework) will provide adequate testing coverage. This may lead to unexpected behavior when the Lambda functions are deployed in AWS.
+
+# Memory Tip
+- Use AWS SAM for local Lambda testing—it's like having a rehearsal space that feels just like the real stage!"
+147,"[""A developer has code that is stored in an Amazon S3 bucket. The code must be\ndeployed as an AWS Lambda function across multiple accounts in the same AWS\nRegion as the S3 bucket. An AWS CloudFormation template that runs for each\naccount will deploy the Lambda function.\n\nWhat is the MOST secure way to allow CloudFormation to access the Lambda code in\nthe S3 bucket?""]",Grant the CloudFormation service role the S3 ListBucket and GetObject permissions. Add a bucket policy to Amazon S3 with the principal of “AWS”: [account numbers].,Grant the CloudFormation service role the S3 GetObject permission. Add a bucket policy to Amazon S3 with the principal of “*”.,Use a service-based link to grant the Lambda function the S3 ListBucket and GetObject permissions by explicitly adding the S3 bucket’s account number in the resource.,Use a service-based link to grant the Lambda function the S3 GetObject permission. Add a resource of “*” to allow access to the S3 bucket.,"# Answer
+- **Correct option:** A: Grant the CloudFormation service role the S3 ListBucket and GetObject permissions. Add a bucket policy to Amazon S3 with the principal of “AWS”: [account numbers].
+
+- **Reason:** This option is the most secure because it restricts access to only the specific AWS accounts that need it, ensuring that only authorized CloudFormation stacks from those accounts can access the Lambda code in the S3 bucket. By granting both ListBucket and GetObject permissions, you ensure that CloudFormation can not only retrieve the Lambda code but also list the objects in the bucket, which is often necessary in a deployment scenario.
+
+# Example / Analogy
+- Think of an S3 bucket as a library. If you want to allow a specific group of people (the developers in a few trusted accounts) to borrow books (Lambda code), you would create a policy to let them not only check out books but also look at what books are available. Allowing access only to certain people (specific account numbers) is like giving out library cards only to your friends and family, while a general “everyone” approach would be like leaving the library unlocked for anyone to take books whenever they want.
+
+# Common Mistakes / Traps
+- A common mistake is to select options that provide overly broad access, such as using the principal of “*” (anyone) in a bucket policy, which can expose sensitive code to unauthorized users. It can also be tempting to ignore the principle of least privilege, leading to potential vulnerabilities in security.
+
+# Memory Tip
+- Secure access is like giving keys only to specific trusted individuals; restrict who can access what!"
+148,"[""An application that runs on AWS Lambda requires access to specific highly\nconfidential objects in an Amazon S3 bucket. In accordance with the principle of\nleast privilege, a company grants access to the S3 bucket by using only\ntemporary credentials.\n\nHow can a developer configure access to the S3 bucket in the MOST secure way?""]",Hardcode the credentials that are required to access the S3 objects in the application code. Use the credentials to access the required S3 objects.,Create a secret access key and access key ID with permission to access the S3 bucket. Store the key and key ID in AWS Secrets Manager. Configure the application to retrieve the Secrets Manager secret and use the credentials to access the S3 objects.,Create a Lambda function execution role. Attach a policy to the role that grants access to specific objects in the S3 bucket.,Create a secret access key and access key ID with permission to access the S3 bucket. Store the key and key ID as environment variables in Lambda. Use the environment variables to access the required S3 objects.,"# Answer
+- **Correct option:** C
+- **Reason:** Using a Lambda function execution role to grant access to specific objects in the S3 bucket ensures that the application operates under the principle of least privilege. The execution role is automatically managed by AWS, and temporary security credentials are provided, which enhances security by eliminating the need for hardcoded or stored static credentials.
+
+# Example / Analogy
+- Think of the execution role like a guest badge at a corporate event. You get a badge that grants you access only to certain areas based on your role and needs for that event. Once the event is over, the badge is no longer valid, ensuring that only authorized personnel can access sensitive areas.
+
+# Common Mistakes / Traps
+- A common mistake is choosing options that involve hardcoding credentials or using static keys (Option A and D), which poses a significant security risk. Additionally, while using AWS Secrets Manager (as in Option B) is secure, it still requires managing static credentials, which goes against the principle of least privilege when possible.
+
+# Memory Tip
+- ""Use Lambda's execution role for secure, temporary access!"""
+149,"[""When using the AWS Encryption SDK, how does the developer keep track of the data\nencryption keys used to encrypt data?""]",The developer must manually keep track of the data encryption keys used for each data object.,The SDK encrypts the data encryption key and stores it (encrypted) as part of the returned ciphertext.,The SDK stores the data encryption keys automatically in Amazon S3.,The data encryption key is stored in the Userdata for the EC2 instance.,"# Answer
+- **Correct option:** B : The SDK encrypts the data encryption key and stores it (encrypted) as part of the returned ciphertext.
+- **Reason:** The AWS Encryption SDK utilizes a technique called key wrapping, where the data encryption key (DEK) is itself encrypted with a key encryption key (KEK) and stored as part of the encrypted data. This process ensures that the DEK is securely managed without requiring the developer to track or store it manually. By including the wrapped DEK within the ciphertext, it also simplifies decryption, as the SDK can automatically extract and decrypt the DEK when needed.
+
+# Example / Analogy
+- Think of the scenario where you have a valuable item (like a diamond) you want to keep safe. Instead of carrying the diamond around with you and risking losing it, you put it into a very secure vault (this represents the encrypted form of the DEK). You keep the vault key (the KEK) safe and, when you need the diamond back, you can use the vault key to access your diamond effortlessly. The encrypted data is your vault, and the key to the vault is secured separately.
+
+# Common Mistakes / Traps
+- A common mistake is choosing option A, thinking that manual tracking is needed for security, not realizing that the SDK provides a robust solution for managing encryption keys. Another mistake could be assuming that AWS services automatically store encryption keys for you (as suggested in option C), which is not the case here.
+
+# Memory Tip
+- Remember: ""The AWS Encryption SDK wraps the key, so you don’t have to track it!"""
+150,"[""A developer at a company needs to create a small application that makes the same\nAPI call once each day at a designated time. The company does not have\ninfrastructure in the AWS Cloud yet, but the company wants to implement this\nfunctionality on AWS.\n\nWhich solution meets these requirements in the MOST operationally efficient\nmanner?""]",Use a Kubernetes cron job that runs on Amazon Elastic Kubernetes Service (Amazon EKS).,Use an Amazon Linux crontab scheduled job that runs on Amazon EC2.,Use an AWS Lambda function that is invoked by an Amazon EventBridge scheduled event.,Use an AWS Batch job that is submitted to an AWS Batch job queue.,"# Answer
+- **Correct option:** C : Use an AWS Lambda function that is invoked by an Amazon EventBridge scheduled event.
+- **Reason:** This solution is the most operationally efficient because AWS Lambda is a serverless compute service that automatically scales and manages resources, meaning there is no infrastructure to maintain or pay for when it's not in use. Amazon EventBridge can easily schedule events to trigger the Lambda function at the specified time each day, making it a perfect fit for running a task on a schedule without managing servers.
+
+# Example / Analogy
+- Think of AWS Lambda and EventBridge like a self-watering garden. You set up an automated system (EventBridge) that waters your plants (invokes Lambda) at a designated time each day. This system requires no additional resources or upkeep once set, just like you don’t need to physically be there to water your plants every day.
+
+# Common Mistakes / Traps
+- A common mistake is to overthink and choose solutions that involve maintaining infrastructure (like EC2 or EKS) when a simpler serverless option exists. Developers might also underestimate the ease of setup and operational efficiency of using EventBridge with Lambda.
+
+# Memory Tip
+- ""For scheduled tasks, go serverless with Lambda and EventBridge!"""
+151,"[""A developer is building a serverless application that is based on AWS Lambda.\nThe developer initializes the AWS software development kit (SDK) outside of the\nLambda handler function.\n\nWhat is the PRIMARY benefit of this action?""]",Improves legibility and stylistic convention,Takes advantage of runtime environment reuse,Provides better error handling,Creates a new SDK instance for each invocation,"# Answer
+- **Correct option:** B : Takes advantage of runtime environment reuse
+- **Reason:** Initializing the AWS SDK outside of the Lambda handler function allows the SDK to be reused across multiple invocations of the Lambda function. This means that the SDK does not need to be reloaded and reconfigured each time the function runs, which can lead to reduced cold start times and improved performance.
+
+# Example / Analogy
+- Real-life example or memorable comparison: Think of it like preparing a cooking station. If you set up your tools (like knives and pots) before you start cooking, you can cook multiple meals faster without wasting time gathering your tools each time. Similarly, by initializing the SDK once, the Lambda function can handle more requests efficiently without the overhead of repeated setups.
+
+# Common Mistakes / Traps
+- Common trap points, if any: Developers might incorrectly think that creating a new instance of the SDK in each invocation is beneficial for isolation or error handling, but this actually adds unnecessary overhead and slows down execution.
+
+# Memory Tip
+- Initialize once, reuse forever – keep your SDK warm for faster Lambda performance!"
+152,"[""A company is using Amazon RDS as the backend database for its application. After\na recent marketing campaign, a surge of read requests to the database increased\nthe latency of data retrieval from the database. The company has decided to\nimplement a caching layer in front of the database. The cached content must be\nencrypted and must be highly available.\n\nWhich solution will meet these requirements?""]",Amazon CloudFront,Amazon ElastiCache for Memcached,Amazon ElastiCache for Redis in cluster mode,Amazon DynamoDB Accelerator (DAX),"# Answer
+- **Correct option:** C : Amazon ElastiCache for Redis in cluster mode
+- **Reason:** Amazon ElastiCache for Redis in cluster mode provides a caching layer that supports encryption at rest and in transit, ensuring that cached content is secure. Additionally, Redis supports high availability through automatic failover and replication features, which are essential for maintaining performance and reliability during surges in read requests.
+
+# Example / Analogy
+- Think of ElastiCache for Redis like a premium vault for frequently accessed documents (data) that not only keeps them secure (encrypted) but also ensures there's always access without delays (high availability) even if the main storage is temporarily overloaded.
+
+# Common Mistakes / Traps
+- A common mistake is to select Amazon CloudFront, which is primarily a content delivery network (CDN) for web assets rather than a caching layer for database queries. Also, while ElastiCache for Memcached provides caching functionality, it does not support persistence and encryption features as robustly as Redis.
+
+# Memory Tip
+- Remember: ""Redis is secure and reliable for cache, making your app faster in busy times!"""
+153,"[""A developer at a company recently created a serverless application to process\nand show data from business reports. The application’s user interface (UI)\nallows users to select and start processing the files. The UI displays a message\nwhen the result is available to view. The application uses AWS Step Functions\nwith AWS Lambda functions to process the files. The developer used Amazon API\nGateway and Lambda functions to create an API to support the UI.\n\nThe company’s UI team reports that the request to process a file is often\nreturning timeout errors because of the size or complexity of the files. The UI\nteam wants the API to provide an immediate response so that the UI can display a\nmessage while the files are being processed. The backend process that is invoked\nby the API needs to send an email message when the report processing is\ncomplete.\n\nWhat should the developer do to configure the API to meet these requirements?""]",Change the API Gateway route to add an X-Amz-Invocation-Type header with a static value of ‘Event’ in the integration request. Deploy the API Gateway stage to apply the changes.,Change the configuration of the Lambda function that implements the request to process a file. Configure the maximum age of the event so that the Lambda function will run asynchronously.,Change the API Gateway timeout value to match the Lambda function timeout value. Deploy the API Gateway stage to apply the changes.,Change the API Gateway route to add an X-Amz-Target header with a static value of ‘Async’ in the integration request. Deploy the API Gateway stage to apply the changes.,"# Answer
+- **Correct option:** A
+- **Reason:** Option A suggests changing the API Gateway route to add an `X-Amz-Invocation-Type` header with a static value of `'Event'`. This tells the API Gateway to invoke the Lambda function asynchronously. By doing this, the API can return an immediate response to the UI while the file processing occurs in the background, meeting the UI team’s requirement of not timing out.
+
+# Example / Analogy
+- Think of a restaurant where you place an order (API call) and get a notification (immediate response) that your meal will be ready soon. The kitchen (Lambda function) prepares the meal asynchronously, allowing you to carry on with your tasks until your meal is served. The restaurant doesn't keep you waiting at the counter, while you get a message confirming your order was received.
+
+# Common Mistakes / Traps
+- A common mistake might be to choose option C, thinking increasing the API Gateway timeout would resolve the issue, but this doesn't address the root problem of requiring an immediate response while processing happens in the background.
+
+# Memory Tip
+- Remember: Asynchronous invocation allows you to say ""I’ll handle it later!"" Instead of waiting, which is crucial for user experience in serverless applications."
+154,"[""A developer has an application that is composed of many different AWS Lambda\nfunctions. The Lambda functions all use some of the same dependencies. To avoid\nsecurity issues, the developer is constantly updating the dependencies of all of\nthe Lambda functions. The result is duplicated effort for each function.\n\nHow can the developer keep the dependencies of the Lambda functions up to date\nwith the LEAST additional complexity?""]",Define a maintenance window for the Lambda functions to ensure that the functions get updated copies of the dependencies.,Upgrade the Lambda functions to the most recent runtime version.,Define a Lambda layer that contains all of the shared dependencies.,Use an AWS CodeCommit repository to host the dependencies in a centralized location.,"# Answer
+- **Correct option:** C : Define a Lambda layer that contains all of the shared dependencies.
+  
+- **Reason:** Using a Lambda Layer allows the developer to package and manage shared dependencies in a single place. This approach reduces duplication of effort, as the Lambda functions can reference the same layer instead of including the dependencies within each function's deployment package. This not only simplifies the update process but also minimizes the size of each Lambda function, leading to faster deployments and lower potential for errors in dependency management.
+
+# Example / Analogy
+- Think of Lambda layers like a library where multiple students can borrow the same books instead of each student individually buying their own. This library approach allows for easy updates and shared access without the need for everyone to manage their own collection.
+
+# Common Mistakes / Traps
+- A common mistake could be choosing to update all functions individually (as in choice A), which leads to increased complexity and risk of missing updates. Another trap is assuming that upgrading the runtime (choice B) will inherently resolve dependency issues, which it may not, as dependencies are often unrelated to the language runtime itself. Option D may centralize the code but not efficiently update functions since it doesn't utilize Lambda's built-in layer feature.
+
+# Memory Tip
+- **Layers for shared dependencies:** Use Lambda layers to streamline and simplify dependency management for your functions."
+155,"[""A developer is modifying an existing AWS Lambda function. While checking the\ncode, the developer notices hardcoded parameter values for an Amazon RDS for SQL\nServer user name, password, database, host, and port. There are also hardcoded\nparameter values for an Amazon DynamoDB table, an Amazon S3 bucket, and an\nAmazon Simple Notification Service (Amazon SNS) topic.\n\nThe developer wants to securely store the parameter values outside the code in\nan encrypted format and wants to turn on rotation for the credentials. The\ndeveloper also wants to be able to reuse the parameter values from other\napplications and to update the parameter values without modifying code.\n\nWhich solution will meet these requirements with the LEAST operational overhead?""]","Create an RDS database secret in AWS Secrets Manager. Set the user name, password, database, host, and port. Turn on secret rotation. Create encrypted Lambda environment variables for the DynamoDB table, S3 bucket, and SNS topic.","Create an RDS database secret in AWS Secrets Manager. Set the user name, password, database, host, and port. Turn on secret rotation. Create SecureString parameters in AWS Systems Manager Parameter Store for the DynamoDB table, S3 bucket, and SNS topic.","Create RDS database parameters in AWS Systems Manager Parameter Store for the user name, password, database, host, and port. Create encrypted Lambda environment variables for the DynamoDB table, S3 bucket, and SNS topic. Create a Lambda function and set the logic for the credentials rotation task. Schedule the credentials rotation task in Amazon EventBridge.","Create RDS database parameters in AWS Systems Manager Parameter Store for the user name, password, database, host, and port. Store the DynamoDB table, S3 bucket, and SNS topic in Amazon S3. Create a Lambda function and set the logic for the credentials rotation. Invoke the Lambda function on a schedule.","# Answer
+- **Correct option:** B
+
+- **Reason:** Option B meets all the developer's requirements by using AWS Secrets Manager to create a secure, rotatable secret for the RDS database parameters and AWS Systems Manager Parameter Store to securely store the configurations for the DynamoDB table, S3 bucket, and SNS topic as SecureString parameters. This setup allows for centralized management of sensitive information, easy updates without changing code, and reuse among different applications with minimal operational overhead.
+
+# Example / Analogy
+- Think of it like storing your important documents in a secure cloud vault (Secrets Manager for RDS) while also having labeled envelopes for each category (Parameter Store for DynamoDB, S3, and SNS). You can easily access and update the contents of the envelopes, while the important documents are kept safe and can be automatically replaced every few months without you having to break into the vault.
+
+# Common Mistakes / Traps
+- A common mistake might be to think that using only Parameter Store or hardcoding values in Lambda is sufficient. Additionally, some might overlook that not all options turned on automatic rotation, which is a key requirement.
+
+# Memory Tip
+- ""Secrets Manage safely, Parameters Store securely for flexibility."""
+156,"[""A mobile app stores blog posts in an Amazon DynamoDB table. Millions of posts\nare added every day, and each post represents a single item in the table. The\nmobile app requires only recent posts. Any post that is older than 48 hours can\nbe removed.\n\nWhat is the MOST cost-effective way to delete posts that are older than 48\nhours?""]","For each item, add a new attribute of type String that has a timestamp that is set to the blog post creation time. Create a script to find old posts with a table scan and remove posts that are older than 48 hours by using the BatchWriteItem API operation. Schedule a cron job on an Amazon EC2 instance once an hour to start the script.","For each item, add a new attribute of type String that has a timestamp that is set to the blog post creation time. Create a script to find old posts with a table scan and remove posts that are older than 48 hours by using the BatchWriteItem API operation. Place the script in a container image. Schedule an Amazon Elastic Container Service (Amazon ECS) task on AWS Fargate that invokes the container every 5 minutes.","For each item, add a new attribute of type Date that has a timestamp that is set to 48 hours after the blog post creation time. Create a global secondary index (GSI) that uses the new attribute as a sort key. Create an AWS Lambda function that references the GSI and removes expired items by using the BatchWriteItem API operation. Schedule the function with an Amazon CloudWatch event every minute.","For each item, add a new attribute of type Number that has a timestamp that is set to 48 hours after the blog post creation time. Configure the DynamoDB table with a TTL that references the new attribute.","# Answer
+- **Correct option:** D
+- **Reason:** By configuring the DynamoDB table with a Time to Live (TTL) attribute, which automatically deletes items based on their timestamps set as a Number type, the process becomes fully automated. This means that DynamoDB will handle the deletion of old posts without requiring any additional infrastructure, scripts, or scheduled jobs, making it the most cost-effective solution.
+
+# Example / Analogy
+- Think of the TTL feature as a “self-cleaning” fridge. Just as a fridge can be set to automatically discard expired food items, TTL allows the DynamoDB table to automatically remove items (old blog posts) that are no longer relevant after a set period (48 hours).
+
+# Common Mistakes / Traps
+- A common trap here is to assume that frequent scanning of the table and manually deleting items with scripts (like in options A and B) would be efficient. However, these methods can lead to higher costs and complexity, especially at scale.
+
+# Memory Tip
+- Remember: ""TTL is like a self-cleaning service for your DynamoDB table!"""
+157,"[""A developer accesses AWS CodeCommit over SSH. The SSH keys configured to access\nAWS CodeCommit are tied to a user with the following permissions:\n\n[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image13.png]\n\nThe developer needs to create/delete branches.\n\nWhich specific IAM permissions need to be added, based on the principle of least\nprivilege?""]","""codecommit:CreateBranch"" ""codecommit:DeleteBranch""","""codecommit:Put*""","""codecommit:Update*""","""codecommit:*""","# Answer
+- **Correct option:** A : ""codecommit:CreateBranch"" ""codecommit:DeleteBranch""
+
+- **Reason:** The principle of least privilege dictates that users should only be given the permissions necessary to perform their required tasks. In this case, the developer needs the ability to create and delete branches in AWS CodeCommit, which specifically requires the permissions `codecommit:CreateBranch` and `codecommit:DeleteBranch`. Choosing these specific permissions ensures that the developer has just the access they need without granting excessive permissions.
+
+# Example / Analogy
+- Imagine a library where you can borrow books. If you only need access to the fiction section to borrow a couple of specific novels, you don't need keys to access the entire library, including the restricted areas like the archives or maintenance rooms. Similarly, the developer only requires permission to create and delete branches, not all possible actions in CodeCommit.
+
+# Common Mistakes / Traps
+- A common mistake is to choose options that provide broader permissions (like ""codecommit:*"") or permissions that are not relevant to the specific task (like ""codecommit:Put*"" or ""codecommit:Update*""). Such choices would violate the principle of least privilege by allowing more access than necessary.
+
+# Memory Tip
+- Remember: Grant only the permissions you need—like only taking the keys for the doors you need to unlock."
+158,"[""An application that is deployed to Amazon EC2 is using Amazon DynamoDB. The\napplication calls the DynamoDB REST API. Periodically, the application receives\na ProvisionedThroughputExceededException error when the application writes to a\nDynamoDB table.\n\nWhich solutions will mitigate this error MOST cost-effectively? (Choose two.)""]",Modify the application code to perform exponential backoff when the error is received.,Modify the application to use the AWS SDKs for DynamoDB.,Increase the read and write throughput of the DynamoDB table.,Create a DynamoDB Accelerator (DAX) cluster for the DynamoDB table.,"# Answer
+- **Correct options:** A, B
+
+- **Reason:** 
+  - **Option A** (Modify the application code to perform exponential backoff when the error is received) is a valid solution because exponential backoff helps manage retry attempts effectively by spacing out retries when encountering transient errors like ProvisionedThroughputExceededException. This avoids overwhelming the DynamoDB service with immediate retries, allowing it time to recover. 
+  - **Option B** (Modify the application to use the AWS SDKs for DynamoDB) is also correct as these SDKs handle retries and exponential backoff natively, thereby simplifying the application code and reducing the likelihood of encountering the exception. Meanwhile, they provide better optimization and features for integrating with DynamoDB compared to directly using the REST API.
+
+# Example / Analogy
+- Think of a restaurant during a busy evening. If the kitchen is overwhelmed and can’t take more orders, instead of continually placing orders immediately (that would lead to chaos), you may wait a moment (exponential backoff) before trying again. Also, if you have a friend (using SDKs) who knows how to navigate the restaurant's system better, they can help place your order without you constantly reordering every minute.
+
+# Common Mistakes / Traps
+- A common trap is assuming that simply increasing the write capacity (Option C) is the best fix without considering cost-effectiveness. While it may solve the immediate issue, it can lead to unnecessary costs. Additionally, creating a DAX cluster (Option D) adds complexity and may not directly address write capacity issues.
+
+# Memory Tip
+- Use exponential backoff and AWS SDKs to gracefully handle temporary DynamoDB throttling."
+159,"[""When a developer tries to run an AWS CodeBuild project, it raises an error\nbecause the length of all environment variables exceeds the limit for the\ncombined maximum of characters.\n\nWhat is the recommended solution?""]","Add the export LC_ALL=""en_US.utf8"" command to the pre_build section to ensure POSIX localization.",Use Amazon Cognito to store key-value pairs for large numbers of environment variables.,Update the settings for the build project to use an Amazon S3 bucket for large numbers of environment variables.,Use AWS Systems Manager Parameter Store to store large numbers of environment variables.,"# Answer
+- **Correct option:** D : Use AWS Systems Manager Parameter Store to store large numbers of environment variables.
+- **Reason:** AWS Systems Manager Parameter Store is designed to manage application configuration data and secure information such as passwords and secrets. It allows you to store key-value pairs efficiently, even for large sets of configuration data. By using Parameter Store, you can overcome the character limit imposed by CodeBuild for environment variables.
+
+# Example / Analogy
+- Imagine you're a chef in a restaurant (CodeBuild) with a tiny prep table (environment variable limit). Instead of cramming all your ingredients (environment variables) onto that small table, you can store some of them in a pantry (AWS Systems Manager Parameter Store) and take them out as needed. This way, you have more space to work with and can access your ingredients anytime without cluttering your work area.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that simply reducing the number of environment variables will solve the issue when the real problem is the total character count. Developers might overlook that using dedicated storage solutions like Parameter Store can provide a more scalable and manageable approach.
+
+# Memory Tip
+- **Tip:** ""Use Parameter Store for more room; keep CodeBuild neat and in Bloom!"""
+160,"[""A company is expanding the compatibility of its photo-sharing mobile app to\nhundreds of additional devices with unique screen dimensions and resolutions.\nPhotos are stored in Amazon S3 in their original format and resolution. The\ncompany uses an Amazon CloudFront distribution to serve the photos. The app\nincludes the dimension and resolution of the display as GET parameters with\nevery request.\n\nA developer needs to implement a solution that optimizes the photos that are\nserved to each device to reduce load time and increase photo quality.\n\nWhich solution will meet these requirements MOST cost-effectively?""]",Use S3 Batch Operations to invoke an AWS Lambda function to create new variants of the photos with the required dimensions and resolutions. Create a dynamic CloudFront origin that automatically maps the request of each device to the corresponding photo variant.,Use S3 Batch Operations to invoke an AWS Lambda function to create new variants of the photos with the required dimensions and resolutions. Create a Lambda@Edge function to route requests to the corresponding photo variant by using request headers.,Create a Lambda@Edge function that optimizes the photos upon request and returns the photos as a response. Change the CloudFront TTL cache policy to the maximum value possible.,"Create a Lambda@Edge function that optimizes the photos upon request and returns the photos as a response. In the same function, store a copy of the processed photos on Amazon S3 for subsequent requests.","# Answer
+- **Correct option:** B
+
+- **Reason:** Option B leverages S3 Batch Operations to efficiently create dimension and resolution variants of photos stored in S3. By using a Lambda@Edge function, it enables dynamic routing based on incoming request headers, optimizing resource utilization by avoiding unnecessary image processing for each request. This approach is cost-effective because it processes images only once and serves them efficiently via CloudFront by routing users to pre-generated optimized images.
+
+# Example / Analogy
+- Imagine a coffee shop that provides different drink sizes. Instead of making a fresh drink every time someone orders, the barista pre-makes various sizes and fetches the appropriate one based on the customer's request. This saves time and resources, similar to how using Lambda@Edge for routing requests to pre-processed images minimizes processing time and improves application performance.
+
+# Common Mistakes / Traps
+- A common mistake is choosing options that suggest processing images on-the-fly (like in options C and D) without considering the efficiency and high load that this can introduce, especially with many unique requests. This can lead to latency and potentially higher costs due to increased compute usage.
+
+# Memory Tip
+- Pre-process, don’t reprocess: Optimize images once and serve based on request details."
+161,"[""A company is building an application for stock trading. The application needs\nsub-millisecond latency for processing trade requests. The company uses Amazon\nDynamoDB to store all the trading data that is used to process each trading\nrequest.\n\nA development team performs load testing on the application and finds that the\ndata retrieval time is higher than expected. The development team needs a\nsolution that reduces the data retrieval time with the least possible effort.\n\nWhich solution meets these requirements?""]",Add local secondary indexes (LSIs) for the trading data.,"Store the trading data in Amazon S3, and use S3 Transfer Acceleration.",Add retries with exponential backoff for DynamoDB queries.,Use DynamoDB Accelerator (DAX) to cache the trading data.,"# Answer
+- **Correct option:** D: Use DynamoDB Accelerator (DAX) to cache the trading data.
+- **Reason:** DAX is a fully managed, in-memory caching service for DynamoDB that provides microsecond response times for read-heavy and bursty workloads. By caching the data, DAX significantly reduces the data retrieval time, which is crucial for applications that require sub-millisecond latency like stock trading.
+
+# Example / Analogy
+- **Real-life example or memorable comparison:** Think of DAX like a speedboat in a busy harbor. While a regular boat may take longer to navigate through many boats (database read operations), a speedboat (DAX) easily zips through, getting you where you need to go in a fraction of the time. In this analogy, DAX reduces the time it takes to retrieve trading data, ensuring prompt processing of trade requests.
+
+# Common Mistakes / Traps
+- A common mistake is to choose local secondary indexes (option A) under the assumption that they will optimize query performance. However, they primarily help in querying data differently rather than improving retrieval speed significantly. Remember that they still rely on the base table data and do not provide caching benefits like DAX.
+
+# Memory Tip
+- **Tip:** Remember that DAX is like a turbocharger for DynamoDB, boosting retrieval speeds to microsecond levels!"

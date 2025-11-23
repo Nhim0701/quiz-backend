@@ -1,0 +1,269 @@
+No,Content,A,B,C,D,Answered
+222,"[""A company has a three-tier application that is deployed in Amazon Elastic\nContainer Service (Amazon ECS). The application is using an Amazon RDS for MySQL\nDB instance. The application performs more database reads than writes.\n\nDuring times of peak usage, the application’s performance degrades. When this\nperformance degradation occurs, the DB instance’s ReadLatency metric in Amazon\nCloudWatch increases suddenly.\n\nHow should a developer modify the application to improve performance?""]",Use Amazon ElastiCache to cache query results.,Scale the ECS cluster to contain more ECS instances.,Add read capacity units (RCUs) to the DB instance.,Modify the ECS task definition to increase the task memory.,"# Answer
+- **Correct option:** A : Use Amazon ElastiCache to cache query results.
+- **Reason:** Using Amazon ElastiCache to cache query results can significantly improve application performance by reducing the number of database reads. Since the application is experiencing increased read latency during peak times, caching frequently accessed data can alleviate pressure on the Amazon RDS instance, allowing it to serve write requests more efficiently.
+
+# Example / Analogy
+- Think of a library (Amazon RDS) where people go to find information. When many people are trying to find the same book (data) at once, it gets crowded, and it takes longer for everyone to get what they need. If the library had a separate small shelf (Amazon ElastiCache) with popular books already available, people could take the book from the shelf without waiting in line, greatly speeding up their experience.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that simply scaling up the ECS cluster or DB instance will resolve performance issues. However, if the underlying problem is too many read requests hitting the database, scaling may only provide a temporary solution without addressing the root cause. 
+
+# Memory Tip
+- Use caching to lighten the load on databases during high traffic!"
+223,"[""A developer is writing an application to encrypt files outside of AWS before\nuploading the files to an Amazon S3 bucket. The encryption must be symmetric and\nmust be performed inside the application.\n\nHow can the developer implement the encryption in the application to meet these\nrequirements?""]",Create a data key in AWS Key Management Service (AWS KMS). Use the AWS Encryption SDK to encrypt the files.,Create a Hash-Based Message Authentication Code (HMAC) key in AWS Key Management Service (AWS KMS). Use the AWS Encryption SDK to encrypt the files.,Create a data key pair in AWS Key Management Service (AWS KMS). Use the AWS CLI to encrypt the files.,Create a data key in AWS Key Management Service (AWS KMS). Use the AWS CLI to encrypt the files.,"# Answer
+- **Correct option:** A : Create a data key in AWS Key Management Service (AWS KMS). Use the AWS Encryption SDK to encrypt the files.
+  
+- **Reason:** This option meets the requirement for symmetric encryption within the application as it utilizes a data key generated in AWS KMS to perform encryption. The AWS Encryption SDK provides a high-level interface for encrypting and decrypting data using that data key, making it suitable for developers looking to integrate encryption directly into their applications before uploading files to S3.
+
+# Example / Analogy
+- Real-life example or memorable comparison: Think of encryption like putting a letter into a locked box (the data key). You can create the box (data key) using a trusted locksmith (AWS KMS), and the AWS Encryption SDK acts as the mechanism to securely lock and unlock the box before putting it in a postal service (S3) for delivery.
+
+# Common Mistakes / Traps
+- A common mistake is choosing options that imply using authentication (like HMAC in option B) or using command-line interfaces (like options C and D), which do not fulfill the requirement of performing encryption within the application itself.
+
+# Memory Tip
+- To remember: ""Data key + Encryption SDK = In-App Encryption Solution."""
+224,"[""A company has an online web application that includes a product catalog. The\ncatalog is stored in an Amazon S3 bucket that is named DOC-EXAMPLE-BUCKET. The\napplication must be able to list the objects in the S3 bucket and must be able\nto download objects through an IAM policy.\n\nWhich policy allows MINIMUM access to meet these requirements?""]",[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image15.png],[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image16.png],[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image17.png],[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image18.png],"# Answer
+- **Correct option:** A
+
+- **Reason:** 
+  The policy in choice A grants the necessary permissions to list objects (`s3:ListBucket`) in the bucket and allows the actions required to download the objects (`s3:GetObject`). Importantly, it specifies the actions only for a particular bucket and objects within it, adhering to the principle of least privilege by only allowing what is necessary.
+
+# Example / Analogy
+- Think of a library where you can only look at the catalog of books and borrow books that you're permitted to access. The library (S3 bucket) has a listing of all available books (objects), and you need specific permissions to see the catalog (list the objects) and to check out a book (download the object).
+
+# Common Mistakes / Traps
+- A common trap in such questions is to select a more permissive option that allows for actions not required (like batch operations or additional actions). It's essential to focus on permissions that meet only the stated requirements for minimum access.
+
+# Memory Tip
+- “List and Get: Just the right permissions to see and take.”"
+225,"[""A developer created a web API that receives requests by using an internet-facing\nApplication Load Balancer (ALB) with an HTTPS listener. The developer configures\nan Amazon Cognito user pool and wants to ensure that every request to the API is\nauthenticated through Amazon Cognito.\n\nWhat should the developer do to meet this requirement?""]",Add a listener rule to the listener to return a fixed response if the Authorization header is missing. Set the fixed response to 401 Unauthorized.,Create an authentication action for the listener rules of the ALSet the rule action type to authenticate-cognito. Set the OnUnauthenticatedRequest field to “deny.”,Create an Amazon API Gateway API. Configure all API methods to be forwarded to the ALB endpoint. Create an authorizer of the COGNITO_USER_POOLS type. Configure every API method to use that authorizer.,Create a new target group that includes an AWS Lambda function target that validates the Authorization header by using Amazon Cognito. Associate the target group with the listener.,"# Answer
+- **Correct option:** B
+- **Reason:** The correct choice is to create an authentication action for the listener rules of the ALB, setting the rule action type to authenticate-cognito and the OnUnauthenticatedRequest field to ""deny."" This configuration ensures that the Application Load Balancer only forwards requests that are authenticated with Amazon Cognito, providing a secure gateway to the API.
+
+# Example / Analogy
+- Think of the ALB as a nightclub entrance. The authentication action is like a bouncer who checks IDs at the door. If someone doesn't have an ID (i.e., an Authorization header), the bouncer denies them entry (returns a 401 Unauthorized). This way, only verified customers (authenticated users) can get in.
+
+# Common Mistakes / Traps
+- A common mistake in this scenario is to assume that simply checking for the Authorization header or returning a fixed response is sufficient for security. Returning a fixed 401 status (Option A) does not provide the proper level of authentication; it only indicates an error without enforcing access control. Similarly, using API Gateway (Option C) may introduce unnecessary complexity if the ALB is already handling traffic. 
+
+# Memory Tip
+- Remember: ""Authenticate at the door – Only allow the VIPs in!"""
+226,"[""A company recently deployed an AWS Lambda function. A developer notices an\nincrease in the function throttle metrics in Amazon CloudWatch.\n\nWhat are the MOST operationally efficient solutions to reduce the function\nthrottling? (Choose two.)""]",Migrate the function to Amazon Elastic Kubernetes Service (Amazon EKS).,Increase the maximum age of events in Lambda.,Increase the function’s reserved concurrency.,Add the lambda:GetFunctionConcurrency action to the execution role.,"# Answer
+- **Correct options:** C and D
+
+- **Reason:** 
+  - **C:** Increasing the function’s reserved concurrency allows you to allocate a specific number of concurrent instances for your Lambda function. This ensures that the function can scale up to meet demand without throttling, as it guarantees the availability of a certain number of execution contexts.  
+  - **D:** Adding the `lambda:GetFunctionConcurrency` action to the execution role helps provide proper permissions to change the concurrency settings if needed but does not directly address throttling. **This option is somewhat misleading since adjusting concurrency directly impacts throttling (option C), but this option does not actually reduce throttling itself. However, ensuring proper permissions for managing concurrency can make it operationally efficient.** 
+
+# Example / Analogy
+- Think of a Lambda function like a restaurant kitchen. If the kitchen has a fixed number of chefs (equivalent to concurrency), no matter how many orders come in (events), only that number of chefs can cook at the same time. By increasing the number of chefs (reserved concurrency), the kitchen can handle more orders simultaneously without making customers wait (throttling). The permissions (D) are like having a manager who can hire more chefs when needed but doesn’t cook himself.
+
+# Common Mistakes / Traps
+- A common mistake is to select option A (migrating to Amazon EKS) as a solution for Lambda function throttling, which is incorrect. EKS is meant for container orchestration, not for directly resolving Lambda throttling issues. Also, options concerning event age (B) don't directly influence throttling performance.
+
+# Memory Tip
+- ""Increase reserved concurrency to meet demand and avoid Lambda throttling."""
+227,"[""A company is creating a REST service using an Amazon API Gateway with AWS Lambda\nintegration. The service must run different versions for testing purposes.\n\nWhat would be the BEST way to accomplish this?""]",Use an X-Version header to denote which version is being called and pass that header to the Lambda function(s).,Create an API Gateway Lambda authorizer to route API clients to the correct API version.,Create an API Gateway resource policy to isolate versions and provide context to the Lambda function(s).,Deploy the API versions as unique stages with unique endpoints and use stage variables to provide further context.,"# Answer
+- **Correct option:** D: Deploy the API versions as unique stages with unique endpoints and use stage variables to provide further context.
+
+- **Reason:** This option allows you to create separate stages in API Gateway for each version of your API. Each stage can have its own unique endpoint, allowing for easier management and testing of different versions. Additionally, stage variables can be used to pass specific configuration or context to the Lambda functions, making it a flexible solution for versioning.
+
+# Example / Analogy
+- Think of a multi-stage rocket. Each stage represents a different version of your API. Just like each stage can be launched independently for testing different payloads (or versions in this case), deploying versions as unique stages allows for clear separation and testing without affecting the other versions.
+
+# Common Mistakes / Traps
+- A common trap is to think that using headers or an authorizer is sufficient for versioning. While those methods can work, they complicate the API design and do not provide the clear separation that stages give.
+
+# Memory Tip
+- Remember: ""Stages are like lanes on a race track - each version runs separately without interference."""
+228,"[""A company is using AWS CodePipeline to deliver one of its applications. The\ndelivery pipeline is triggered by changes to the main branch of an AWS\nCodeCommit repository and uses AWS CodeBuild to implement the test and build\nstages of the process and AWS CodeDeploy to deploy the application.\n\nThe pipeline has been operating successfully for several months and there have\nbeen no modifications. Following a recent change to the application’s source\ncode, AWS CodeDeploy has not deployed the updated application as expected.\n\nWhat are the possible causes? (Choose two.)""]",The change was not made in the main branch of the AWS CodeCommit repository.,One of the earlier stages in the pipeline failed and the pipeline has terminated.,One of the Amazon EC2 instances in the company’s AWS CodePipeline cluster is inactive.,The AWS CodePipeline is incorrectly configured and is not invoking AWS CodeDeploy.,"# Answer
+- **Correct options:** A, B
+- **Reason:**  
+  - **A:** If the change was made in a branch other than the main branch, the pipeline would not trigger since it is configured to listen only for changes on the main branch. This means that CodeDeploy wouldn’t deploy the updated application as there was no new commit detected in the monitored branch.
+  - **B:** If any stage earlier in the pipeline fails (e.g., the build or test stage), the pipeline stops running, and the later stages (including the deployment by CodeDeploy) do not get executed. Thus, if there was an error in those stages, the application won't be updated.
+
+# Example / Analogy
+- Think of a pipeline as a water delivery system in your home. If you've left the faucet closed (not made changes in the correct branch), or if there's a blockage somewhere in the system (like a stage failing), no water (or updated code) will reach your desired destination (the deployed application).
+
+# Common Mistakes / Traps
+- A common mistake is to assume that CodeDeploy will attempt a deployment regardless of the pipeline state. It's essential to remember that every step in the CodePipeline must succeed for the deployment to occur.
+
+# Memory Tip
+- ""Changes only trigger the pipeline if they flow from the main branch and all stages must succeed to deploy."""
+229,"[""A developer is building a new application that will be deployed on AWS. The\ndeveloper has created an AWS CodeCommit repository for the application. The\ndeveloper has initialized a new project for the application by invoking the AWS\nCloud Development Kit (AWS CDK) cdk init command.\n\nThe developer must write unit tests for the infrastructure as code (IaC)\ntemplates that the AWS CDK generates. The developer also must run a validation\ntool across all constructs in the CDK application to ensure that critical\nsecurity configurations are activated.\n\nWhich combination of actions will meet these requirements with the LEAST\ndevelopment overhead? (Choose two.)""]",Use a unit testing framework to write custom unit tests against the cdk.out file that the AWS CDK generates. Run the unit tests in a continuous integration and continuous delivery (CI/CD) pipeline that is invoked after any commit to the repository.,Use the CDK assertions module to integrate unit tests with the application. Run the unit tests in a continuous integration and continuous delivery (CI/CD) pipeline that is invoked after any commit to the repository.,Use the CDK runtime context to set key-value pairs that must be present in the cdk.out file that the AWS CDK generates. Fail the stack synthesis if any violations are present.,Write a script that searches the application for specific key configuration strings. Configure the script to produce a report of any security violations.,"# Answer
+- **Correct options:** B and D
+- **Reason:** Option B leverages the CDK assertions module, which is specifically designed for unit testing AWS CDK constructs, resulting in minimal development overhead for creating and validating tests. It allows developers to efficiently assert the presence of required configurations or resources within the infrastructure. Option D is relevant for validating security configurations, allowing developers to write scripts that can automate the review process for key configuration strings. This combination ensures both unit testing and security validations with the least amount of additional overhead.
+
+# Example / Analogy
+- Think of building an architectural model (the infrastructure) and wanting to ensure it’s both structurally sound (unit tests with assertions) and complies with safety regulations (security validations through scripting). Just like you'd check both aspects before finalizing a building plan, using the CDK assertions module and a custom script allows you to verify both functionality and security in your cloud application.
+
+# Common Mistakes / Traps
+- A common mistake might be to overlook the specific tools available for the CDK, such as the assertions module, opting instead for more generic solutions like just unit testing the generated files (as suggested in option A). This can lead to more complexity and unnecessary overhead.
+
+# Memory Tip
+- Use CDK assertions for testing constructs and scripts for security checks to simplify your development process."
+230,"[""A company deploys a photo-processing application to an Amazon EC2 instance. The\napplication needs to process each photo in less than 5 seconds. If processing\ntakes longer than 5 seconds, the company’s development team must receive a\nnotification.\n\nHow can a developer implement the required time measurement and notification\nwith the LEAST operational overhead?""]","Create an Amazon CloudWatch custom metric. Each time a photo is processed, publish the processing time as a metric value. Create a CloudWatch alarm that is based on a static threshold of 5 seconds. Notify the development team by using an Amazon Simple Notification Service (Amazon SNS) topic.","Create an Amazon Simple Queue Service (Amazon SQS) queue. Each time a photo is processed, publish the processing time to the queue. Create an application to consume from the queue and to determine whether any values are more than 5 seconds. Notify the development team by using an Amazon Simple Notification Service (Amazon SNS) topic.","Create an Amazon CloudWatch custom metric. Each time a photo is processed, publish the processing time as a metric value. Create a CloudWatch alarm that enters ALARM state if the average of values is greater than 5 seconds. Notify the development team by sending an Amazon Simple Email Service (Amazon SES) message.","Create an Amazon Kinesis data stream. Each time a photo is processed, publish the processing time to the data stream. Create an Amazon CloudWatch alarm that enters ALARM state if any values are more than 5 seconds. Notify the development team by using an Amazon Simple Notification Service (Amazon SNS) topic.","# Answer
+- **Correct option:** A
+
+- **Reason:** Option A provides the least operational overhead by utilizing Amazon CloudWatch to create a custom metric for processing time. When the processing exceeds 5 seconds, a CloudWatch alarm can quickly notify the development team via Amazon SNS. This solution requires minimal infrastructure and no additional applications to monitor the processing times, making it efficient and straightforward.
+
+# Example / Analogy
+- Think of this like using a stopwatch to track the time it takes to bake a cake. If it takes longer than a set duration (5 seconds in this case), you have an alarm (like a timer) that alerts you. In this scenario, CloudWatch acts as both your stopwatch and timer, allowing you to efficiently monitor and receive notifications based on your specified time threshold.
+
+# Common Mistakes / Traps
+- A common trap is assuming that more complex solutions (like using SQS or Kinesis) will provide better monitoring or notification insights. However, they add unnecessary complexity and operational overhead for this straightforward requirement.
+
+# Memory Tip
+- ""Use CloudWatch to monitor time; alarms are your friends!"""
+231,"[""A company is using AWS Elastic Beanstalk to manage web applications that are\nrunning on Amazon EC2 instances. A developer needs to make configuration\nchanges. The developer must deploy the changes to new instances only.\n\nWhich types of deployment can the developer use to meet this requirement?\n(Choose two.)""]",All at once,Immutable,Rolling,Blue/green,"# Answer
+- **Correct option:** B (Immutable) and D (Blue/green)
+
+- **Reason:**  
+Both Immutable and Blue/green deployment strategies deploy changes to new instances while keeping the existing instances running. In Immutable deployment, new instances with the updated version are launched, and once they are running, traffic is switched to them. In Blue/green deployment, two separate environments (blue and green) exist; one is live (frontend) while the other is idle (back-end). Changes are made in the idle environment, and once validated, traffic is routed to it. This approach allows for smooth transitions and minimal downtime.
+
+# Example / Analogy
+- Imagine you are renovating a restaurant (the application). Instead of closing it down (disruption), you build a new dining area (new instances with updated code) next door while the original remains open. Once the new area is finished, you invite customers to the new space (traffic switch) smoothly, ensuring they have a great experience without interruptions.
+
+# Common Mistakes / Traps
+- A common mistake is to think that ""All at once"" (which deploys changes to all instances simultaneously) can meet the requirement since it does not involve deploying to new instances only, leading to potential downtimes. ""Rolling"" is also a misconception since it updates instances gradually, which might not comply with the request for new deployments only.
+
+# Memory Tip
+- Remember: Use Immutable or Blue/green for zero-downtime deployments on new instances!"
+232,"[""A developer needs to use Amazon DynamoDB to store customer orders. The\ndeveloper’s company requires all customer data to be encrypted at rest with a\nkey that the company generates.\n\nWhat should the developer do to meet these requirements?""]",Create the DynamoDB table with encryption set to None. Code the application to use the key to decrypt the data when the application reads from the table. Code the application to use the key to encrypt the data when the application writes to the table.,Store the key by using AWS Key Management Service (AWS KMS). Choose an AWS KMS customer managed key during creation of the DynamoDB table. Provide the Amazon Resource Name (ARN) of the AWS KMS key.,Store the key by using AWS Key Management Service (AWS KMS). Create the DynamoDB table with default encryption. Include the kms:Encrypt parameter with the Amazon Resource Name (ARN) of the AWS KMS key when using the DynamoDB software development kit (SDK).,Store the key by using AWS Key Management Service (AWS KMS). Choose an AWS KMS AWS managed key during creation of the DynamoDB table. Provide the Amazon Resource Name (ARN) of the AWS KMS key.,"# Answer
+- **Correct option:** B 
+- **Reason:** In order to meet the requirement of encrypting customer data at rest with a key that the company generates, the developer should use AWS Key Management Service (AWS KMS) to store a customer managed key. By selecting this key when creating the DynamoDB table, the developer ensures that the data is encrypted correctly using the specific key controlled by the company.
+
+# Example / Analogy
+- Think of AWS KMS like a safe deposit box. If you have a key that only your company controls (customer managed key), you can safely store your valuable items (customer data) in the box (DynamoDB table). Unlike a shared key (AWS managed key), your custom key ensures that only you and your permitted users can access the contents of the box.
+
+# Common Mistakes / Traps
+- A common trap is choosing options that do not involve customer managed keys when the requirement clearly states that the company generates the key. Options involving AWS managed keys (like option D) do not allow the company full control, which is against the requirement.
+
+# Memory Tip
+- Remember: **""Control your keys, control your data.""**  Use AWS KMS customer managed keys for unique encryption needs."
+233,"[""A company uses AWS CloudFormation to deploy an application that uses an Amazon\nAPI Gateway REST API with AWS Lambda function integration. The application uses\nAmazon DynamoDB for data persistence. The application has three stages:\ndevelopment, testing, and production. Each stage uses its own DynamoDB table.\n\nThe company has encountered unexpected issues when promoting changes to the\nproduction stage. The changes were successful in the development and testing\nstages. A developer needs to route 20% of the traffic to the new production\nstage API with the next production release. The developer needs to route the\nremaining 80% of the traffic to the existing production stage. The solution must\nminimize the number of errors that any single customer experiences.\n\nWhich approach should the developer take to meet these requirements?""]",Update 20% of the planned changes to the production stage. Deploy the new production stage. Monitor the results. Repeat this process five times to test all planned changes.,Update the Amazon Route 53 DNS record entry for the production stage API to use a weighted routing policy. Set the weight to a value of 80. Add a second record for the production domain name. Change the second routing policy to a weighted routing policy. Set the weight of the second policy to a value of 20. Change the alias of the second policy to use the testing stage API.,"Deploy an Application Load Balancer (ALB) in front of the REST API. Change the production API Amazon Route 53 record to point traffic to the ALB. Register the production and testing stages as targets of the ALB with weights of 80% and 20%, respectively.",Configure canary settings for the production stage API. Change the percentage of traffic directed to canary deployment to 20%. Make the planned updates to the production stage. Deploy the changes,"# Answer
+- **Correct option:** D 
+- **Reason:** This option utilizes AWS API Gateway's canary deployment feature, allowing the developer to route a specific percentage (20%) of traffic to a new version of the API while the remaining traffic (80%) continues to hit the existing production stage. This minimizes errors for users since only a subset of traffic is directed toward the new changes, enabling monitoring and testing before a full rollout.
+
+# Example / Analogy
+- Think of a restaurant introducing a new dish. Instead of offering it to every customer right away, the chef first serves the new dish to 20% of the customers while 80% continue to order their regular meals. This allows the chef to gather feedback and make adjustments based on initial reactions before officially adding the new dish to the menu.
+
+# Common Mistakes / Traps
+- A common mistake is to think DNS-based routing (like option B) is sufficient for canary deployment. While DNS can route traffic, it lacks the integration and feedback mechanism of canary deployments—if something goes wrong, users may already face issues before the developer can react.
+
+# Memory Tip
+- **""Canary deployments keep the majority safe while testing the new changes.""**"
+234,"[""A developer has created a data collection application that uses Amazon API\nGateway, AWS Lambda, and Amazon S3. The application’s users periodically upload\ndata files and wait for the validation status to be reflected on a processing\ndashboard. The validation process is complex and time-consuming for large files.\n\nSome users are uploading dozens of large files and have to wait and refresh the\nprocessing dashboard to see if the files have been validated. The developer must\nrefactor the application to immediately update the validation result on the\nuser’s dashboard without reloading the full dashboard.\n\nWhat is the MOST operationally efficient solution that meets these requirements?""]",Integrate the client with an API Gateway WebSocket API. Save the user-uploaded files with the WebSocket connection ID. Push the validation status to the connection ID when the processing is complete to initiate an update of the user interface.,"Launch an Amazon EC2 micro instance, and set up a WebSocket server. Send the user-uploaded file and user detail to the EC2 instance after the user uploads the file. Use the WebSocket server to send updates to the user interface when the uploaded file is processed.","Save the user’s email address along with the user-uploaded file. When the validation process is complete, send an email notification through Amazon Simple Notification Service (Amazon SNS) to the user who uploaded the file.",Save the user-uploaded file and user detail to Amazon DynamoDB. Use Amazon DynamoDB Streams with Amazon Simple Notification Service (Amazon SNS) push notifications to send updates to the browser to update the user interface.,"# Answer
+- **Correct option:** A
+- **Reason:** Integrating the client with an API Gateway WebSocket API allows for real-time communication. When a user uploads a file, the connection ID is stored, and updates can be pushed to this connection when the validation process is complete. This eliminates the need for users to refresh their dashboard for updates, providing an instant and operationally efficient solution.
+
+# Example / Analogy
+- Think of it like a push notification on your smartphone. Instead of checking your email continuously (like refreshing a dashboard), you receive a notification as soon as the validation is complete, allowing you to react immediately without manual effort.
+
+# Common Mistakes / Traps
+- A common trap is to choose options that do not provide real-time updates (like option C), assuming that asynchronous notifications (like emails) are sufficient for user experience. Users prefer immediate feedback over delays.
+
+# Memory Tip
+- ""WebSockets are like instant messages; they keep the conversation going without refreshing."""
+235,"[""A company’s developer is creating an application that uses Amazon API Gateway.\nThe company wants to ensure that only users in the Sales department can use the\napplication. The users authenticate to the application by using federated\ncredentials from a third-party identity provider (IdP) through Amazon Cognito.\nThe developer has set up an attribute mapping to map an attribute that is named\nDepartment and to pass the attribute to a custom AWS Lambda authorizer.\n\nTo test the access limitation, the developer sets their department to\nEngineering in the IdP and attempts to log in to the application. The developer\nis denied access. The developer then updates their department to Sales in the\nIdP and attempts to log in. Again, the developer is denied access. The developer\nchecks the logs and discovers that access is being denied because the\ndeveloper’s access token has a department value of Engineering.\n\nWhich of the following is a possible reason that the developer’s department is\nstill being reported as Engineering instead of Sales?""]",Authorization caching is enabled in the custom Lambda authorizer.,Authorization caching is enabled on the Amazon Cognito user pool.,The IAM role for the custom Lambda authorizer does not have a Department tag.,The IAM role for the Amazon Cognito user pool does not have a Department tag.,"# Answer
+- **Correct option:** A : Authorization caching is enabled in the custom Lambda authorizer.
+- **Reason:** Authorization caching in the custom Lambda authorizer means that once an authorization decision is made, the results are stored for a certain period. If the developer had previously authenticated with the value of ""Engineering"" as their department, that decision would remain cached, and subsequent authentication attempts would not re-evaluate the updated department value of ""Sales.""
+
+# Example / Analogy
+- Imagine a bouncer at a club who checks IDs (your department in this case) and then writes down who is allowed in (caching the decision). If the bouncer sees your ID showing ""Engineering"" and lets you in, they might not check your ID again for a while. Even if you later change your ID to show ""Sales,"" the bouncer still believes you are from ""Engineering"" because that was cached feedback, preventing you from entering again.
+
+# Common Mistakes / Traps
+- A common mistake is assuming that changes in the identity provider will immediately reflect in the authorization logic. Many don't take into account that caching mechanisms exist, which can lead to confusion about why updates aren't recognized right away.
+
+# Memory Tip
+- Remember: ""Cached decisions stick; update may not reflect."""
+236,"[""A company has migrated an application to Amazon EC2 instances. Automatic scaling\nis working well for the application user interface. However, the process to\ndeliver shipping requests to the company’s warehouse staff is encountering\nissues. Duplicate shipping requests are arriving, and some requests are lost or\narrive out of order.\n\nThe company must avoid duplicate shipping requests and must process the requests\nin the order that the requests arrive. Requests are never more than 250 KB in\nsize and take 5-10 minutes to process. A developer needs to rearchitect the\napplication to improve the reliability of the delivery and processing of the\nrequests.\n\nWhat should the developer do to meet these requirements?""]",Create an Amazon Kinesis Data Firehose delivery stream to process the requests. Create an Amazon Kinesis data stream. Modify the application to write the requests to the Kinesis data stream.,Create an AWS Lambda function to process the requests. Create an Amazon Simple Notification Service (Amazon SNS) topic. Subscribe the Lambda function to the SNS topic. Modify the application to write the requests to the SNS topic.,Create an AWS Lambda function to process the requests. Create an Amazon Simple Queue Service (Amazon SQS) standard queue. Set the SQS queue as an event source for the Lambda function. Modify the application to write the requests to the SQS queue.,Create an AWS Lambda function to process the requests. Create an Amazon Simple Queue Service (Amazon SQS) FIFO queue. Set the SQS queue as an event source for the Lambda function. Modify the application to write the requests to the SQS queue.,"# Answer
+- **Correct option:** D
+- **Reason:** An Amazon SQS FIFO (First-In-First-Out) queue ensures that the requests are processed in the exact order they arrive, which is crucial for the shipping process. It also avoids duplicate messages, addressing the issue of duplicate requests. By integrating the FIFO queue with an AWS Lambda function, the system can handle the requests seamlessly while maintaining both order and uniqueness.
+
+# Example / Analogy
+- Imagine a restaurant where orders are taken at the counter and served in the exact order they were placed. If two customers order the same dish at the same time, the kitchen prepares the dish just once, avoiding confusion and ensuring that customers receive their meals in the correct sequence.
+
+# Common Mistakes / Traps
+- A common mistake is to choose an SQS standard queue (Choice C), which does not guarantee the order of message delivery and can result in duplicates. Many might also overlook the need for processing in strict order when thinking only about scalability or the speed of delivery.
+
+# Memory Tip
+- Remember: ""FIFO queues keep it orderly and unique!"""
+237,"[""A developer is creating a machine learning (ML) pipeline in AWS Step Functions\nthat contains AWS Lambda functions. The developer has configured an Amazon\nSimple Queue Service (Amazon SQS) queue to deliver ML model parameters to the ML\npipeline to train ML models. The developer uploads the trained models are\nuploaded to an Amazon S3 bucket.\n\nThe developer needs a solution that can locally test the ML pipeline without\nmaking service integration calls to Amazon SQS and Amazon S3.\n\nWhich solution will meet these requirements?""]",Use the Amazon CodeGuru Profiler to analyze the Lambda functions used in the AWS Step Functions pipeline.,Use the AWS Step Functions Local Docker Image to run and locally test the Lambda functions.,Use the AWS Serverless Application Model (AWS SAM) CLI to run and locally test the Lambda functions.,Use AWS Step Functions Local with mocked service integrations.,"# Answer
+- **Correct option:** D: Use AWS Step Functions Local with mocked service integrations.
+
+- **Reason:** AWS Step Functions Local allows developers to run state machines and local Lambda functions without invoking actual AWS services. This enables the developer to test the ML pipeline, including the logic flow and transitions, without making calls to Amazon SQS or Amazon S3, thus reducing costs and speeding up the development process.
+
+# Example / Analogy
+- Think of it like a rehearsal for a play. Actors can practice their lines and actions without the actual audience or set in place. Similarly, by using AWS Step Functions Local with mocked service integrations, developers can test their workflows without interacting with live resources, ensuring they are ready for the actual performance.
+
+# Common Mistakes / Traps
+- A common mistake is choosing options that do not emphasize the requirement of mocking service integrations, such as options that involve running code in the cloud (like AWS SAM CLI), which would still involve live services.
+
+# Memory Tip
+- Remember: ""Mock it before you rock it!""—test locally to ensure your flow is correct before deploying to AWS."
+238,"[""A developer has created a large AWS Lambda function. Deployment of the function\nis failing because of an InvalidParameterValueException error. The error message\nindicates that the unzipped size of the function exceeds the maximum supported\nvalue.\n\nWhich actions can the developer take to resolve this error? (Choose two.)""]",Submit a quota increase request to AWS Support to increase the function to the required size.,Use a compression algorithm that is more efficient than ZIP.,Break up the function into multiple smaller functions.,Zip the .zip file twice to compress the file more.,"# Answer
+- **Correct options:** C and A
+
+- **Reason:** 
+   - **C** (Break up the function into multiple smaller functions) is correct because AWS Lambda has limits on the unzipped deployment package size, which is 250 MB for the uncompressed code. If a function exceeds this size, it is recommended to split the code into smaller, manageable pieces, which can facilitate better functionality and maintenance as well. 
+   - **A** (Submit a quota increase request to AWS Support to increase the function to the required size) is technically correct, but it may not be feasible for Lambda’s maximum limits—as they are strict at 250 MB unzipped, and the request may not be successful. Generally, it's better to adapt the code to fit within existing limits.
+
+# Example / Analogy
+- Think of packing a suitcase. If your suitcase (the Lambda function) exceeds weight limits (unzip size limit), rather than asking the airport to increase the limit, a more practical solution is to divide your clothes into two smaller suitcases. This way, each suitcase fits within the limits while still containing all your important items.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that just compressing the code more (like option B, using a more efficient compression algorithm) would solve the problem. However, AWS Lambda has specific limits on unzipped sizes, and effective code organization is necessary. Also, attempting to compress the file twice (like option D) will not help resolve the deployment size issue, as AWS Lambda evaluates the unzipped size upon upload.
+
+# Memory Tip
+- Think ""smaller pieces, bigger impact"" to remember to break down large functions rather than only trying to get around size limits."
+239,"[""A company runs an application on Amazon EC2 instances. The EC2 instances open\nconnections to an Amazon RDS for SQL Server database. A developer needs to store\nand access the credentials and wants to automatically rotate the credentials.\nThe developer does not want to store the credentials for the database in the\ncode.\n\nWhich solution will meet these requirements in the MOST secure way?""]",Create an IAM role that has permissions to access the database. Attach the IAM role to the EC2 instances.,Store the credentials as secrets in AWS Secrets Manager. Create an AWS Lambda function to update the secrets and the database. Retrieve the credentials from Secrets Manager as needed.,Store the credentials in an encrypted text file in an Amazon S3 bucket. Configure the EC2 instance launch template to download the credentials from Amazon S3 as the instance launches. Create an AWS Lambda function to update the secrets and the database.,Store the credentials in an Amazon DynamoDB table. Configure an Amazon CloudWatch Events rule to invoke an AWS Lambda function to periodically update the secrets and database.,"# Answer
+- **Correct option:** B
+- **Reason:** Storing the credentials as secrets in AWS Secrets Manager allows for secure storage and automatic rotation of credentials without hardcoding them in your application code. Secrets Manager is specifically designed for managing sensitive information and integrates well with other AWS services, making it the best choice for this scenario.
+
+# Example / Analogy
+- Think of AWS Secrets Manager like a safe where you can store your most valuable information—similar to how a bank securely keeps your money. You can access it when needed (like retrieving credentials) and automate updates (like getting new secure codes or locks), ensuring that your valuables are always secure and up-to-date.
+
+# Common Mistakes / Traps
+- A common mistake is to consider storing credentials in S3 or DynamoDB. While these options are technically feasible, they lack the automated management and security features that AWS Secrets Manager offers, such as encryption, versioning, and automatic rotation.
+
+# Memory Tip
+- **Remember:** Secrets Manager = Secure storage + Automatic rotation = Best practice for sensitive information.
+"
+240,"A company has a web application that is hosted on Amazon EC2 instances. The EC2
+instances are configured to stream logs to Amazon CloudWatch Logs. The company
+needs to receive an Amazon Simple Notification Service (Amazon SNS) notification
+when the number of application error messages exceeds a defined threshold within
+a 5-minute period.
+
+Which solution will meet these requirements?",Rewrite the application code to stream application logs to Amazon SNS. Configure an SNS topic to send a notification when the number of errors exceeds the defined threshold within a 5-minute period.,Configure a subscription filter on the CloudWatch Logs log group. Configure the filter to send an SNS notification when the number of errors exceeds the defined threshold within a 5-minute period.,Install and configure the Amazon Inspector agent on the EC2 instances to monitor for errors. Configure Amazon Inspector to send an SNS notification when the number of errors exceeds the defined threshold within a 5-minute period.,Create a CloudWatch metric filter to match the application error pattern in the log data. Set up a CloudWatch alarm based on the new custom metric. Configure the alarm to send an SNS notification when the number of errors exceeds the defined threshold within a 5-minute period.,"# Answer
+- **Correct option:** D 
+- **Reason:** Creating a CloudWatch metric filter allows you to analyze the log data and generate a custom metric based on specific criteria (in this case, application errors). By setting up a CloudWatch alarm on this custom metric, you can configure it to send an SNS notification when the defined threshold for errors is exceeded within a 5-minute window. This method directly connects log data with alerting mechanisms without needing to modify application code or over-complicate the architecture.
+
+# Example / Analogy
+- Imagine you own a bakery, and you want to know when you sell a certain number of loaves of bread in 5 minutes. Instead of counting loaves yourself, you could install a tally system that automatically counts every loaf sold and alerts you when you reach your target. This is similar to the CloudWatch metric filter and alarm—it automatically tracks application errors and alerts you when they exceed your threshold, so you can respond quickly.
+
+# Common Mistakes / Traps
+- A common mistake is choosing option A, which involves rewriting application code to send notifications directly via SNS. This is unnecessary because existing log data can be analyzed using CloudWatch, making the solution more efficient and keeping the application code clean.
+
+# Memory Tip
+- ""Use CloudWatch metrics for log alerts, no need to rewrite your app!"""
+241,"A company is adopting serverless computing for some of its new services. A
+development team needs to create a serverless infrastructure by using AWS
+Serverless Application Model (AWS SAM). All infrastructure must be deployed by
+using AWS CloudFormation templates.
+
+What should the development team do to meet these requirements?",Add a Resources section to the CloudFormation templates that contains AWS::Lambda::Function resources.,Add a Mappings section to the CloudFormation templates that contains AWS::Serverless::Function and AWS::Serverless::API.,Add a Transform section to the CloudFormation templates. Use the AWS SAM syntax to define the resources.,Add a Parameters section to the CloudFormation templates that specifies the relevant AWS SAM Globals section.,"# Answer
+- **Correct option:** C : Add a Transform section to the CloudFormation templates. Use the AWS SAM syntax to define the resources.  
+- **Reason:** In order to utilize AWS SAM (Serverless Application Model) within CloudFormation, the `Transform` section is required. This section allows you to leverage AWS SAM's simplified syntax and capabilities for defining serverless resources, such as AWS Lambda functions and APIs, making the deployment process more straightforward and efficient. 
+
+# Example / Analogy
+- Think of the `Transform` section as a specialized tool that transforms your regular language into a serverless language that AWS understands better. Similar to how a translator helps people communicate by converting languages, the `Transform` section helps AWS CloudFormation understand and configure serverless applications using AWS SAM syntax. 
+
+# Common Mistakes / Traps
+- A common mistake is to assume that simply adding AWS SAM resource types directly into the `Resources` section will work without specifying the `Transform`. This can lead to template errors since CloudFormation will not recognize the AWS SAM resource types unless the `Transform` directive is included.
+
+# Memory Tip
+- Remember: **""Transform for SAM"" - always include the Transform section to enable serverless syntax!**"

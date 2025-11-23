@@ -1,0 +1,254 @@
+No,Content,A,B,C,D,Answered
+122,"[""A developer is creating an application for a company. The application needs to\nread the file doc.txt that is placed in the root folder of an Amazon S3 bucket\nthat is named DOC-EXAMPLE-BUCKET. The company’s security team requires the\nprinciple of least privilege to be applied to the application’s IAM policy.\n\nWhich IAM policy statement will meet these security requirements?""]",[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image8.png],[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image9.png],[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image10.png],[https://img.examtopics.com/aws-certified-developer-associate-dva-c02/image11.png],"# Answer
+- **Correct option:** A
+
+- **Reason:** Option A specifies an IAM policy that allows the required action ""s3:GetObject"" on the specific resource (the `doc.txt` file in the `DOC-EXAMPLE-BUCKET` bucket). This adheres to the principle of least privilege by ensuring the application can only access the necessary resource without granting broader permissions than required.
+
+# Example / Analogy
+- Think of it like giving a friend the key to a specific room in your house where they can retrieve a book, rather than giving them a key to your entire house. You want to limit their access to just what they need.
+
+# Common Mistakes / Traps
+- A common mistake is to choose an option that grants broader permissions, such as allowing full access to the bucket or multiple objects, which violates the principle of least privilege.
+
+# Memory Tip
+- Remember: ""Access Only What is Necessary"" to keep your permissions tight and secure."
+123,"[""A company has an application that uses AWS CodePipeline to automate its\ncontinuous integration and continuous delivery (CI/CD) workflow. The application\nuses AWS CodeCommit for version control. A developer who was working on one of\nthe tasks did not pull the most recent changes from the main branch. A week\nlater, the developer noticed merge conflicts.\n\nHow can the developer resolve the merge conflicts in the developer's branch with\nthe LEAST development effort?""]",Clone the repository. Create a new branch. Update the branch with the changes.,Create a new branch. Apply the changes from the previous branch.,Use the Commit Visualizer view to compare the commits when a feature was added. Fix the merge conflicts.,Stop the pull from the main branch to the feature branch. Rebase the feature branch from the main branch.,"# Answer
+- **Correct option:** D
+
+- **Reason:** The least development effort to resolve merge conflicts is to perform a rebase (which is typically done with `git rebase`). By rebasing the feature branch onto the latest version of the main branch, the developer can incorporate the latest changes from the main branch seamlessly. This approach allows the developer to fix any merge conflicts during the rebase process instead of creating a new branch or manually applying changes.
+
+# Example / Analogy
+- Think of it like updating your playlist on your music app. If you downloaded songs a week ago but new singles have been released, instead of starting a completely new playlist from scratch, you simply update your current playlist, resolving any conflicts if two songs share similar titles. This way, you keep your collection up-to-date without losing your previous work.
+
+# Common Mistakes / Traps
+- A common mistake is to choose option A, which suggests cloning the repository and creating a new branch. This is unnecessary and adds more steps than needed, as it doesn't leverage Git's powerful rebase function which simplifies conflict resolution.
+
+# Memory Tip
+- **Rebase to merge: keep it simple, fix conflicts directly!**"
+124,"[""Users are reporting errors in an application. The application consists of\nseveral microservices that are deployed on Amazon Elastic Container Service\n(Amazon ECS) with AWS Fargate.\n\nWhich combination of steps should a developer take to fix the errors? (Choose\ntwo.)""]",Deploy AWS X-Ray as a sidecar container to the microservices. Update the task role policy to allow access to the X-Ray API.,Deploy AWS X-Ray as a daemonset to the Fargate cluster. Update the service role policy to allow access to the X-Ray API.,Instrument the application by using the AWS X-Ray SDK. Update the application to use the PutXrayTrace API call to communicate with the X-Ray API.,Instrument the application by using the AWS X-Ray SDK. Update the application to communicate with the X-Ray daemon.,"# Answer
+- **Correct option:** A and C
+- **Reason:** Deploying AWS X-Ray as a sidecar container (Option A) allows the microservices to send trace data to X-Ray, facilitating easy monitoring and debugging. Instrumenting the application using the AWS X-Ray SDK (Option C) enables the application to actively send trace information and call the PutXrayTrace API, which is essential for capturing detailed tracing information.
+
+# Example / Analogy
+- Think of AWS X-Ray as a GPS system for your applications. Just as a GPS tracks your route and identifies possible delays, X-Ray tracks the requests that flow through your microservices, helping you find bottlenecks and errors.
+
+# Common Mistakes / Traps
+- A common mistake is to believe that deploying X-Ray as a daemonset (Option B) applies to Fargate, but Fargate doesn’t support daemonsets as it is a managed compute engine for containers. Option D suggests communicating with a daemon, which isn't applicable in the Fargate context.
+
+# Memory Tip
+- **Remember:** To debug effectively, think ""sidecar + SDK"" for AWS X-Ray."
+125,"[""A developer wants to add request validation to a production environment Amazon\nAPI Gateway API. The developer needs to test the changes before the API is\ndeployed to the production environment. For the test, the developer will send\ntest requests to the API through a testing tool.\n\nWhich solution will meet these requirements with the LEAST operational overhead?""]",Export the existing API to an OpenAPI file. Create a new API. Import the OpenAPI file. Modify the new API to add request validation. Perform the tests. Modify the existing API to add request validation. Deploy the existing API to production.,Modify the existing API to add request validation. Deploy the updated API to a new API Gateway stage. Perform the tests. Deploy the updated API to the API Gateway production stage.,"Create a new API. Add the necessary resources and methods, including new request validation. Perform the tests. Modify the existing API to add request validation. Deploy the existing API to production",Clone the existing API. Modify the new API to add request validation. Perform the tests. Modify the existing API to add request validation. Deploy the existing API to production.,"# Answer
+- **Correct option:** B  
+- **Reason:** This option has the least operational overhead because it allows the developer to modify the existing API directly and deploy it to a new stage for testing. This way, no additional APIs need to be created or imported, keeping the process streamlined and efficient. Testing in a separate stage is a best practice in API development, ensuring that changes can be validated without affecting the production environment.
+
+# Example / Analogy
+- Think of this like a restaurant's menu. If the chef wants to introduce a new dish, they can add it temporarily as a special (new stage) instead of reprinting the entire menu (new API). This way, customers can try it out without the entire menu being affected while they gather feedback and make adjustments.
+
+# Common Mistakes / Traps
+- A common mistake is to think that creating a new API or cloning is a safer route; however, this increases complexity and can lead to more operational overhead. Developers may also overlook the testing stages available in API Gateway, which allow for adequate validation without impacting production.
+
+# Memory Tip
+- Use stages like test kitchens to safely evaluate changes before serving to customers (production)."
+126,"[""An online food company provides an Amazon API Gateway HTTP API to receive orders\nfor partners. The API is integrated with an AWS Lambda function. The Lambda\nfunction stores the orders in an Amazon DynamoDB table.\n\nThe company expects to onboard additional partners. Some of the partners require\nadditional Lambda functions to receive orders. The company has created an Amazon\nS3 bucket. The company needs to store all orders and updates in the S3 bucket\nfor future analysis.\n\nHow can the developer ensure that all orders and updates are stored to Amazon S3\nwith the LEAST development effort?""]",Create a new Lambda function and a new API Gateway API endpoint. Configure the new Lambda function to write to the S3 bucket. Modify the original Lambda function to post updates to the new API endpoint.,Use Amazon Kinesis Data Streams to create a new data stream. Modify the Lambda function to publish orders to the data stream. Configure the data stream to write to the S3 bucket.,Enable DynamoDB Streams on the DynamoDB table. Create a new Lambda function. Associate the stream’s Amazon Resource Name (ARN) with the Lambda function. Configure the Lambda function to write to the S3 bucket as records appear in the table's stream.,Modify the Lambda function to publish to a new Amazon Simple Notification Service (Amazon SNS) topic as the Lambda function receives orders. Subscribe a new Lambda function to the topic. Configure the new Lambda function to write to the S3 bucket as updates come through the topic.,"# Answer
+- **Correct option:** C
+- **Reason:** Enabling DynamoDB Streams allows you to automatically capture changes (inserts, updates) to the DynamoDB table in real-time. By creating a Lambda function that is triggered by the DynamoDB stream, you can write records directly to the S3 bucket without modifying the original order processing functionality. This approach minimizes changes to the existing system and handles future updates efficiently.
+
+# Example / Analogy
+- Think of DynamoDB Streams as a security camera that watches a busy intersection (the DynamoDB table). When there are any changes (traffic), the camera records those events. By attaching a responsive team (the Lambda function) that immediately takes notes (writes to S3), you ensure that all traffic (orders) is documented without needing to overhaul the entire traffic control system (existing Lambda function and API).
+
+# Common Mistakes / Traps
+- A common mistake is to assume that modifying the existing Lambda function would be easier. However, this could introduce more complexity and potential bugs, as it requires changing the existing flow of order processing. Also, assuming that direct API integrations (as in A) would provide a better solution can lead to unnecessary overhead.
+
+# Memory Tip
+- **Use DynamoDB Streams to watch and react instead of reworking!**"
+127,"[""A company has an Amazon S3 bucket containing premier content that it intends to\nmake available to only paid subscribers of its website. The S3 bucket currently\nhas default permissions of all objects being private to prevent inadvertent\nexposure of the premier content to non-paying website visitors.\n\nHow can the company limit the ability to download a premier content file in the\nS3 bucket to paid subscribers only?""]",Apply a bucket policy that allows anonymous users to download the content from the S3 bucket.,Generate a pre-signed object URL for the premier content file when a paid subscriber requests a download.,Add a bucket policy that requires multi-factor authentication for requests to access the S3 bucket objects.,Enable server-side encryption on the S3 bucket for data protection against the non-paying website visitors.,"# Answer
+- **Correct option:** B : Generate a pre-signed object URL for the premier content file when a paid subscriber requests a download.
+- **Reason:** Pre-signed URLs allow you to create a time-limited URL that provides temporary access to specific S3 objects. This enables the company to securely grant download access to paid subscribers without exposing the content to everyone, as the URL must be generated by someone with permission to access the content.
+
+# Example / Analogy
+- Think of a pre-signed URL like an event ticket that grants access to specific seating for a limited period. Just as you wouldn't let everyone enter the theater with a ticket meant for just one person, a pre-signed URL ensures that only the intended subscriber can access the content for a short time.
+
+# Common Mistakes / Traps
+- A common trap is to assume that bucket policies can fully manage access on their own. Options that provide open access or require additional authentication (like multifactor) don't effectively control access to specific paid content since they either expose data or complicate the access unnecessarily.
+
+# Memory Tip
+- ""Pre-sign for timing: give access, keep it secure!"""
+128,"[""A developer is creating an AWS Lambda function that searches for items from an\nAmazon DynamoDB table that contains customer contact information. The DynamoDB\ntable items have the customer’s email_address as the partition key and\nadditional properties such as customer_type, name and job_title.\n\nThe Lambda function runs whenever a user types a new character into the\ncustomer_type text input. The developer wants the search to return partial\nmatches of all the email_address property of a particular customer_type. The\ndeveloper does not want to recreate the DynamoDB table.\n\nWhat should the developer do to meet these requirements?""]",Add a global secondary index (GSI) to the DynamoDB table with customer_type as the partition key and email_address as the sort key. Perform a query operation on the GSI by using the begins_with key condition expression with the email_address property.,Add a global secondary index (GSI) to the DynamoDB table with email_address as the partition key and customer_type as the sort key. Perform a query operation on the GSI by using the begins_with key condition expression with the email_address property.,Add a local secondary index (LSI) to the DynamoDB table with customer_type as the partition key and email_address as the sort key. Perform a query operation on the LSI by using the begins_with key condition expression with the email_address property.,Add a local secondary index (LSI) to the DynamoDB table with job_title as the partition key and email_address as the sort key. Perform a query operation on the LSI by using the begins_with key condition expression with the email_address property.,"# Answer
+- **Correct option:** A
+
+- **Reason:** The developer wants to perform searches based on customer type and return partial matches of the email addresses. By adding a global secondary index (GSI) with `customer_type` as the partition key, the Lambda function can query the index for all customers with a specific type, and then use the `begins_with` key condition on the `email_address` (which is the sort key) to find email addresses that match the beginning characters input by the user.
+
+# Example / Analogy
+- Think of the GSI as a specialized phone directory. If you have a directory where you can look up people not just by their name (like a phone book's traditional method), but by their profession (customer type), and once you find the right profession, you can further filter by the first few letters of their emails, which represents a more specific search.
+
+# Common Mistakes / Traps
+- A common mistake is confusing the use of global and local secondary indexes. A GSI allows you to query on a different partition key than the main table, which is essential for this scenario. Local secondary indexes (LSIs) can only use the same partition key as the base table, which won't support the required search pattern based on `customer_type` in this scenario.
+
+# Memory Tip
+- **Remember:** Use a GSI when you need flexibility in how you access data—like searching in multiple ways, not just one!"
+129,"[""A developer is building an application that uses AWS API Gateway APIs, AWS\nLambda functions, and AWS DynamoDB tables. The developer uses the AWS Serverless\nApplication Model (AWS SAM) to build and run serverless applications on AWS.\nEach time the developer pushes changes for only to the Lambda functions, all the\nartifacts in the application are rebuilt.\n\nThe developer wants to implement AWS SAM Accelerate by running a command to only\nredeploy the Lambda functions that have changed.\n\nWhich command will meet these requirements?""]",sam deploy --force-upload,sam deploy --no-execute-changeset,sam package,sam sync --watch,"# Answer
+- **Correct option:** D : sam sync --watch
+- **Reason:** The `sam sync` command allows you to synchronize your local code changes with the AWS Lambda functions in your AWS account. With the `--watch` option, it automatically watches for changes in your code and sends only the modified Lambda function code to AWS, enabling faster deployments and avoiding the need to rebuild all artifacts in the application.
+
+# Example / Analogy
+- Think of it like a painter who is working on a mural. Instead of repainting the entire mural every time they want to make a change, they only touch up the areas that need improvement. `sam sync --watch` is like having a helper remind the painter to only focus on the sections that require modification while the rest of the mural remains untouched.
+
+# Common Mistakes / Traps
+- A common mistake is confusing `sam deploy` options like `--force-upload` and `--no-execute-changeset` with `sam sync`. While `sam deploy` is used for full deployments, it recompiles everything rather than focusing on incremental updates of just the Lambda functions, which is not efficient for smaller changes.
+
+# Memory Tip
+- Use `sam sync` for quick updates: it’s like a smart painter only fixing what needs fixing!"
+130,"[""A developer is building an application that gives users the ability to view bank\naccounts from multiple sources in a single dashboard. The developer has\nautomated the process to retrieve API credentials for these sources. The process\ninvokes an AWS Lambda function that is associated with an AWS CloudFormation\ncustom resource.\n\nThe developer wants a solution that will store the API credentials with minimal\noperational overhead.\n\nWhich solution will meet these requirements in the MOST secure way?""]",Add an AWS Secrets Manager GenerateSecretString resource to the CloudFormation template. Set the value to reference new credentials for the CloudFormation resource.,Use the AWS SDK ssm:PutParameter operation in the Lambda function from the existing custom resource to store the credentials as a parameter. Set the parameter value to reference the new credentials. Set the parameter type to SecureString.,Add an AWS Systems Manager Parameter Store resource to the CloudFormation template. Set the CloudFormation resource value to reference the new credentials. Set the resource NoEcho attribute to true.,Use the AWS SDK ssm:PutParameter operation in the Lambda function from the existing custom resource to store the credentials as a parameter. Set the parameter value to reference the new credentials. Set the parameter NoEcho attribute to true.,"# Answer
+- **Correct option:** A
+
+- **Reason:** AWS Secrets Manager is designed specifically for securely storing and managing sensitive information, such as API credentials. By incorporating the `GenerateSecretString` resource into the CloudFormation template, credentials can be automatically generated and stored with built-in encryption and secrets management capabilities. This minimizes operational overhead for secure storage and retrieval of sensitive data.
+
+# Example / Analogy
+- Think of AWS Secrets Manager like a secure vault specifically built for holding valuable items like gold coins (API credentials). Just as a vault protects your gold and allows only authorized access, Secrets Manager protects your credentials and provides controlled access through IAM policies.
+
+# Common Mistakes / Traps
+- A common trap is assuming that AWS Systems Manager Parameter Store (with SecureString) provides the same level of built-in functionality and ease of management for secrets as AWS Secrets Manager. Parameter Store can be used for sensitive parameters, but Secrets Manager is tailored specifically for secrets management, including automatic rotation, which can lead to better security practices.
+
+# Memory Tip
+- Use AWS Secrets Manager for secrets needing secure storage and automatic management."
+131,"[""A developer is trying to get data from an Amazon DynamoDB table called\ndemoman-table. The developer configured the AWS CLI to use a specific IAM user’s\ncredentials and ran the following command:\n\naws dynamodb get-item --table-name demoman-table --key '{\""id\"": {\""N\"":\""1993\""}}'\n\nThe command returned errors and no rows were returned.\n\nWhat is the MOST likely cause of these issues?""]",The command is incorrect; it should be rewritten to use put-item with a string argument.,The developer needs to log a ticket with AWS Support to enable access to the demoman-table.,Amazon DynamoDB cannot be accessed from the AWS CLI and needs to be called via the REST API.,The IAM user needs an associated policy with read access to demoman-table.,"# Answer
+- **Correct option:** D : The IAM user needs an associated policy with read access to demoman-table.
+- **Reason:** In order to access resources in AWS, the IAM user must have the appropriate permissions configured in their IAM policy. If the user doesn't have the necessary read access to the specified DynamoDB table, the command will fail, resulting in no rows being returned. 
+
+# Example / Analogy
+- Think of IAM permissions like keys to a locked door. If you have the correct key (permissions), you can open the door (access the table). If you don't have a key, you can't even see what's behind the door—just like the IAM user won’t be able to access the DynamoDB table without permissions.
+
+# Common Mistakes / Traps
+- A common mistake is assuming that simply configuring the AWS CLI with IAM user credentials provides access without verifying the permissions. Users often overlook the necessity of an appropriate IAM policy when access is denied.
+
+# Memory Tip
+- Always check IAM permissions before troubleshooting access issues in AWS resources."
+132,"[""An organization is using Amazon CloudFront to ensure that its users experience\nlow-latency access to its web application. The organization has identified a\nneed to encrypt all traffic between users and CloudFront, and all traffic\nbetween CloudFront and the web application.\n\nHow can these requirements be met? (Choose two.)""]",Use AWS KMS to encrypt traffic between CloudFront and the web application.,Set the Origin Protocol Policy to “HTTPS Only”.,Set the Origin’s HTTP Port to 443.,Set the Viewer Protocol Policy to “HTTPS Only” or “Redirect HTTP to HTTPS”.,"# Answer
+- **Correct options:** B, D
+
+- **Reason:** 
+  - **Option B (Set the Origin Protocol Policy to “HTTPS Only”)** ensures that all communication between CloudFront and the origin server (web application) occurs over HTTPS, which encrypts the traffic and protects it from eavesdropping.
+  - **Option D (Set the Viewer Protocol Policy to “HTTPS Only” or “Redirect HTTP to HTTPS”)** secures the connection between the users and CloudFront by ensuring that users can only interact with CloudFront through HTTPS, thereby encrypting their data in-transit.
+
+# Example / Analogy
+- Think of CloudFront as a secure postal service. If you want to make sure that the packages (data) sent to and from your residence (web application) are secured, you would only accept packages that are placed in locked boxes (HTTPS). Thus, enforcing HTTPS at both ends protects the contents from being opened by anyone else.
+
+# Common Mistakes / Traps
+- A common mistake is to overlook the necessity of both policies. Students may think that only one policy (like just setting Origin Protocol Policy) is sufficient when both viewer and origin protocols need to be secured to meet encryption requirements.
+
+# Memory Tip
+- ""Secure both ends with HTTPS to keep data safe!"""
+133,"[""A team of developers is using an AWS CodePipeline pipeline as a continuous\nintegration and continuous delivery (CI/CD) mechanism for a web application. A\ndeveloper has written unit tests to programmatically test the functionality of\nthe application code. The unit tests produce a test report that shows the\nresults of each individual check. The developer now wants to run these tests\nautomatically during the CI/CD process.\n\nWhich solution will meet this requirement with the LEAST operational effort?""]",Write a Git pre-commit hook that runs the tests before every commit. Ensure that each developer who is working on the project has the pre-commit hook installed locally. Review the test report and resolve any issues before pushing changes to AWS CodeCommit.,Add a new stage to the pipeline. Use AWS CodeBuild as the provider. Add the new stage after the stage that deploys code revisions to the test environment. Write a buildspec that fails the CodeBuild stage if any test does not pass. Use the test reports feature of CodeBuild to integrate the report with the CodeBuild console. View the test results in CodeBuild. Resolve any issues.,Add a new stage to the pipeline. Use AWS CodeBuild as the provider. Add the new stage before the stage that deploys code revisions to the test environment. Write a buildspec that fails the CodeBuild stage if any test does not pass. Use the test reports feature of CodeBuild to integrate the report with the CodeBuild console. View the test results in CodeBuild. Resolve any issues.,Add a new stage to the pipeline. Use Jenkins as the provider. Configure CodePipeline to use Jenkins to run the unit tests. Write a Jenkinsfile that fails the stage if any test does not pass. Use the test report plugin for Jenkins to integrate the report with the Jenkins dashboard. View the test results in Jenkins. Resolve any issues.,"# Answer
+- **Correct option:** C 
+- **Reason:** This option effectively integrates the unit testing phase into the CI/CD pipeline before the deployment stage, ensuring that any changes to the application code are verified and validated before they are moved to the test environment. It minimizes operational effort by using AWS CodeBuild, which is a managed service that provides a straightforward way to run builds and tests without requiring manual setup or management.
+
+# Example / Analogy
+- Think of this process like a quality check in a bakery. Before you serve a batch of cookies (deploying to test), you taste-test the dough (run unit tests) to ensure quality. If the dough is not up to standard (tests fail), you fix the recipe (the code) before going further. This ensures only the best cookies are served.
+
+# Common Mistakes / Traps
+- A common mistake is choosing option A, which relies on each developer to manually run tests locally. This adds variability and human error into the process, defeating the purpose of automation in CI/CD. It’s crucial to automate testing and integrate it into the pipeline to ensure consistency and reliability.
+
+# Memory Tip
+- ""Always test before you deploy!"" - Keep testing integrated in your CI/CD workflow."
+134,"[""A company uses a custom root certificate authority certificate chain (Root CA\nCert) that is 10 KB in size to generate SSL certificates for its on-premises\nHTTPS endpoints. One of the company’s cloud-based applications has hundreds of\nAWS Lambda functions that pull data from these endpoints. A developer updated\nthe trust store of the Lambda execution environment to use the Root CA Cert when\nthe Lambda execution environment is initialized. The developer bundled the Root\nCA Cert as a text file in the Lambda deployment bundle.\n\nAfter 3 months of development, the Root CA Cert is no longer valid and must be\nupdated. The developer needs a more efficient solution to update the Root CA\nCert for all deployed Lambda functions. The solution must not include rebuilding\nor updating all Lambda functions that use the Root CA Cert. The solution must\nalso work for all development, testing, and production environments. Each\nenvironment is managed in a separate AWS account.\n\nWhich combination of steps should the developer take to meet these requirements\nMOST cost-effectively? (Choose two.)""]",Store the Root CA Cert as a secret in AWS Secrets Manager. Create a resource-based policy. Add IAM users to allow access to the secret.,Store the Root CA Cert as a SecureString parameter in AWS Systems Manager Parameter Store. Create a resource-based policy. Add IAM users to allow access to the policy.,Store the Root CA Cert in an Amazon S3 bucket. Create a resource-based policy to allow access to the bucket.,Refactor the Lambda code to load the Root CA Cert from the Root CA Cert’s location. Modify the runtime trust store inside the Lambda function handler.,"# Answer
+- **Correct option:** B and D
+
+- **Reason:** 
+  - Option B is correct because using AWS Systems Manager Parameter Store to store the Root CA Cert as a SecureString allows for easy updates without redeploying Lambda functions. The functions can dynamically retrieve the updated certificate at runtime, thus providing flexibility and efficiency across multiple AWS accounts and environments.
+  - Option D is also correct as it suggests refactoring the Lambda code to load the Root CA Cert from a specified location at runtime. This step avoids the need to bundle the certificate with each deployment and facilitates updating it without code changes.
+
+# Example / Analogy
+- Imagine you are storing a key to a safe in a library. If the library needs to replace the key, they can just change the lock mechanism instead of replacing the entire safe. Similarly, by storing the Root CA Cert in Parameter Store or another accessible location (like S3) and loading it at runtime, you streamline updates without needing to redeploy every Lambda function.
+
+# Common Mistakes / Traps
+- A common mistake is thinking that secrets or parameters must be directly baked into Lambda functions, which can lead to cumbersome redeployments for updates. Another trap is overlooking the need to grant necessary permissions, which could cause access issues at runtime.
+
+# Memory Tip
+- **Retrieve and refactor:** Store certificates in a managed location and refactor code to retrieve them dynamically, minimizing deployments."
+135,"[""A developer is planning to migrate on-premises company data to Amazon S3. The\ndata must be encrypted, and the encryption keys must support automatic annual\nrotation. The company must use AWS Key Management Service (AWS KMS) to encrypt\nthe data.\n\nWhich type of keys should the developer use to meet these requirements?""]",Amazon S3 managed keys,Symmetric customer managed keys with key material that is generated by AWS,Asymmetric customer managed keys with key material that is generated by AWS,Symmetric customer managed keys with imported key material,"# Answer
+- **Correct option:** B : Symmetric customer managed keys with key material that is generated by AWS
+- **Reason:** Symmetric customer managed keys allow for automatic rotation, which aligns with the requirement for annual key rotation. These keys use key material generated by AWS and can be managed via AWS KMS, which provides the necessary encryption features and compliance.
+
+# Example / Analogy
+- Imagine you have a safe where you can automatically change the combination every year. Using symmetric customer managed keys with key material generated by AWS is like having a smart safe that not only keeps your valuables secure but also refreshes its combination automatically without requiring you to manually change it.
+
+# Common Mistakes / Traps
+- Many might confuse Amazon S3 managed keys as suitable for this requirement. However, S3 managed keys do not provide the option for key rotation, which is essential in this case. Another common misconception is that asymmetric keys would be usable in typical data encryption scenarios, which they are not in this context.
+
+# Memory Tip
+- Think ""Symmetric = Simple rotation"" for easy recall of the key rotation feature."
+136,"[""A company has multiple Amazon VPC endpoints in the same VPC. A developer needs\nto configure an Amazon S3 bucket policy so users can access an S3 bucket only by\nusing these VPC endpoints.\n\nWhich solution will meet these requirements?""]",Create multiple S3 bucket polices by using each VPC endpoint ID that have the aws:SourceVpce value in the StringNotEquals condition.,Create a single S3 bucket policy that has the aws:SourceVpc value and in the StringNotEquals condition to use VPC ID.,Create a single S3 bucket policy that has the aws:SourceVpce value and in the StringNotEquals condition to use vpce*.,Create a single S3 bucket policy that has multiple aws:sourceVpce value in the StringNotEquals condition. Repeat for all the VPC endpoint IDs.,"# Answer
+- **Correct option:** D
+- **Reason:** The correct way to restrict access to an S3 bucket via specific VPC endpoints is to create a single S3 bucket policy that includes each VPC endpoint ID in the `StringEquals` condition for the `aws:SourceVpce` key. This ensures that only requests made through specified VPC endpoints can access the bucket, while denying access through any other means.
+
+# Example / Analogy
+- Think of it like an exclusive club that only allows entry through specific gates (VPC endpoints). Each gate has its own ID, and to gain access, you must enter through one of those designated gates. The club (S3 bucket) checks if the gate ID you use (sourceVpce) matches one of the approved gates before letting you in.
+
+# Common Mistakes / Traps
+- A common mistake is to use a wildcard or `StringNotEquals` condition when specifying VPC endpoint IDs. This can lead to access being granted through unintended endpoints or configurations that don't specifically enumerate the allowed endpoints.
+
+# Memory Tip
+- ""Use specific IDs in `aws:SourceVpce` for controlled bucket access."""
+137,"[""A developer maintains applications that store several secrets in AWS Secrets\nManager. The applications use secrets that have changed over time. The developer\nneeds to identify required secrets that are still in use. The developer does not\nwant to cause any application downtime.\n\nWhat should the developer do to meet these requirements?""]",Configure an AWS CloudTrail log file delivery to an Amazon S3 bucket. Create an Amazon CloudWatch alarm for the GetSecretValue Secrets Manager API operation requests.,Create a secretsmanager-secret-unused AWS Config managed rule. Create an Amazon EventBridge rule to initiate notifications when the AWS Config managed rule is met.,Deactivate the applications secrets and monitor the applications error logs temporarily.,Configure AWS X-Ray for the applications. Create a sampling rule to match the GetSecretValue Secrets Manager API operation requests.,"# Answer
+- **Correct option:** A
+
+- **Reason:** Configuring an AWS CloudTrail log file delivery to an Amazon S3 bucket allows the developer to record all API operations, including those related to AWS Secrets Manager. By creating a CloudWatch alarm for the GetSecretValue Secrets Manager API operation, the developer can monitor which secrets are being accessed without impacting application performance or causing downtime. This method provides insight into which secrets are actively used by the applications.
+
+# Example / Analogy
+- Think of it like keeping a log of books borrowed from a library. By recording which books are checked out (using CloudTrail logs), the library can easily see which books are popular and which are gathering dust on the shelves, without having to remove any from the shelves or interrupt the borrowing process.
+
+# Common Mistakes / Traps
+- A common mistake might be to choose options that disrupt application operations or could lead to application downtime, such as deactivating secrets (Option C), which could cause immediate failures in applications reliant on those secrets. Additionally, relying on AWS Config rules (Option B) might not provide immediate insight into secret usage patterns.
+
+# Memory Tip
+- **Log secrets usage to track importance without impacting functionality!**"
+138,"[""A developer is writing a serverless application that requires an AWS Lambda\nfunction to be invoked every 10 minutes.\n\nWhat is an automated and serverless way to invoke the function?""]","Deploy an Amazon EC2 instance based on Linux, and edit its /etc/crontab file by adding a command to periodically invoke the Lambda function.",Configure an environment variable named PERIOD for the Lambda function. Set the value to 600.,Create an Amazon EventBridge rule that runs on a regular schedule to invoke the Lambda function.,Create an Amazon Simple Notification Service (Amazon SNS) topic that has a subscription to the Lambda function with a 600-second timer.,"# Answer
+- **Correct option:** C : Create an Amazon EventBridge rule that runs on a regular schedule to invoke the Lambda function.
+
+- **Reason:** Amazon EventBridge (formerly called CloudWatch Events) is designed for event-driven computing and can be used to trigger AWS Lambda functions on a schedule. By defining a rule that triggers every 10 minutes, you can automate the invocation of your Lambda function without the need for managing any servers or instances.
+
+# Example / Analogy
+- Think of EventBridge like a digital alarm clock that you set to wake you up at a specific time. Just as the alarm triggers an action (waking you up) at predefined intervals, EventBridge triggers your Lambda function according to the schedule you set, allowing you to run tasks regularly without any manual effort.
+
+# Common Mistakes / Traps
+- A common mistake is to choose methods that require server management or constant runtime, such as using an EC2 instance (Option A) which is not serverless. Another trap is misunderstanding how timings work and selecting options that imply direct control over intervals, like environment variables (Option B) or SNS subscriptions (Option D), which do not inherently provide scheduling capabilities.
+
+# Memory Tip
+- Remember: **""EventBridge is my serverless scheduler!""**"
+139,"[""A company is using Amazon OpenSearch Service to implement an audit monitoring\nsystem. A developer needs to create an AWS CloudFormation custom resource that\nis associated with an AWS Lambda function to configure the OpenSearch Service\ndomain. The Lambda function must access the OpenSearch Service domain by using\nOpenSearch Service internal master user credentials.\n\nWhat is the MOST secure way to pass these credentials to the Lambda function?""]",Use a CloudFormation parameter to pass the master user credentials at deployment to the OpenSearch Service domain’s MasterUserOptions and the Lambda function’s environment variable. Set the NoEcho attribute to true.,Use a CloudFormation parameter to pass the master user credentials at deployment to the OpenSearch Service domain’s MasterUserOptions and to create a parameter in AWS Systems Manager Parameter Store. Set the NoEcho attribute to true. Create an IAM role that has the ssm:GetParameter permission. Assign the role to the Lambda function. Store the parameter name as the Lambda function’s environment variable. Resolve the parameter’s value at runtime.,Use a CloudFormation parameter to pass the master user credentials at deployment to the OpenSearch Service domain’s MasterUserOptions and the Lambda function’s environment variable. Encrypt the parameter’s value by using the AWS Key Management Service (AWS KMS) encrypt command.,Use CloudFormation to create an AWS Secrets Manager secret. Use a CloudFormation dynamic reference to retrieve the secret’s value for the OpenSearch Service domain’s MasterUserOptions. Create an IAM role that has the secretsmanager:GetSecretValue permission. Assign the role to the Lambda function. Store the secret’s name as the Lambda function’s environment variable. Resolve the secret’s value at runtime.,"# Answer
+- **Correct option:** D
+
+- **Reason:** This option leverages AWS Secrets Manager, which is specifically designed for managing sensitive information such as credentials. By using a secret, you can easily rotate credentials, and the Lambda function can access them securely through an IAM role, keeping sensitive data hidden and adding a layer of security compared to other methods.
+
+# Example / Analogy
+- Think of AWS Secrets Manager like a locked safe where you can store your valuable items (credentials). Just like you wouldn't share the key to your safe with everyone, you only grant access to those who absolutely need it (the Lambda function in this case) through permissions. This ensures that even if someone gets access to the Lambda function, they still can't see what’s in the safe unless they have the key.
+
+# Common Mistakes / Traps
+- A common mistake is assuming that simply encryption (like in option C) is sufficient for securing credentials. While encryption adds a layer of security, managing secrets and roles properly, as done in option D, is a much more comprehensive and secure approach. Using CloudFormation parameters (option A and B) for passing credentials could expose sensitive information if not handled correctly.
+
+# Memory Tip
+- Always use AWS Secrets Manager for sensitive credentials to ensure they are managed securely."
+140,"[""An application runs on multiple EC2 instances behind an ELB.\n\nWhere is the session data best written so that it can be served reliably across\nmultiple requests?""]",Write data to Amazon ElastiCache.,Write data to Amazon Elastic Block Store.,Write data to Amazon EC2 Instance Store.,Write data to the root filesystem.,"# Answer
+- **Correct option:** A: Write data to Amazon ElastiCache.
+- **Reason:** Amazon ElastiCache is a fully managed, in-memory data store that supports session state persistence across multiple application servers. By using ElastiCache, session data can be accessed quickly and consistently by all EC2 instances behind the Elastic Load Balancer (ELB), ensuring that users have a seamless experience regardless of which instance handles their request.
+
+# Example / Analogy
+- Imagine ElastiCache as a shared whiteboard in a group project, where all team members can write and refer to notes in real-time. No matter who is looking at the board (which EC2 instance is handling the request), everyone has access to the same information, making it easy to keep track of their discussions (session data).
+
+# Common Mistakes / Traps
+- A common mistake is selecting options like Amazon Elastic Block Store (EBS), Amazon EC2 Instance Store, or the root filesystem, thinking they provide persistent or shared storage for session data. However, these options either do not offer the necessary quick access across instances or are not designed for scalable and distributed session data storage.
+
+# Memory Tip
+- Remember: ""For scalable sessions, think ElastiCache!"""
+141,"[""An ecommerce application is running behind an Application Load Balancer. A\ndeveloper observes some unexpected load on the application during non-peak\nhours. The developer wants to analyze patterns for the client IP addresses that\nuse the application.\n\nWhich HTTP header should the developer use for this analysis?""]",The X-Forwarded-Proto header,The X-Forwarded-Host header,The X-Forwarded-For header,The X-Forwarded-Port header,"# Answer
+- **Correct option:** C : The X-Forwarded-For header
+- **Reason:** The X-Forwarded-For header is used to identify the originating IP address of a client connecting to a web server through an intermediary (like an Application Load Balancer). This header is essential for the developer to analyze which clients are making requests to the application, especially when observing unexpected loads.
+
+# Example / Analogy
+- Think of the X-Forwarded-For header as a postmark on a letter that shows where it originally came from, despite passing through several hands (intermediaries). Just like a postmark helps you know the true origin of the letter, the X-Forwarded-For header reveals the real IP address of the client, even when the client connects through a load balancer.
+
+# Common Mistakes / Traps
+- A common mistake is to confuse the X-Forwarded-For header with other headers, such as X-Forwarded-Proto or X-Forwarded-Port, which do not provide client IP address information. Developers may overlook the importance of the correct header when troubleshooting issues related to traffic sources.
+
+# Memory Tip
+- Remember: The ""For"" in X-Forwarded-For indicates it’s about the ""originating"" client IP address."

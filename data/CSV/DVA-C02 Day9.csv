@@ -1,0 +1,253 @@
+No,Content,A,B,C,D,Answered
+162,"[""A developer is working on a Python application that runs on Amazon EC2\ninstances. The developer wants to enable tracing of application requests to\ndebug performance issues in the code.\n\nWhich combination of actions should the developer take to achieve this goal?\n(Choose two.)""]",Install the Amazon CloudWatch agent on the EC2 instances.,Install the AWS X-Ray daemon on the EC2 instances.,Configure the application to write JSON-formatted logs to /var/log/cloudwatch.,Configure the application to write trace data to /var/log/xray.,"# Answer
+- **Correct options:** B, D
+
+- **Reason:** AWS X-Ray is specifically designed for tracing requests in your applications to analyze and debug performance issues. By installing the AWS X-Ray daemon on your EC2 instances (Option B) and configuring your application to write trace data to the correct log file (Option D), you enable detailed request tracing and insight into how requests are processed, which is essential for identifying performance bottlenecks.
+
+# Example / Analogy
+- Think of AWS X-Ray like a GPS tracking system for your application's requests. Just as GPS allows you to see the exact route you took and where delays occurred during your journey, AWS X-Ray provides visibility into the paths your requests take through your application, helping you pinpoint where the slowdowns are happening.
+
+# Common Mistakes / Traps
+- A common mistake is to confuse AWS X-Ray with CloudWatch. Some may think that installing the CloudWatch agent (Option A) is enough for tracing requests, but CloudWatch primarily handles monitoring and logging, not request tracing.
+
+# Memory Tip
+- Remember: For tracing requests, ""X-Ray tracks; CloudWatch stores."""
+163,"[""A company has an application that runs as a series of AWS Lambda functions. Each\nLambda function receives data from an Amazon Simple Notification Service (Amazon\nSNS) topic and writes the data to an Amazon Aurora DB instance.\n\nTo comply with an information security policy, the company must ensure that the\nLambda functions all use a single securely encrypted database connection string\nto access Aurora.\n\nWhich solution will meet these requirements?""]",Use IAM database authentication for Aurora to enable secure database connections for all the Lambda functions.,Store the credentials and read the credentials from an encrypted Amazon RDS DB instance.,Store the credentials in AWS Systems Manager Parameter Store as a secure string parameter.,Use Lambda environment variables with a shared AWS Key Management Service (AWS KMS) key for encryption.,"# Answer
+- **Correct option:** C : Store the credentials in AWS Systems Manager Parameter Store as a secure string parameter.
+- **Reason:** This option allows you to securely store and manage database credentials centrally. The AWS Systems Manager Parameter Store supports encryption using AWS Key Management Service (KMS), ensuring that sensitive information is kept secure and is accessible by your Lambda functions.
+
+# Example / Analogy
+- Think of AWS Systems Manager Parameter Store as a locked filing cabinet in a secure office where important documents (like sensitive credentials) are stored safely and can be accessed by employees (Lambda functions) who have the key (appropriate IAM permissions) to get the data they need.
+
+# Common Mistakes / Traps
+- A common mistake is choosing options that imply storing credentials in less secure ways (like plain environment variables or an unencrypted database) or those that don’t consolidate credential management effectively (like IAM authentication that might not cover all use cases).
+
+# Memory Tip
+- Remember: ""Use Parameter Store for secure secrets—it's the safe place for your Lambda connects!"""
+164,"[""A developer is troubleshooting an Amazon API Gateway API. Clients are receiving\nHTTP 400 response errors when the clients try to access an endpoint of the API.\n\nHow can the developer determine the cause of these errors?""]",Create an Amazon Kinesis Data Firehose delivery stream to receive API call logs from API Gateway. Configure Amazon CloudWatch Logs as the delivery stream’s destination.,Turn on AWS CloudTrail Insights and create a trail. Specify the Amazon Resource Name (ARN) of the trail for the stage of the API.,Turn on AWS X-Ray for the API stage. Create an Amazon CloudWatch Logs log group. Specify the Amazon Resource Name (ARN) of the log group for the API stage.,Turn on execution logging and access logging in Amazon CloudWatch Logs for the API stage. Create a CloudWatch Logs log group. Specify the Amazon Resource Name (ARN) of the log group for the API stage.,"# Answer
+- **Correct option:** D
+- **Reason:** Turning on execution logging and access logging for the API stage in Amazon API Gateway allows you to capture detailed logs of requests and responses, including the reasons for errors like HTTP 400 responses. These logs can be sent to an Amazon CloudWatch Logs log group, making it easier to monitor and troubleshoot the API.
+
+# Example / Analogy
+- Think of it like having a security camera (CloudWatch Logs) installed in a store (API Gateway). When a customer (client) tries to enter but is rejected (HTTP 400 error), the camera (logs) captures the event, showing what went wrong—be it a problem with their ID (request validation) or something else—allowing you to investigate the issue later.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that simply viewing the API Gateway console will provide enough detail for troubleshooting. However, without detailed logs, understanding the specific reasons for errors can be challenging. Some might confuse logging with monitoring services like AWS CloudTrail, which does not provide the same level of detail for request logging.
+
+# Memory Tip
+- ""Logs reveal the story - enable them to know the cause!"""
+165,"[""A company developed an API application on AWS by using Amazon CloudFront, Amazon\nAPI Gateway, and AWS Lambda. The API has a minimum of four requests every\nsecond. A developer notices that many API users run the same query by using the\nPOST method. The developer wants to cache the POST request to optimize the API\nresources.\n\nWhich solution will meet these requirements?""]",Configure the CloudFront cache. Update the application to return cached content based upon the default request headers.,Override the cache method in the selected stage of API Gateway. Select the POST method.,Save the latest request response in Lambda /tmp directory. Update the Lambda function to check the /tmp directory.,Save the latest request in AWS Systems Manager Parameter Store. Modify the Lambda function to take the latest request response from Parameter Store.,"# Answer
+- **Correct option:** B: Override the cache method in the selected stage of API Gateway. Select the POST method.
+
+- **Reason:** API Gateway allows for caching responses to certain HTTP methods, including POST, which is essential in this scenario. By overriding the cache settings and enabling caching for the specific POST method, repeated requests for the same query can be served from the cache, optimizing resource usage and reducing latency. This approach effectively allows the developer to cache responses based on individual requests while maintaining API integrity.
+
+# Example / Analogy
+- Imagine a sandwich shop where every customer orders the same popular sandwich. If the shop maintains a few ready-made sandwiches based on that popular order (instead of making one from scratch for each customer), it speeds up service. Similarly, caching the POST request responses allows the API to quickly serve repeated requests without having to process them each time.
+
+# Common Mistakes / Traps
+- A common mistake is to think that caching can only apply to GET requests. While GET requests are typically cached, POST requests can also be cached in API Gateway with the right configuration, which is often overlooked.
+
+# Memory Tip
+- Cache repeated requests for efficiency—just like fast food restaurants prepare popular menu items in advance!"
+166,"[""A company is using AWS CloudFormation to deploy a two-tier application. The\napplication will use Amazon RDS as its backend database. The company wants a\nsolution that will randomly generate the database password during deployment.\nThe solution also must automatically rotate the database password without\nrequiring changes to the application.\n\nWhat is the MOST operationally efficient solution that meets these requirements?""]",Use an AWS Lambda function as a CloudFormation custom resource to generate and rotate the password.,Use an AWS Systems Manager Parameter Store resource with the SecureString data type to generate and rotate the password.,Use a cron daemon on the application’s host to generate and rotate the password.,Use an AWS Secrets Manager resource to generate and rotate the password.,"# Answer
+- **Correct option:** D : Use an AWS Secrets Manager resource to generate and rotate the password.
+
+- **Reason:** AWS Secrets Manager is specifically designed for managing sensitive information like database credentials. It can automatically perform password generation and rotation seamlessly, integrating directly with Amazon RDS without requiring any manual intervention or application code changes. This aligns perfectly with the company's requirements for operational efficiency and automated password management.
+
+# Example / Analogy
+- Think of AWS Secrets Manager like a safe where you can store your valuables (in this case, the database password). Not only does it securely keep your valuables, but it can also change the lock (rotate the password) automatically every month without you needing to remember to do it or needing to access it.
+
+# Common Mistakes / Traps
+- A common mistake is to consider AWS Lambda or Systems Manager Parameter Store as alternatives, but these solutions require custom scripting or manual updates that can introduce complexity and operational overhead compared to the fully managed service provided by Secrets Manager.
+
+# Memory Tip
+- ""Secrets Manager is the key to automated password management in AWS."""
+167,"[""A company is building a microservices application that consists of many AWS\nLambda functions. The development team wants to use AWS Serverless Application\nModel (AWS SAM) templates to automatically test the Lambda functions. The\ndevelopment team plans to test a small percentage of traffic that is directed to\nnew updates before the team commits to a full deployment of the application.\n\nWhich combination of steps will meet these requirements in the MOST\noperationally efficient way? (Choose two.)""]",Use AWS SAM CLI commands in AWS CodeDeploy to invoke the Lambda functions to test the deployment.,Declare the EventInvokeConfig on the Lambda functions in the AWS SAM templates with OnSuccess and OnFailure configurations.,Enable gradual deployments through AWS SAM templates.,Set the deployment preference type to Canary10Percent30Minutes. Use hooks to test the deployment.,"# Answer
+- **Correct options:** C and D
+- **Reason:** 
+  - Option C is correct because enabling gradual deployments through AWS SAM templates allows for smooth testing of new updates without affecting the entire user base. It helps in minimizing risk associated with deploying untested updates. 
+  - Option D is also correct as setting the deployment preference to `Canary10Percent30Minutes` aligns with the requirement to test a small percentage (10%) of traffic directed to new updates over a defined time frame (30 minutes) before proceeding with the full deployment. This ensures operational efficiency by catching potential issues early.
+
+# Example / Analogy
+- Think of gradual deployments like a restaurant that introduces a new dish to a few customers before making it part of the full menu. If the feedback is positive, they can confidently roll it out to everyone; if not, they can adjust the recipe without impacting all diners.
+
+# Common Mistakes / Traps
+- A common mistake is confusing different deployment strategies or tools. For instance, choosing options that involve invoking functions directly or dealing with success/failure configurations can mislead one to think they are handling traffic and testing effectively, which is not the case here.
+
+# Memory Tip
+- **""Gradual testing = Safe rollout""**  – remember that gradual deployments allow for risk management in updates."
+168,"[""A developer has been asked to create an AWS Lambda function that is invoked any\ntime updates are made to items in an Amazon DynamoDB table. The function has\nbeen created, and appropriate permissions have been added to the Lambda\nexecution role. Amazon DynamoDB streams have been enabled for the table, but the\nfunction is still not being invoked.\n\nWhich option would enable DynamoDB table updates to invoke the Lambda function?""]",Change the StreamViewType parameter value to NEW_AND_OLD_IMAGES for the DynamoDB table.,Configure event source mapping for the Lambda function.,Map an Amazon Simple Notification Service (Amazon SNS) topic to the DynamoDB streams.,Increase the maximum runtime (timeout) setting of the Lambda function.,"# Answer
+- **Correct option:** B : Configure event source mapping for the Lambda function.
+- **Reason:** In order for the Lambda function to be invoked by updates in the DynamoDB table, there must be an event source mapping that connects the DynamoDB stream to the Lambda function. This mapping tells AWS Lambda to listen to the stream and invoke the function whenever there are changes in the table.
+
+# Example / Analogy
+- Think of DynamoDB streams as a conveyor belt where updates to items are placed. The Lambda function is like a worker standing next to the conveyor belt, ready to pick up and process each item that passes. If the worker (Lambda) is not set up to be notified when new items arrive (event source mapping), they won't know to act on them, no matter how many updates are on the conveyor belt.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that simply enabling DynamoDB streams is sufficient for invoking the Lambda function. However, without the proper event source mapping, the function will not be triggered.
+
+# Memory Tip
+- Remember: ""Event source mapping connects the stream to the function for triggers."""
+169,"[""A developer needs to deploy an application running on AWS Fargate using Amazon\nECS. The application has environment variables that must be passed to a\ncontainer for the application to initialize.\n\nHow should the environment variables be passed to the container?""]",Define an array that includes the environment variables under the environment parameter within the service definition.,Define an array that includes the environment variables under the environment parameter within the task definition.,Define an array that includes the environment variables under the entryPoint parameter within the task definition.,Define an array that includes the environment variables under the entryPoint parameter within the service definition.,"# Answer
+- **Correct option:** B: Define an array that includes the environment variables under the environment parameter within the task definition.
+
+- **Reason:** The environment variables needed by a container can be specified in the task definition in Amazon ECS. This allows the Fargate service to retrieve these variables when the containers are started. The task definition is a central configuration for the application’s environment, ensuring that settings like environment variables are consistently applied across all instances of the service.
+
+# Example / Analogy
+- Think of the task definition as a recipe for baking a cake. Just like the recipe lists all the ingredients (flour, sugar, eggs) required to bake the cake, the task definition lists all the necessary environment variables (like API keys, database URLs) the application needs to function properly.
+
+# Common Mistakes / Traps
+- A common mistake is to confuse the service definition with the task definition. The service definition handles scaling and managing tasks, but the actual configuration of the environment variables must be done in the task definition.
+
+# Memory Tip
+- **Tip:** Remember that task definitions are where the ""recipe"" for your container configuration, including environment variables, is defined."
+170,"[""A development team maintains a web application by using a single AWS RDS,\ntemplate. The template defines web servers and an Amazon RDS database. The team\nuses the CloudFormation template to deploy the CloudFormation stack to different\nenvironments.\n\nDuring a recent application deployment, a developer caused the primary\ndevelopment database to be dropped and recreated. The result of this incident\nwas a loss of data. The team needs to avoid accidental database deletion in the\nfuture.\n\nWhich solutions will meet these requirements? (Choose two.)""]",Add a CloudFormation DeletionPolicy attribute with the Retain value to the database resource.,Update the CloudFormation stack policy to prevent updates to the database.,Modify the database to use a Multi-AZ deployment.,Create a CloudFormation stack set for the web application and database deployments.,"# Answer
+- **Correct options:** A and B
+- **Reason:** 
+  - **Option A:** Adding a CloudFormation DeletionPolicy with the Retain value instructs AWS CloudFormation to retain the database resource when the stack is deleted, protecting it from accidental deletion. This ensures that the database remains intact, preserving the data.
+  - **Option B:** Updating the CloudFormation stack policy to prevent updates to the database can help enforce rules that discourage or block any potentially destructive operations on the database, which decreases the likelihood of accidental deletions or modifications.
+
+# Example / Analogy
+- Think of the CloudFormation DeletionPolicy as a safety lock on a valuable item. Just like you would use a lock to ensure that no one can accidentally take or destroy something precious, setting the DeletionPolicy to Retain locks your database from being removed unintentionally. A stack policy acts like a security guard, ensuring that only authorized changes can be made to your valuable property (the database), thus preventing potential mishaps.
+
+# Common Mistakes / Traps
+- A common trap is assuming that simply using Multi-AZ or a stack set will protect against accidental deletions; however, these options do not address the specific issue of preventing deletion or modification directly. Multi-AZ primarily provides high availability and fault tolerance rather than a safeguard against accidental data loss.
+
+# Memory Tip
+- **Lock your resources (use DeletionPolicy) and guard your changes (set stack policies)!**"
+171,"[""A developer is storing sensitive data generated by an application in Amazon S3.\nThe developer wants to encrypt the data at rest. A company policy requires an\naudit trail of when the AWS Key Management Service (AWS KMS) key was used and by\nwhom.\n\nWhich encryption option will meet these requirements?""]",Server-side encryption with Amazon S3 managed keys (SSE-S3),Server-side encryption with AWS KMS managed keys (SSE-KMS),Server-side encryption with customer-provided keys (SSE-C),Server-side encryption with self-managed keys,"# Answer
+- **Correct option:** B : Server-side encryption with AWS KMS managed keys (SSE-KMS)
+- **Reason:** SSE-KMS provides an audit trail for key usage through AWS CloudTrail, allowing you to track when the KMS key was used and who accessed it. This is important given the requirement for an audit trail as part of the company policy. Additionally, it allows for fine-grained access control using IAM policies.
+
+# Example / Analogy
+- Imagine you have a safe with a special key that can only be accessed by specific trusted individuals, and every time someone uses that key to open the safe, there's a logbook that records who used it and when. SSE-KMS functions similarly by securing data with a key that can be monitored and controlled.
+
+# Common Mistakes / Traps
+- A common mistake is confusing SSE-KMS with SSE-S3. While SSE-S3 is easier to use, it doesn't provide the required audit trail as KMS does. Another trap is thinking that customer-provided keys (SSE-C) offer the same level of management and auditing, which they do not.
+
+# Memory Tip
+- **Remember:** ""KMS keeps the keys and the logs!"""
+172,"[""A company has an ecommerce application. To track product reviews, the company’s\ndevelopment team uses an Amazon DynamoDB table.\n\nEvery record includes the following:\n\n• A Review ID, a 16-digit universally unique identifier (UUID)\n• A Product ID and User ID, 16-digit UUIDs that reference other tables\n• A Product Rating on a scale of 1-5\n• An optional comment from the user\n\nThe table partition key is the Review ID. The most performed query against the\ntable is to find the 10 reviews with the highest rating for a given product.\n\nWhich index will provide the FASTEST response for this query?""]",A global secondary index (GSI) with Product ID as the partition key and Product Rating as the sort key,A global secondary index (GSI) with Product ID as the partition key and Review ID as the sort key,A local secondary index (LSI) with Product ID as the partition key and Product Rating as the sort key,A local secondary index (LSI) with Review ID as the partition key and Product ID as the sort key,"# Answer
+- **Correct option:** A : A global secondary index (GSI) with Product ID as the partition key and Product Rating as the sort key
+
+- **Reason:** A Global Secondary Index (GSI) allows you to query the table using alternative keys, and it can have a different partition and sort key than the primary table. In this case, by using Product ID as the partition key and Product Rating as the sort key, the query can efficiently fetch the top 10 reviews for a specific product, sorted by the highest ratings. This enables very fast lookups when searching for reviews of a particular product based on their ratings.
+
+# Example / Analogy
+- Imagine you are searching for the best-reviewed restaurants in a city. If you have a list of all restaurants (the main table), and you create a sorted list specifically for 'cuisine type' (the GSI), it makes it easy to find the top-rated Italian restaurants without having to sift through every single restaurant. This is similar to how GSIs help you retrieve the top-rated product reviews without scanning the entire table.
+
+# Common Mistakes / Traps
+- A common trap is to confuse the use of Local Secondary Indexes (LSI) with GSIs. LSI shares the same partition key as the base table but allows a different sort key. Hence, it cannot provide an optimal solution for this query because it cannot partition by Product ID, limiting the query efficiency. Always remember that LSIs are used when you need the same partition key but a different sort key.
+
+# Memory Tip
+- **Key takeaway:** Use GSIs for flexible and efficient queries across different partition keys!"
+173,"[""A company needs to distribute firmware updates to its customers around the\nworld.\n\nWhich service will allow easy and secure control of the access to the downloads\nat the lowest cost?""]",Use Amazon CloudFront with signed URLs for Amazon S3.,Create a dedicated Amazon CloudFront Distribution for each customer.,Use Amazon CloudFront with AWS Lambda@Edge.,Use Amazon API Gateway and AWS Lambda to control access to an S3 bucket.,"# Answer
+- **Correct option:** A : Use Amazon CloudFront with signed URLs for Amazon S3.
+- **Reason:** Amazon CloudFront is a content delivery network (CDN) that helps speed up the delivery of your files globally. By using signed URLs, you can control access to the firmware updates stored in Amazon S3, ensuring only authorized users can download them, all while keeping costs low.
+
+# Example / Analogy
+- Real-life example or memorable comparison: Think of Amazon CloudFront like a worldwide delivery service that only delivers packages (firmware updates) to those who have a special key (signed URLs). Just like you might give a guest a key to your house to access specific areas, signed URLs give customers access to specific downloads securely.
+
+# Common Mistakes / Traps
+- Common trap points, if any: A common mistake is choosing overly complex solutions like creating dedicated CloudFront distributions for each customer or using API Gateway and Lambda, which can increase costs and complexity unnecessarily.
+
+# Memory Tip
+- 1 quick tip: ""CloudFront + Signed URLs = Secure, low-cost delivery!"""
+174,"[""A developer is testing an application that invokes an AWS Lambda function\nasynchronously. During the testing phase, the Lambda function fails to process\nafter two retries.\n\nHow can the developer troubleshoot the failure?""]",Configure AWS CloudTrail logging to investigate the invocation failures.,Configure Dead Letter Queues by sending events to Amazon SQS for investigation.,Configure Amazon Simple Workflow Service to process any direct unprocessed events.,Configure AWS Config to process any direct unprocessed events.,"# Answer
+- **Correct option:** B : Configure Dead Letter Queues by sending events to Amazon SQS for investigation.
+- **Reason:** Configuring Dead Letter Queues (DLQs) allows you to capture and store events that fail to process after a configured number of retries. By directing the failed events to an Amazon SQS queue or an SNS topic, developers can investigate the specific cause of the failure, review the messages, and take corrective actions accordingly.
+
+# Example / Analogy
+- Think of a mail delivery service. If the postman can't deliver a package after several attempts, rather than discarding it, they place it in a special holding area (the DLQ), where it can be examined later to find out what went wrong (like an incorrect address).
+
+# Common Mistakes / Traps
+- A common trap in this question is selecting option A (AWS CloudTrail) thinking it will provide insight into failures, but CloudTrail primarily logs API calls and not application-level failures directly. Similarly, options C and D suggest using services that do not directly address the handling of failed Lambda invocations.
+
+# Memory Tip
+- Remember: ""Dead Letter Queues hold the lost; retrieve and resolve what's been tossed!"""
+175,"[""A developer is creating a mobile application that will not require users to log\nin.\n\nWhat is the MOST efficient method to grant users access to AWS resources?""]",Use an identity provider to securely authenticate with the application.,Create an AWS Lambda function to create an IAM user when a user accesses the application.,Create credentials using AWS KMS and apply these credentials to users when using the application.,Use Amazon Cognito to associate unauthenticated users with an IAM role that has limited access to resources.,"# Answer
+- **Correct option:** D
+- **Reason:** Using Amazon Cognito to associate unauthenticated users with an IAM role allows you to provide limited and controlled access to AWS resources without requiring user login. This is efficient because it handles user identity and access management seamlessly, allowing the application to function without sign-ins while still maintaining security.
+
+# Example / Analogy
+- Think of Amazon Cognito like a guest access system at a club. Guests (unauthenticated users) can enter without a membership (login) but only have access to certain areas (limited AWS resources). The club ensures that while guests are inside, they can't access restricted VIP areas, maintaining a level of security.
+
+# Common Mistakes / Traps
+- A common trap is to assume that all users need to be authenticated through an identity provider (option A) to access AWS resources. However, for applications that do not require user logins, using Cognito for unauthenticated access is often the best approach.
+
+# Memory Tip
+- Remember: **""Cognito = Guest Access with Limits.""**"
+176,"[""A company is migrating its PostgreSQL database into the AWS Cloud. The company\nwants to use a database that will secure and regularly rotate database\ncredentials. The company wants a solution that does not require additional\nprogramming overhead.\n\nWhich solution will meet these requirements?""]",Use Amazon Aurora PostgreSQL for the database. Store the database credentials in AWS Systems Manager Parameter Store. Turn on rotation.,Use Amazon Aurora PostgreSQL for the database. Store the database credentials in AWS Secrets Manager. Turn on rotation.,Use Amazon DynamoDB for the database. Store the database credentials in AWS Systems Manager Parameter Store. Turn on rotation.,Use Amazon DynamoDB for the database. Store the database credentials in AWS Secrets Manager. Turn on rotation.,"# Answer
+- **Correct option:** B
+
+- **Reason:** Amazon Aurora PostgreSQL is a managed database service that supports features like automatic backups and read replicas. By using AWS Secrets Manager to store database credentials, the company can benefit from secure credential storage and automatic rotation of those credentials without requiring any additional programming overhead. Secrets Manager integrates easily with other AWS services, including Aurora, making it a suitable choice for managing secrets.
+
+# Example / Analogy
+- Think of AWS Secrets Manager as a highly secure vault that automatically updates the keys (database credentials) based on a schedule. Just as you wouldn’t want to keep your house keys in an easy-to-find place, using Secrets Manager keeps your database credentials safe and ensures they are rotated regularly like changing the locks periodically to enhance security.
+
+# Common Mistakes / Traps
+- A common mistake here is to overlook the importance of using AWS Secrets Manager, as some may think that just storing credentials in AWS Systems Manager Parameter Store is sufficient. While Parameter Store can store secrets, it lacks the automatic rotation feature that Secrets Manager provides and requires additional coding to rotate secrets.
+
+# Memory Tip
+- **Remember:** ""Secrets Manager is a secure vault for credentials with auto-rotation – use it for database security!"""
+177,"[""A company has developed a new serverless application using AWS Lambda functions\nthat will be deployed using the AWS Serverless Application Model (AWS SAM) CLI.\n\nWhich step should the developer complete prior to deploying the application?""]",Compress the application to a .zip file and upload it into AWS Lambda.,Test the new AWS Lambda function by first tracing it in AWS X-Ray.,Bundle the serverless application using a SAM package.,Create the application environment using the eb create my-env command.,"# Answer
+- **Correct option:** C : Bundle the serverless application using a SAM package.
+- **Reason:** Before deploying an application using the AWS Serverless Application Model (AWS SAM) CLI, the developer must package the application with the `sam package` command. This command bundles the source code and dependencies, and prepares it for deployment to AWS by creating an S3 bucket where the packaged files will be stored.
+
+# Example / Analogy
+- Real-life example or memorable comparison: Think of this step like preparing a suitcase for a trip (packaging) before you head to the airport (deployment). You wouldn't just jump on a plane without ensuring that all your items are packed neatly and securely!
+
+# Common Mistakes / Traps
+- Common trap points, if any: Many developers might mistakenly believe that just compressing the application into a .zip file (Option A) is sufficient or that testing the Lambda function first (Option B) should be prioritized. However, the packaging step is essential and must come before deployment. 
+
+# Memory Tip
+- Always remember: ""Package first, deploy later!"""
+178,"[""A company wants to automate part of its deployment process. A developer needs to\nautomate the process of checking for and deleting unused resources that\nsupported previously deployed stacks but that are no longer used.\n\nThe company has a central application that uses the AWS Cloud Development Kit\n(AWS CDK) to manage all deployment stacks. The stacks are spread out across\nmultiple accounts. The developer’s solution must integrate as seamlessly as\npossible within the current deployment process.\n\nWhich solution will meet these requirements with the LEAST amount of\nconfiguration?""]","In the central AWS CDK application, write a handler function in the code that uses AWS SDK calls to check for and delete unused resources. Create an AWS CloudFormation template from a JSON file. Use the template to attach the function code to an AWS Lambda function and to invoke the Lambda function when the deployment stack runs.","In the central AWS CDK application, write a handler function in the code that uses AWS SDK calls to check for and delete unused resources. Create an AWS CDK custom resource. Use the custom resource to attach the function code to an AWS Lambda function and to invoke the Lambda function when the deployment stack runs.","In the central AWS CDK, write a handler function in the code that uses AWS SDK calls to check for and delete unused resources. Create an API in AWS Amplify. Use the API to attach the function code to an AWS Lambda function and to invoke the Lambda function when the deployment stack runs.","In the AWS Lambda console, write a handler function in the code that uses AWS SDK calls to check for and delete unused resources. Create an AWS CDK custom resource. Use the custom resource to import the Lambda function into the stack and to invoke the Lambda function when the deployment stack runs.","# Answer
+- **Correct option:** B
+
+- **Reason:** Option B is the best choice because it utilizes AWS CDK to create a custom resource, which allows the integration of the Lambda function into the deployment process seamlessly. This approach leverages existing CDK infrastructure and minimizes configuration overhead. The custom resource can trigger the Lambda function during the CloudFormation stack lifecycle, ensuring that unused resources are checked and deleted as part of the deployment.
+
+# Example / Analogy
+- Think of the AWS CDK custom resource as a ""housekeeper"" that runs periodically whenever a new ""guest"" (deployment stack) comes to stay (is deployed). The housekeeper checks if there are any rooms (resources) that are no longer needed and takes care of cleaning them up. This process fits neatly within the infrastructure management workflow.
+
+# Common Mistakes / Traps
+- A common mistake is to overcomplicate the solution by introducing unnecessary components, such as creating an API (as in option C), which adds complexity without benefiting the automation process. Also, one might overlook the importance of aligning with the CDK framework for more streamlined operations.
+
+# Memory Tip
+- ""Use custom resources to keep operations clean and integrated."""
+179,"[""A company built a new application in the AWS Cloud. The company automated the\nbootstrapping of new resources with an Auto Scaling group by using AWS\nCloudFormation templates. The bootstrap scripts contain sensitive data.\n\nThe company needs a solution that is integrated with CloudFormation to manage\nthe sensitive data in the bootstrap scripts.\n\nWhich solution will meet these requirements in the MOST secure way?""]",Put the sensitive data into a CloudFormation parameter. Encrypt the CloudFormation templates by using an AWS Key Management Service (AWS KMS) key.,Put the sensitive data into an Amazon S3 bucket. Update the CloudFormation templates to download the object from Amazon S3 during bootstrap.,Put the sensitive data into AWS Systems Manager Parameter Store as a secure string parameter. Update the CloudFormation templates to use dynamic references to specify template values.,Put the sensitive data into Amazon Elastic File System (Amazon EFS). Enforce EFS encryption after file system creation. Update the CloudFormation templates to retrieve data from Amazon EFS.,"# Answer
+- **Correct option:** C  
+- **Reason:** This option uses AWS Systems Manager Parameter Store to securely manage sensitive data as a secure string parameter. It integrates seamlessly with CloudFormation by allowing the use of dynamic references, ensuring that sensitive data is not hard-coded in templates or exposed during stack operations.
+
+# Example / Analogy
+- Think of AWS Systems Manager Parameter Store like a secure vault for your sensitive information. Just as you wouldn’t leave a combination to a safe lying around in your house, placing sensitive data in Parameter Store keeps it secure and accessible only to those who need it when the application is bootstrapped.
+
+# Common Mistakes / Traps
+- A common mistake is to underestimate the importance of security when managing sensitive data. Options A and B propose methods that can expose sensitive information either directly in templates or during retrieval. Option D, while using EFS, adds unnecessary complexity and isn't as efficient as using a dedicated service for secrets management.
+
+# Memory Tip
+- ""Secure strings in Parameter Store: the vault for your app secrets!"""
+180,"[""A company needs to set up secure database credentials for all its AWS Cloud\nresources. The company’s resources include Amazon RDS DB instances, Amazon\nDocumentDB clusters, and Amazon Aurora DB instances. The company’s security\npolicy mandates that database credentials be encrypted at rest and rotated at a\nregular interval.\n\nWhich solution will meet these requirements MOST securely?""]","Set up IAM database authentication for token-based access. Generate user tokens to provide centralized access to RDS DB instances, Amazon DocumentDB clusters, and Aurora DB instances.",Create parameters for the database credentials in AWS Systems Manager Parameter Store. Set the Type parameter to SecureString. Set up automatic rotation on the parameters.,Store the database access credentials as an encrypted Amazon S3 object in an S3 bucket. Block all public access on the S3 bucket. Use S3 server-side encryption to set up automatic rotation on the encryption key.,Create an AWS Lambda function by using the SecretsManagerRotationTemplate template in the AWS Secrets Manager console. Create secrets for the database credentials in Secrets Manager. Set up secrets rotation on a schedule.,"# Answer
+- **Correct option:** D 
+- **Reason:** AWS Secrets Manager is designed specifically for securely storing and managing sensitive information such as database credentials. It provides built-in encryption for secrets at rest, supports automatic rotation of those secrets, and can be easily integrated with various AWS services. This meets the company's requirement to encrypt credentials and rotate them regularly, ensuring both security and compliance with the security policy.
+
+# Example / Analogy
+- Think of AWS Secrets Manager as a secure vault for your most critical keys (database credentials). Just like how you might store important documents in a safety deposit box that automatically alerts you to check or change the contents every few months, Secrets Manager keeps your sensitive information safe and reminds you to rotate them regularly.
+
+# Common Mistakes / Traps
+- A common mistake is to overlook the specific need for automatic credential rotation. While options like B (Systems Manager) may allow for secure storage, they do not inherently provide the advanced features of automated rotation or fine-grained access control, which are essential for dynamic environments.
+
+# Memory Tip
+- ""Secrets Manager = Secure vault + Automatic rotation."""
+181,"[""A developer has created an AWS Lambda function that makes queries to an Amazon\nAurora MySQL DB instance. When the developer performs a test, the DB instance\nshows an error for too many connections.\n\nWhich solution will meet these requirements with the LEAST operational effort?""]",Create a read replica for the DB instance. Query the replica DB instance instead of the primary DB instance.,Migrate the data to an Amazon DynamoDB database.,Configure the Amazon Aurora MySQL DB instance for Multi-AZ deployment.,Create a proxy in Amazon RDS Proxy. Query the proxy instead of the DB instance.,"# Answer
+- **Correct option:** D : Create a proxy in Amazon RDS Proxy. Query the proxy instead of the DB instance.
+
+- **Reason:** Using Amazon RDS Proxy helps to manage the number of active connections to the Aurora MySQL DB instance efficiently. It allows for connection pooling, which reduces the overhead of opening and closing connections frequently. This significantly lowers the chances of hitting the 'too many connections' error by managing the database connections more effectively and allowing multiple clients to share a smaller number of active connections.
+
+# Example / Analogy
+- Think of Amazon RDS Proxy as a traffic controller at a busy intersection. Just as a traffic controller can efficiently manage the flow of vehicles to prevent congestion, RDS Proxy manages database connections, ensuring that the database is not overwhelmed with too many simultaneous connection requests. By utilizing the proxy, multiple requests can be served without needing a distinct connection for each one, optimizing performance and resource usage.
+
+# Common Mistakes / Traps
+- A common mistake is to assume that merely creating a read replica (Option A) will solve the problem of too many connections. While read replicas can help with read traffic, they do not address the connection limits of the primary DB instance. Additionally, options like migrating to DynamoDB (Option B) or configuring Multi-AZ deployment (Option C) may not resolve the connection issue directly, as they pertain to data availability and scalability but don’t necessarily manage connection counts.
+
+# Memory Tip
+- Use RDS Proxy to streamline and manage database connections effectively, just like having a traffic controller to regulate vehicle flow."

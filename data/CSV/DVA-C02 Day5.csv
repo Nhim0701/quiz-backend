@@ -1,0 +1,249 @@
+No,Content,A,B,C,D,Answered
+82,"[""A developer is developing an application that uses signed requests (Signature\nVersion 4) to call other AWS services. The developer has created a canonical\nrequest, has created the string to sign, and has calculated signing information.\n\nWhich methods could the developer use to complete a signed request? (Choose\ntwo.)""]",Add the signature to an HTTP header that is named Authorization.,Add the signature to a session cookie.,Add the signature to an HTTP header that is named Authentication.,Add the signature to a query string parameter that is named X-Amz-Signature.,"# Answer
+- **Correct option:** A and D
+- **Reason:** To complete a signed request using Signature Version 4, the developer can add the signature to an HTTP header named Authorization (option A) or to a query string parameter named X-Amz-Signature (option D). The Authorization header is the standard method for sending credentials in AWS, while using a query string parameter is also acceptable for certain use cases, such as when the request is being made via a web browser.
+
+# Example / Analogy
+- Imagine sending a letter through the mail. You can either write your signature directly on the letter (like adding it to the Authorization header) or include it in a special envelope that highlights your signature (similar to adding it to a query string parameter). Both methods verify your identity and intent of sending the letter.
+
+# Common Mistakes / Traps
+- A common trap is selecting the incorrect option regarding how the signature should be passed. Some might confuse ""Authentication"" (which is not a valid header for AWS requests) or think cookies can be used like Microsoft signatures, but that’s not applicable in AWS’s signed request methodology.
+
+# Memory Tip
+- Remember: Signatures go in the Authorization header or as a query parameter X-Amz-Signature!"
+83,"[""A company must deploy all its Amazon RDS DB instances by using AWS\nCloudFormation templates as part of AWS CodePipeline continuous integration and\ncontinuous delivery (CI/CD) automation. The primary password for the DB instance\nmust be automatically generated as part of the deployment process.\n\nWhich solution will meet these requirements with the LEAST development effort?""]",Create an AWS Lambda-backed CloudFormation custom resource. Write Lambda code that generates a secure string. Return the value of the secure string as a data field of the custom resource response object. Use the CloudFormation Fn::GetAtt intrinsic function to get the value of the secure string. Use the value to create the DB instance.,Use the AWS CodeBuild action of CodePipeline to generate a secure string by using the following AWS CLI command: aws secretsmanager get-random-password. Pass the generated secure string as a CloudFormation parameter with the NoEcho attribute set to true. Use the parameter reference to create the DB instance.,Create an AWS Lambda-backed CloudFormation custom resource. Write Lambda code that generates a secure string. Return the value of the secure string as a data field of the custom resource response object. Use the CloudFormation Fn::GetAtt intrinsic function to get a value of the secure string. Create secrets in AWS Secrets Manager. Use the secretsmanager dynamic reference to use the value stored in the secret to create the DB instance.,Use the AWS::SecretsManager::Secret resource to generate a secure string. Store the secure string as a secret in AWS Secrets Manager. Use the secretsmanager dynamic reference to use the value stored in the secret to create the DB instance.,"# Answer
+- **Correct option:** D 
+- **Reason:** This option uses the AWS::SecretsManager::Secret resource to generate and store a secure string/password in AWS Secrets Manager directly as part of the CloudFormation template. This method is straightforward and incorporates best practices by leveraging Secrets Manager for secure password storage. It simplifies the process while adhering to AWS's security and resource management best practices, meeting the requirements with minimal additional effort.
+
+# Example / Analogy
+- Think of AWS Secrets Manager like a vault where you can keep your passwords safe and easily access them whenever needed. By using AWS CloudFormation to store the password directly into this vault, it’s like ensuring that instead of carrying a key in your pocket, it’s securely locked in a safe, accessed only when necessary.
+
+# Common Mistakes / Traps
+- A common mistake might be to think that using additional Lambda functions or complex custom resources is always necessary. This can lead to over-engineering solutions. Often, native solutions like AWS Secrets Manager can accomplish the task with less complexity and better maintainability.
+
+# Memory Tip
+- Remember: **“Use Secrets Manager for passwords, it's the simplest and safest path!”**"
+84,"[""An organization is storing large files in Amazon S3, and is writing a web\napplication to display meta-data about the files to end-users. Based on the\nmetadata a user selects an object to download. The organization needs a\nmechanism to index the files and provide single-digit millisecond latency\nretrieval for the metadata.\n\nWhat AWS service should be used to accomplish this?""]",Amazon DynamoDB,Amazon EC2,AWS Lambda,Amazon RDS,"# Answer
+- **Correct option:** A : Amazon DynamoDB
+- **Reason:** Amazon DynamoDB is a fully managed NoSQL database service that provides single-digit millisecond response times at any scale. This makes it ideal for storing and retrieving metadata about files quickly, as required by the web application.
+
+# Example / Analogy
+- Think of DynamoDB like a high-speed library where you can quickly look up book information (metadata) based on various attributes (like author, genre, etc.) rather than scanning each book (file) physically. Just as you can find a book by searching its title or author in a well-organized library, DynamoDB allows quick indexing and retrieval of metadata.
+
+# Common Mistakes / Traps
+- A common mistake is to confuse the need for fast metadata retrieval (DynamoDB) with the necessity to store files or larger data sets. Candidates might mistakenly think they could use Amazon RDS (a relational database) which, while it can store more complex queries, typically involves higher latency compared to DynamoDB.
+
+# Memory Tip
+- Remember: **DynamoDB is your go-to for high-speed metadata access – it's like your metadata librarian!**"
+85,"[""A developer is creating an AWS Serverless Application Model (AWS SAM) template.\nThe AWS SAM template contains the definition of multiple AWS Lambda functions,\nan Amazon S3 bucket, and an Amazon CloudFront distribution. One of the Lambda\nfunctions runs on Lambda@Edge in the CloudFront distribution. The S3 bucket is\nconfigured as an origin for the CloudFront distribution.\n\nWhen the developer deploys the AWS SAM template in the eu-west-1 Region, the\ncreation of the stack fails.\n\nWhich of the following could be the reason for this issue?""]",CloudFront distributions can be created only in the us-east-1 Region.,Lambda@Edge functions can be created only in the us-east-1 Region.,A single AWS SAM template cannot contain multiple Lambda functions.,The CloudFront distribution and the S3 bucket cannot be created in the same Region.,"# Answer
+- **Correct option:** B
+- **Reason:** Lambda@Edge functions are a specific type of AWS Lambda function that can only be created and associated with CloudFront distributions in the us-east-1 (N. Virginia) Region. Although the CloudFront distribution itself can be used globally, the function must be created in us-east-1 for it to be associated with the CloudFront distribution before it is deployed globally.
+
+# Example / Analogy
+- Think of a movie premiere event (the CloudFront distribution) that can take place in various theaters worldwide. However, the movie (Lambda@Edge function) must be finalized and produced in a specific studio (us-east-1) before it can be shown anywhere else. Essentially, even though the premiere is global, the actual movie has to be made in that one location.
+
+# Common Mistakes / Traps
+- A common trap is misunderstanding the relationship between Lambda functions and CloudFront distributions. Developers may think they can deploy Lambda@Edge functions in any region where other elements of the CloudFront setup can be managed, not realizing the specific requirement for us-east-1.
+
+# Memory Tip
+- Remember: Lambda@Edge is like a movie that must be made in us-east-1 before it goes global."
+86,"[""A developer is integrating Amazon ElastiCache in an application. The cache will\nstore data from a database. The cached data must populate real-time dashboards.\n\nWhich caching strategy will meet these requirements?""]",A read-through cache,A write-behind cache,A lazy-loading cache,A write-through cache,"# Answer
+- **Correct option:** A : A read-through cache
+- **Reason:** A read-through cache allows the application to automatically fetch data from the database and populate the cache when there is a cache miss (i.e., when the requested data is not found in the cache). This strategy is ideal for real-time applications since it ensures that the most current data is fetched and stored in the cache for quick access, which aligns perfectly with the requirement of populating real-time dashboards.
+
+# Example / Analogy
+- Think of a read-through cache like a library with a smart librarian. When you request a book (data), if it's not on the shelf (cache), the librarian goes to find it in the storage room (database) and brings it back for you. In future requests, the book is available on the shelf, allowing for quick access without delays.
+
+# Common Mistakes / Traps
+- A common mistake is confusing a read-through cache with a write-through cache. In a write-through cache, updates are made to both the cache and the database immediately, which may not always ensure the real-time aspect needed for dashboards. 
+
+# Memory Tip
+- ""Read-through is like a smart librarian fetching fresh books for you."""
+87,"[""A developer is creating an AWS Lambda function. The Lambda function needs an\nexternal library to connect to a third-party solution. The external library is a\ncollection of files with a total size of 100 MB. The developer needs to make the\nexternal library available to the Lambda execution environment and reduce the\nLambda package space.\n\nWhich solution will meet these requirements with the LEAST operational overhead?""]",Create a Lambda layer to store the external library. Configure the Lambda function to use the layer.,Create an Amazon S3 bucket. Upload the external library into the S3 bucket. Mount the S3 bucket folder in the Lambda function. Import the library by using the proper folder in the mount point.,Load the external library to the Lambda function's /tmp directory during deployment of the Lambda package. Import the library from the /tmp directory.,Create an Amazon Elastic File System (Amazon EFS) volume. Upload the external library to the EFS volume. Mount the EFS volume in the Lambda function. Import the library by using the proper folder in the mount point.,"# Answer
+- **Correct option:** A
+- **Reason:** Creating a Lambda layer to store the external library allows you to package the library separately from your Lambda function code. This method helps to keep the Lambda package size within the limits and reduces operational overhead by making the libraries available across multiple functions without needing to include them in every deployment package.
+
+# Example / Analogy
+- Think of Lambda layers like a toolbox that you can share among various projects. Instead of duplicating the same set of tools (libraries) in different toolboxes (Lambda functions), you just keep one shared toolbox (the layer) and refer to it whenever you need those tools.
+
+# Common Mistakes / Traps
+- A common mistake would be choosing option B (using S3) or D (using EFS) thinking they may seem like effective solutions. However, both involve more complexity and administrative effort compared to simply using Lambda layers, which are designed specifically for this purpose.
+
+# Memory Tip
+- **Layers are the shared toolbox for Lambda, reducing clutter and making deployment simpler.**"
+88,"[""A company has a front-end application that runs on four Amazon EC2 instances\nbehind an Elastic Load Balancer (ELB) in a production environment that is\nprovisioned by AWS Elastic Beanstalk. A developer needs to deploy and test new\napplication code while updating the Elastic Beanstalk platform from the current\nversion to a newer version of Node.js. The solution must result in zero downtime\nfor the application.\n\nWhich solution meets these requirements?""]","Clone the production environment to a different platform version. Deploy the new application code, and test it. Swap the environment URLs upon verification.",Deploy the new application code in an all-at-once deployment to the existing EC2 instances. Test the code. Redeploy the previous code if verification fails.,Perform an immutable update to deploy the new application code to new EC2 instances. Serve traffic to the new instances after they pass health checks.,Use a rolling deployment for the new application code. Apply the code to a subset of EC2 instances until the tests pass. Redeploy the previous code if the tests fail.,"# Answer
+- **Correct option:** A
+- **Reason:** Cloning the production environment allows the developer to deploy and test the new application code and platform version without affecting the live application. Once the new environment is verified, swapping the environment URLs ensures zero downtime as users are directed to the fully tested environment.
+
+# Example / Analogy
+- Think of it like a restaurant that builds a new kitchen (the cloned environment) while still serving customers from the old one. The restaurant can test new recipes in the new kitchen, and once everything is perfect, they switch over completely, so diners don’t notice any disruption.
+
+# Common Mistakes / Traps
+- A common mistake is thinking that rolling or immutable updates are sufficient for zero downtime, which they can be, but they require careful implementation. Additionally, ""all-at-once"" deployments (like option B) can lead to downtime if something goes wrong.
+
+# Memory Tip
+- **Tip:** Use clones for safe changes—test first, switch URLs later!"
+89,"[""A company has a critical application on AWS. The application exposes an HTTP API\nby using Amazon API Gateway. The API is integrated with an AWS Lambda function.\nThe application stores data in an Amazon RDS for MySQL DB instance with 2\nvirtual CPUs (vCPUs) and 64 GB of RAM.\n\nCustomers have reported that some of the API calls return HTTP 500 Internal\nServer Error responses. Amazon CloudWatch Logs shows errors for “too many\nconnections.” The errors occur during peak usage times that are unpredictable.\n\nThe company needs to make the application resilient. The database cannot be down\noutside of scheduled maintenance hours.\n\nWhich solution will meet these requirements?""]",Decrease the number of vCPUs for the DB instance. Increase the max_connections setting.,Use Amazon RDS Proxy to create a proxy that connects to the DB instance. Update the Lambda function to connect to the proxy.,"Add a CloudWatch alarm that changes the DB instance class when the number of connections increases to more than 1,000.",Add an Amazon EventBridge rule that increases the max_connections setting of the DB instance when CPU utilization is above 75%.,"# Answer
+- **Correct option:** B : Use Amazon RDS Proxy to create a proxy that connects to the DB instance. Update the Lambda function to connect to the proxy.
+
+- **Reason:** Amazon RDS Proxy helps manage database connections more efficiently, especially during peak usage times when you're encountering ""too many connections"" errors. It acts as a connection pool that reduces the number of connections made to your RDS instance by reusing connections, which optimizes resource utilization and can improve application resilience.
+
+# Example / Analogy
+- Think of RDS Proxy as a traffic police officer at a busy intersection. Just as the officer helps manage the flow of cars, preventing congestion and maintaining smooth traffic, RDS Proxy helps manage database connections, ensuring your application doesn't overwhelm the database with too many requests at once and avoids errors like “too many connections.”
+
+# Common Mistakes / Traps
+- A common trap is to assume that simply increasing instance resources (like vCPUs or max_connections) will solve the problem. While this might help to some extent, it does not address the fundamental issue of connection management during peak loads.
+
+# Memory Tip
+- Remember: ""RDS Proxy is the traffic controller for my database connections."""
+90,"[""A company has installed smart meters in all its customer locations. The smart\nmeters measure power usage at 1-minute intervals and send the usage readings to\na remote endpoint for collection. The company needs to create an endpoint that\nwill receive the smart meter readings and store the readings in a database. The\ncompany wants to store the location ID and timestamp information.\n\nThe company wants to give its customers low-latency access to their current\nusage and historical usage on demand. The company expects demand to increase\nsignificantly. The solution must not impact performance or include downtime\nwhile scaling.\n\nWhich solution will meet these requirements MOST cost-effectively?""]",Store the smart meter readings in an Amazon RDS database. Create an index on the location ID and timestamp columns. Use the columns to filter on the customers' data.,Store the smart meter readings in an Amazon DynamoDB table. Create a composite key by using the location ID and timestamp columns. Use the columns to filter on the customers' data.,Store the smart meter readings in Amazon ElastiCache for Redis. Create a SortedSet key by using the location ID and timestamp columns. Use the columns to filter on the customers' data.,Store the smart meter readings in Amazon S3. Partition the data by using the location ID and timestamp columns. Use Amazon Athena to filter on the customers' data.,"# Answer
+- **Correct option:** B
+- **Reason:** Amazon DynamoDB is a fully managed NoSQL database that offers low-latency access and scales seamlessly to handle increased demand without downtime. By using a composite key of location ID and timestamp, you can effectively query and filter the data for customers' smart meter readings.
+
+# Example / Analogy
+- Think of DynamoDB like a library with well-organized sections (keys) based on genres (location ID) and publication dates (timestamp). This allows you to quickly find the books (data) you want without sifting through an entire shelf, mirroring how DynamoDB allows fast access to specific readings without impacting performance.
+
+# Common Mistakes / Traps
+- A common trap is assuming that traditional SQL databases like Amazon RDS (Option A) can scale without performance issues. While RDS can handle queries, it may require more management and can face scaling challenges when demand spikes. Option C (ElastiCache) focuses on caching rather than persistent storage, which doesn't suit the requirement of storing historical usage effectively. Option D (S3 with Athena) can introduce latency when querying the data for low-latency access.
+
+# Memory Tip
+- Remember: For real-time performance and scalability with high concurrency, choose DynamoDB as your cloud database solution."
+91,"[""A developer is configuring an application's deployment environment in AWS\nCodePipeline. The application code is stored in a GitHub repository. The\ndeveloper wants to ensure that the repository package's unit tests run in the\nnew deployment environment. The developer has already set the pipeline's source\nprovider to GitHub and has specified the repository and branch to use in the\ndeployment.\n\nWhich combination of steps should the developer take next to meet these\nrequirements with the LEAST overhead? (Choose two.)""]",Create an AWS CodeCommit project. Add the repository package's build and test commands to the project's buildspec.,Create an AWS CodeBuild project. Add the repository package's build and test commands to the project's buildspec.,Create an AWS CodeDeploy project. Add the repository package's build and test commands to the project's buildspec.,Add an action to the source stage. Specify the newly created project as the action provider. Specify the build artifact as the action's input artifact.,"# Answer
+- **Correct options:** B and D
+
+- **Reason:** 
+  To run unit tests as part of a deployment process in AWS CodePipeline, the developer should create an AWS CodeBuild project (option B) that will execute the build commands specified in the buildspec file, which includes the unit tests. Then, the developer must add an action to the source stage of the pipeline (option D), specifying the CodeBuild project as the provider. This configuration allows CodePipeline to trigger the test and build processes as soon as there's a change in the GitHub repository, thus ensuring that tests are run automatically with the least overhead.
+
+# Example / Analogy
+- Think of it like a cooking competition. You have the ingredients (your source code in GitHub) and a cooking station (CodeBuild). You set up a recipe card (buildspec) with specific instructions to prepare your dish (build and run tests). Once your ingredients are ready, the competition (CodePipeline) calls you to start cooking (running tests and building), monitoring your progress throughout the stages.
+
+# Common Mistakes / Traps
+- A common mistake would be to overlook the necessity of linking the CodeBuild project with the CodePipeline. Some might mistakenly assume that merely creating a CodeDeploy project is sufficient, but CodeDeploy is primarily for deployment rather than handling builds and tests.
+
+# Memory Tip
+- Remember: ""Build with CodeBuild, Test with CodePipeline."""
+92,"[""An application under development is required to store hundreds of video files.\nThe data must be encrypted within the application prior to storage, with a\nunique key for each video file.\n\nHow should the developer code the application?""]",Use the KMS Encrypt API to encrypt the data. Store the encrypted data key and data.,Use a cryptography library to generate an encryption key for the application. Use the encryption key to encrypt the data. Store the encrypted data.,Use the KMS GenerateDataKey API to get a data key. Encrypt the data with the data key. Store the encrypted data key and data.,Upload the data to an S3 bucket using server side-encryption with an AWS KMS key.,"# Answer
+- **Correct option:** C : Use the KMS GenerateDataKey API to get a data key. Encrypt the data with the data key. Store the encrypted data key and data.
+
+- **Reason:** This option correctly addresses the requirement of using a unique encryption key for each video file while leveraging AWS Key Management Service (KMS). The process of using the GenerateDataKey API allows the application to obtain a data encryption key that is encrypted by KMS and can be safely stored alongside the encrypted video data. This method combines security (by using KMS for key management) with the flexibility of managing unique keys for each file.
+
+# Example / Analogy
+- Think of KMS as a secure vault where you can store gold keys (data keys). Each time you need gold to lock your treasure (video files), you ask KMS for a new gold key. You use it to lock your treasure and then put the key in the vault, secured by KMS, ensuring that each treasure is uniquely secured.
+
+# Common Mistakes / Traps
+- A common mistake is misunderstanding when to use KMS versus application-level encryption. Option A suggests directly using KMS to encrypt data, but it does not mention managing unique keys for each video file. Option D assumes server-side encryption with KMS, which does not meet the requirement of pre-encrypting the data with unique keys before storage. 
+
+# Memory Tip
+- ""Use KMS for gold keys, keep them safe and unique for each video!"""
+93,"[""A company is planning to deploy an application on AWS behind an Elastic Load\nBalancer. The application uses an HTTP/HTTPS listener and must access the client\nIP addresses.\n\nWhich load-balancing solution meets these requirements?""]",Use an Application Load Balancer and the X-Forwarded-For headers.,Use a Network Load Balancer (NLB). Enable proxy protocol support on the NLB and the target application.,Use an Application Load Balancer. Register the targets by the instance ID.,Use a Network Load Balancer and the X-Forwarded-For headers.,"# Answer
+- **Correct option:** A : Use an Application Load Balancer and the X-Forwarded-For headers.
+- **Reason:** The Application Load Balancer (ALB) supports both HTTP and HTTPS listeners and can include the original client IP address in the requests forwarded to the backend instances through the `X-Forwarded-For` header. This allows the application to identify the true client IP, which is essential for certain functionalities such as logging and security.
+
+# Example / Analogy
+- Think of a restaurant where customers submit their orders. If an order ticket only has the name of the waiter who took the order, the kitchen staff may not know who actually placed the order. The `X-Forwarded-For` header acts like a note that includes the actual customer’s name, allowing the kitchen to know who made the request.
+
+# Common Mistakes / Traps
+- A common trap is to assume that using a Network Load Balancer or relying solely on instance IP addresses will allow access to client IPs. NLBs don’t natively forward client IPs unless you enable proxy protocol, which can add unnecessary complexity. 
+
+# Memory Tip
+- Remember: **ALB + X-Forwarded-For = Client IP Awareness!**"
+94,"[""A developer is building a highly secure healthcare application using serverless\ncomponents. This application requires writing temporary data to /tmp storage on\nan AWS Lambda function.\n\nHow should the developer encrypt this data?""]",Enable Amazon EBS volume encryption with an AWS KMS key in the Lambda function configuration so that all storage attached to the Lambda function is encrypted.,Set up the Lambda function with a role and key policy to access an AWS KMS key. Use the key to generate a data key used to encrypt all data prior to writing to /tmp storage.,Use OpenSSL to generate a symmetric encryption key on Lambda startup. Use this key to encrypt the data prior to writing to /tmp.,"Use an on-premises hardware security module (HSM) to generate keys, where the Lambda function requests a data key from the HSM and uses that to encrypt data on all requests to the function.","# Answer
+- **Correct option:** B
+- **Reason:** Option B describes the proper approach to encrypting temporary data in an AWS Lambda function. By setting up the Lambda function with a role and key policy to access an AWS KMS key, the developer can safely generate a data key that is used to encrypt the data before writing it to the /tmp storage. This ensures that sensitive healthcare data is protected while in transit and at rest.
+
+# Example / Analogy
+- Think of your data as a valuable package that you want to store temporarily. Instead of leaving it unguarded, you use a special key (the KMS key) to lock it in a secure container (the encryption method). When you need the package, you unlock it with your key, ensuring that only authorized parties can access it, similar to securing important documents in a safe.
+
+# Common Mistakes / Traps
+- A common mistake may be opting for option A, which mentions Amazon EBS volume encryption. However, Lambda functions do not have attached EBS volumes, meaning this option is irrelevant. Furthermore, relying solely on OpenSSL in option C might introduce risks associated with key management and does not leverage AWS's built-in security features effectively.
+
+# Memory Tip
+- Use AWS KMS for secure key management to encrypt sensitive data in Lambda!"
+95,"[""A developer deployed an application to an Amazon EC2 instance. The application\nneeds to know the public IPv4 address of the instance.\n\nHow can the application find this information?""]",Query the instance metadata from http://169.254.169.254/latest/meta-data/.,Query the instance user data from http://169.254.169.254/latest/user-data/.,Query the Amazon Machine Image (AMI) information from http://169.254.169.254/latest/meta-data/ami/.,Check the hosts file of the operating system.,"# Answer
+- **Correct option:** A : Query the instance metadata from http://169.254.169.254/latest/meta-data/.
+
+- **Reason:** The instance metadata is a special feature provided by AWS that allows an EC2 instance to access information about itself, including its public IPv4 address. This information can be retrieved by making a simple HTTP request to the instance metadata service at a predefined link, which for IPv4 addressed information is specifically located at `http://169.254.169.254/latest/meta-data/`. 
+
+# Example / Analogy
+- Imagine your EC2 instance is like a person at a conference. They have a name tag (instance metadata) which includes their contact information. To find out their phone number (public IPv4 address), you simply need to ask them directly in a specific way, rather than looking at a directory (like the hosts file) or asking about other irrelevant information (like AMI or user data), which wouldn’t help you get the phone number you actually need.
+
+# Common Mistakes / Traps
+- A common mistake is to confuse instance metadata with user data or AMI information. User data is used to pass initialization scripts and configurations to the instance at launch but does not contain dynamic metadata such as the public IPv4 address. Additionally, some might incorrectly assume to search through system files (like the hosts file), which would not provide this specific information.
+
+# Memory Tip
+- Remember: **""Instance metadata is the key to knowing your EC2 instance's address!""**"
+96,"[""A developer wants to debug an application by searching and filtering log data.\nThe application logs are stored in Amazon CloudWatch Logs. The developer creates\na new metric filter to count exceptions in the application logs. However, no\nresults are returned from the logs.\n\nWhat is the reason that no filtered results are being returned?""]",A setup of the Amazon CloudWatch interface VPC endpoint is required for filtering the CloudWatch Logs in the VPC.,CloudWatch Logs only publishes metric data for events that happen after the filter is created.,The log group for CloudWatch Logs should be first streamed to Amazon OpenSearch Service before metric filtering returns the results.,Metric data points for logs groups can be filtered only after they are exported to an Amazon S3 bucket.,"# Answer
+- **Correct option:** B
+- **Reason:** CloudWatch Logs only publishes metric data for events that happen after the filter is created. This means that if the metric filter was set up after the relevant log data was generated (such as the exceptions), then it won't count those prior events because they were logged before the filter was in place.
+
+# Example / Analogy
+- Think of it like setting up a new subscription to a newspaper. If you subscribe today, you'll only receive the articles published from today onward. Any articles that were published before your subscription won't be delivered to you. Similarly, the metric filter only tracks logs generated after it has been created.
+
+# Common Mistakes / Traps
+- A common mistake is assuming that metric filters can retroactively analyze logs that have already been written. It's important to remember that filters only operate on new events recorded after their creation.
+
+# Memory Tip
+- Remember: ""Filters catch only new data, like a net only catching fish that swim by after it’s cast."""
+97,"[""A company is planning to use AWS CodeDeploy to deploy an application to Amazon\nElastic Container Service (Amazon ECS). During the deployment of a new version\nof the application, the company initially must expose only 10% of live traffic\nto the new version of the deployed application. Then, after 15 minutes elapse,\nthe company must route all the remaining live traffic to the new version of the\ndeployed application.\n\nWhich CodeDeploy predefined configuration will meet these requirements?""]",CodeDeployDefault.ECSCanary10Percent15Minutes,CodeDeployDefault.LambdaCanary10Percent5Minutes,CodeDeployDefault.LambdaCanary10Percentl15Minutes,CodeDeployDefault.ECSLinear10PercentEvery1Minutes,"# Answer
+- **Correct option:** A : CodeDeployDefault.ECSCanary10Percent15Minutes
+- **Reason:** This predefined configuration in AWS CodeDeploy is specifically designed for Canary deployments. It allows you to shift only 10% of the traffic to the new version for a duration of 15 minutes before promoting the remaining traffic to the new version, which aligns perfectly with the company's requirements to gradually expose the new version.
+
+# Example / Analogy
+- Think of it like a restaurant testing a new dish. The restaurant serves the new dish to 10% of its customers for 15 minutes to see if they like it. If the feedback is positive, they then decide to serve the dish to all customers. This gradual testing ensures that they mitigate risks before a full rollout.
+
+# Common Mistakes / Traps
+- A common mistake would be confusing the configurations for Lambda and ECS. Remember that the ECS deployment types will have ""ECS"" in their names, while Lambda deployment types will have ""Lambda"" in them. Always look for the specific service you are deploying to in the options.
+
+# Memory Tip
+- **Remember: Canary is gradual, ECS specifies service!**"
+98,"[""A developer is creating a Ruby application and needs to automate the deployment,\nscaling, and management of an environment without requiring knowledge of the\nunderlying infrastructure.\n\nWhich service would best accomplish this task?""]",AWS CodeDeploy,AWS CloudFormation,AWS OpsWorks,AWS Elastic Beanstalk,"# Answer
+- **Correct option:** D : AWS Elastic Beanstalk  
+- **Reason:** AWS Elastic Beanstalk is a Platform as a Service (PaaS) that allows developers to deploy applications without worrying about the underlying infrastructure. It automates the deployment, scaling, and management of applications, providing a straightforward way for Ruby developers (and others) to focus on writing code rather than managing servers.
+
+# Example / Analogy
+- Consider Elastic Beanstalk like a restaurant that prepares and serves meals for you without you needing to learn how to cook or manage the kitchen. You simply provide the recipe (your application code), and the restaurant handles everything else (servers, scaling, and management).
+
+# Common Mistakes / Traps
+- A common mistake is confusing AWS Elastic Beanstalk with AWS CloudFormation or AWS OpsWorks. CloudFormation focuses on infrastructure as code (IAC), while OpsWorks is based on Chef/Puppet for configuration management, neither of which automates deployment as seamlessly as Elastic Beanstalk does for application management.
+
+# Memory Tip
+- Remember: ""Elastic Beanstalk = Easy deployment with no infrastructure worries!"""
+99,"[""A company has a web application that is deployed on AWS. The application uses an\nAmazon API Gateway API and an AWS Lambda function as its backend.\n\nThe application recently demonstrated unexpected behavior. A developer examines\nthe Lambda function code, finds an error, and modifies the code to resolve the\nproblem. Before deploying the change to production, the developer needs to run\ntests to validate that the application operates properly.\n\nThe application has only a production environment available. The developer must\ncreate a new development environment to test the code changes. The developer\nmust also prevent other developers from overwriting these changes during the\ntest cycle.\n\nWhich combination of steps will meet these requirements with the LEAST\ndevelopment effort? (Choose two.)""]",Create a new resource in the current stage. Create a new method with Lambda proxy integration. Select the Lambda function. Add the hotfix alias. Redeploy the current stage. Test the backend.,Update the Lambda function in the API Gateway API integration request to use the hotfix alias. Deploy the API Gateway API to a new stage named hotfix. Test the backend.,Modify the Lambda function by fixing the code. Test the Lambda function. Create the alias hotfix. Point the alias to the $LATEST version.,"Modify the Lambda function by fixing the code. Test the Lambda function. When the Lambda function is working as expected, publish the Lambda function as a new version. Create the alias hotfix. Point the alias to the new version.","# Answer
+- **Correct options:** B and D
+- **Reason:** 
+  - Option **B** involves updating the Lambda function integration in the API Gateway to point to a new stage, which allows the developer to test the changes without affecting the production environment. This approach ensures that other developers cannot overwrite the hotfix changes because it operates in an isolated stage. 
+  - Option **D** allows the developer to test the changes and ensure they're working as expected before publishing a new version of the Lambda function and creating an alias named ""hotfix."" This allows ongoing development and testing while maintaining stability in the production environment. The alias points to a specific version, preventing changes from disrupting this version. 
+
+# Example / Analogy
+- Imagine a restaurant that wants to add a new dish to its menu (the new code). Instead of immediately replacing a popular dish (the production environment), the restaurant tries the new dish in a special weekend trial (the separate stage in API Gateway) while keeping the old dish on the menu. Once they know the new dish is fantastic (successful testing), they officially add it to the menu (publish the new version).
+
+# Common Mistakes / Traps
+- One common mistake is rushing to modify the production environment directly, which can lead to unexpected downtime or issues. Also, utilizing aliases without appropriately versioning can create confusion over what version is in use.
+
+# Memory Tip
+- Always test changes in a dedicated environment and use aliases for version control in AWS Lambda!"
+100,"[""A company's new mobile app uses Amazon API Gateway. As the development team\ncompletes a new release of its APIs, a developer must safely and transparently\nroll out the API change.\n\nWhat is the SIMPLEST solution for the developer to use for rolling out the new\nAPI version to a limited number of users through API Gateway?""]",Create a new API in API Gateway. Direct a portion of the traffic to the new API using an Amazon Route 53 weighted routing policy.,Validate the new API version and promote it to production during the window of lowest expected utilization.,Implement an Amazon CloudWatch alarm to trigger a rollback if the observed HTTP 500 status code rate exceeds a predetermined threshold.,Use the canary release deployment option in API Gateway. Direct a percentage of the API traffic using the canarySettings setting.,"# Answer
+- **Correct option:** D
+- **Reason:** Using the canary release deployment option in API Gateway allows the developer to route a percentage of traffic to the new API version while keeping the majority on the stable version. This approach provides a safe way to test the new version with real users, enabling the team to monitor performance and issues without fully committing to the new release.
+
+# Example / Analogy
+- Think of it like testing a new flavor of ice cream in a small bowl rather than switching all customers to the new flavor immediately. If customers love it, you can roll it out to everyone; if they don't, you still have your original flavor available.
+
+# Common Mistakes / Traps
+- A common mistake is to choose options that involve creating a completely new API (Choice A) or merely rolling out updates without testing them (Choice B). Canary releases specifically require managing traffic, which can’t be achieved with those strategies.
+
+# Memory Tip
+- **Canary releases let you ""test the waters"" before a full rollout.**"
+101,"[""A company caches session information for a web application in an Amazon DynamoDB\ntable. The company wants an automated way to delete old items from the table.\n\nWhat is the simplest way to do this?""]",Write a script that deletes old records; schedule the script as a cron job on an Amazon EC2 instance.,Add an attribute with the expiration time; enable the Time To Live feature based on that attribute.,"Each day, create a new table to hold session data; delete the previous day's table.",Add an attribute with the expiration time; name the attribute ItemExpiration.,"# Answer
+- **Correct option:** B : Add an attribute with the expiration time; enable the Time To Live feature based on that attribute.
+
+- **Reason:** The Time To Live (TTL) feature in DynamoDB allows you to specify an expiration time for each item in your table. When the specified time is reached, DynamoDB automatically deletes the item. This eliminates the need for manual scripts or external processes to manage old records, simplifying your architecture and reducing costs.
+
+# Example / Analogy
+- Imagine the TTL feature as a ""best before"" date on packaged food. Once the date passes, you can safely dispose of the item without risk, just as DynamoDB automatically clears expired items, keeping your data fresh without manual intervention.
+
+# Common Mistakes / Traps
+- A common trap is thinking that a script-based solution is necessary for cleanup, overlooking the built-in TTL functionality that simplifies management. Some may also get confused by suggesting naming conventions for attributes (like ItemExpiration) instead of focusing on enabling TTL itself.
+
+# Memory Tip
+- **Think of TTL as a ""self-cleaning"" mechanism for your DynamoDB items.**"
