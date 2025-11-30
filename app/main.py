@@ -26,3 +26,11 @@ app.include_router(response.router, prefix="/api/v1/responses", tags=["responses
 @app.get("/")
 def root():
     return {"message": "Welcome to My FastAPI Project"}
+
+@app.get("/api/v1/health")
+def health_check():
+    return {
+        "status": "healthy",
+        "service": "quiz-api",
+        "version": "1.0.0"
+    }
